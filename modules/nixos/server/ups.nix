@@ -30,7 +30,7 @@ in
     })
 
     (mkIf (cfg.enable && cfg.type == "server") {
-      sops.secrets."nut/admin" = { };
+      sops.secrets."nut/admin".sopsFile = config.custom.base.secrets.system;
 
       # for some reason, nut seems to spam this (seemingly) benign error
       systemd.services.upsdrv.serviceConfig.LogFilterPatterns = "~nut_libusb_get_(report|string): Input/Output Error";
