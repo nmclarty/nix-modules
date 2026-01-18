@@ -1,6 +1,8 @@
 { flake, ... }: {
-  imports = with flake.modules; [
-    nixos.disko
+  imports = with flake.nixosModules; [
+    disks
+    base
+    server
   ];
 
   # hardware
@@ -12,5 +14,7 @@
       type = "ext4";
       disks = [ "/dev/nvme0n1" ];
     };
+
+    server.ups.type = "server";
   };
 }

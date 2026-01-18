@@ -1,6 +1,7 @@
 { config, lib, ... }:
 let
   cfg = config.custom.disks.root;
+  firstDisk = builtins.elemAt cfg.disks 0;
 in
 {
   config = lib.mkIf (cfg.enable && cfg.type == "ext4") {
@@ -10,9 +11,9 @@ in
         message = "Root disk type 'ext4' requires 1 disk.";
       }
     ];
-    disko.devices.disk.primary = {
+    disko.devices.disk.${firstDisk} = {
       type = "disk";
-      device = builtins.elemAt cfg.disks 0;
+      device = firstDisk;
       content = {
         type = "gpt";
         partitions = {

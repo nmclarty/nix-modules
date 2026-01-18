@@ -1,6 +1,7 @@
-{ lib, inputs, config, ... }:
-with lib;
+{ inputs, ... }:
+{ lib, config, ... }:
 let
+  inherit (lib) mkEnableOption mkOption types mkIf;
   cfg = config.custom.disks;
 in
 {

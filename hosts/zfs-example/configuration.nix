@@ -1,6 +1,9 @@
 { flake, ... }: {
-  imports = with flake.modules; [
-    nixos.disko
+  imports = with flake.nixosModules; [
+    disks
+    base
+    server
+    apps
   ];
 
   # hardware
@@ -20,5 +23,22 @@
         disks = [ "/dev/sda" "/dev/sdb" ];
       };
     };
+  };
+
+  apps = {
+    settings = {
+      domain = "example.com";
+      cpus = "12-19";
+    };
+
+    forgejo.enable = true;
+    garage.enable = true;
+    immich.enable = true;
+    seafile.enable = true;
+    traefik.enable = true;
+    pocket.enable = true;
+    tinyauth.enable = true;
+    minecraft.enable = true;
+    # media.enable = true;
   };
 }
