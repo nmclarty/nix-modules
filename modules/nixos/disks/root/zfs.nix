@@ -2,7 +2,6 @@
 let
   cfg = config.custom.disks.root;
   listLength = builtins.length cfg.disks;
-  firstDisk = builtins.elemAt cfg.disks 0;
   secondDisk = if builtins.length cfg.disks == 2 then builtins.elemAt cfg.disks 1 else "";
 in
 {
@@ -15,9 +14,9 @@ in
     ];
     disko.devices = {
       disk = {
-        ${firstDisk} = {
+        primary = {
           type = "disk";
-          device = firstDisk;
+          device = builtins.elemAt cfg.disks 0;
           content = {
             type = "gpt";
             partitions = {
