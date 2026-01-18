@@ -2,7 +2,7 @@
 { ... }:
 {
   imports = with inputs; [
-    nix-helpers.homeModules.py-motd
+    helper-tools.homeModules.py-motd
     ./cli
     ./packages.nix
   ];

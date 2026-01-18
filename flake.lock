@@ -24,7 +24,7 @@
     "blueprint_2": {
       "inputs": {
         "nixpkgs": [
-          "nix-helpers",
+          "helper-tools",
           "nixpkgs"
         ],
         "systems": "systems_2"
@@ -116,6 +116,28 @@
         "type": "github"
       }
     },
+    "helper-tools": {
+      "inputs": {
+        "blueprint": "blueprint_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pyproject-nix": "pyproject-nix"
+      },
+      "locked": {
+        "lastModified": 1768777685,
+        "narHash": "sha256-IsNjn8HgiHbykxjtPJgb3p+IKN+LL2crqFIcNTwJV0A=",
+        "owner": "nmclarty",
+        "repo": "helper-tools",
+        "rev": "3ec99ead848688d62e333778099a40667b89f4ab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nmclarty",
+        "repo": "helper-tools",
+        "type": "github"
+      }
+    },
     "lanzaboote": {
       "inputs": {
         "crane": "crane",
@@ -137,28 +159,6 @@
         "owner": "nix-community",
         "ref": "v1.0.0",
         "repo": "lanzaboote",
-        "type": "github"
-      }
-    },
-    "nix-helpers": {
-      "inputs": {
-        "blueprint": "blueprint_2",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "pyproject-nix": "pyproject-nix"
-      },
-      "locked": {
-        "lastModified": 1768737994,
-        "narHash": "sha256-xEhWzfC28rQSBxQ09QByS2ThWUyMeNIDLMfxvOCUu64=",
-        "owner": "nmclarty",
-        "repo": "nix-helpers",
-        "rev": "1897ca55d6e22a25b946aff2b75309f5145c6e57",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nmclarty",
-        "repo": "nix-helpers",
         "type": "github"
       }
     },
@@ -204,7 +204,7 @@
     "pyproject-nix": {
       "inputs": {
         "nixpkgs": [
-          "nix-helpers",
+          "helper-tools",
           "nixpkgs"
         ]
       },
@@ -241,8 +241,8 @@
       "inputs": {
         "blueprint": "blueprint",
         "disko": "disko",
+        "helper-tools": "helper-tools",
         "lanzaboote": "lanzaboote",
-        "nix-helpers": "nix-helpers",
         "nixpkgs": "nixpkgs",
         "quadlet-nix": "quadlet-nix",
         "sops-nix": "sops-nix"

@@ -1,7 +1,7 @@
 { inputs, lib, ... }:
 let
   inherit (lib) mkOption types;
-  inherit (inputs.nix-helpers.lib) mkContainerOptions;
+  inherit (inputs.helper-tools.lib) mkContainerOptions;
 in
 {
   imports = [

@@ -6,7 +6,7 @@ in
 {
   imports = with inputs; [
     quadlet-nix.nixosModules.quadlet
-    nix-helpers.nixosModules.sops-podman
+    helper-tools.nixosModules.sops-podman
     ./services.nix
     ./podman.nix
     ./system.nix

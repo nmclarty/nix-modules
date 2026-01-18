@@ -5,8 +5,8 @@
     # utilities
     blueprint.url = "github:numtide/blueprint";
     blueprint.inputs.nixpkgs.follows = "nixpkgs";
-    nix-helpers.url = "github:nmclarty/nix-helpers";
-    nix-helpers.inputs.nixpkgs.follows = "nixpkgs";
+    helper-tools.url = "github:nmclarty/helper-tools";
+    helper-tools.inputs.nixpkgs.follows = "nixpkgs";
     # base
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";

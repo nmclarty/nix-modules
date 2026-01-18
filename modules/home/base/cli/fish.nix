@@ -18,7 +18,7 @@
       enable = pkgs.stdenv.isLinux;
       settings = {
         backup.enable = with osConfig; services ? py-backup && services.py-backup.enable;
-        update.inputs = [ "nixpkgs" "nix-helpers" "nix-private" ];
+        update.inputs = [ "nixpkgs" "helper-tools" ];
       };
     };
 

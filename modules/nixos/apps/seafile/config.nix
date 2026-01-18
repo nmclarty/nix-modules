@@ -1,6 +1,6 @@
 { inputs, config, lib, ... }:
 let
-  inherit (inputs.nix-helpers.lib) mkSecrets;
+  inherit (inputs.helper-tools.lib) mkSecrets;
   cfg = config.apps.seafile;
 in
 {

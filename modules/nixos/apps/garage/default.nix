@@ -1,6 +1,6 @@
 { inputs, lib, config, ... }:
 let
-  inherit (inputs.nix-helpers.lib) mkContainerUser;
+  inherit (inputs.helper-tools.lib) mkContainerUser;
   cfg = config.apps.garage;
   id = toString cfg.user.id;
 in
