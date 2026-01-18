@@ -18,12 +18,25 @@
 
   # nix settings
   sops = {
-    secrets."github/token" = { };
-    templates."nix/access-token" = {
-      owner = "nmclarty";
-      content = ''
-        access-tokens = github.com=${config.sops.placeholder."github/token"}
-      '';
+    secrets = {
+      "github/token" = { };
+      "garnix/token" = { };
+    };
+    templates = {
+      "nix/github-token" = {
+        owner = "nmclarty";
+        content = ''
+          access-tokens = github.com=${config.sops.placeholder."github/token"}
+        '';
+      };
+      "nix/garnix-netrc" = {
+        owner = "nmclarty";
+        content = ''
+          machine cache.garnix.io
+            login nmclarty
+            password ${config.sops.placeholder."garnix/token"}
+        '';
+      };
     };
   };
   nix = {
@@ -36,9 +49,19 @@
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
       warn-dirty = false;
+      substituters = [
+        "https://cache.garnix.io"
+        "https://cache.nixos.org/"
+      ];
+      trusted-public-keys = [
+        "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      ];
     };
     extraOptions = ''
-      !include ${config.sops.templates."nix/access-token".path}
+      !include ${config.sops.templates."nix/github-token".path}
+      netrc-file = ${config.sops.templates."nix/garnix-netrc".path}
+      narinfo-cache-positive-ttl = 3600
     '';
   };
 }
