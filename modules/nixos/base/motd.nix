@@ -20,28 +20,30 @@ let
     else "";
 in
 {
-  systemd.services.rust-motd = {
-    description = "Update the motd using rust-motd";
-    after = [ "network-online.target" ];
-    requires = [ "network-online.target" ];
-    serviceConfig.Type = "oneshot";
-    path = with pkgs; [ rust-motd ];
-    script = ''
-      rust-motd ${config.sops.templates."rust-motd/config.kdl".path} > /run/rust-motd/motd
-    '';
-  };
-  systemd.timers.rust-motd = {
-    description = "Timer for rust-motd updates";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnBootSec = "0";
-      OnUnitActiveSec = "60s";
+  systemd = {
+    services.rust-motd = {
+      description = "Update the motd using rust-motd";
+      after = [ "network-online.target" ];
+      requires = [ "network-online.target" ];
+      serviceConfig.Type = "oneshot";
+      path = with pkgs; [ rust-motd ];
+      script = ''
+        rust-motd ${config.sops.templates."rust-motd/config.kdl".path} > /run/rust-motd/motd
+      '';
     };
+    timers.rust-motd = {
+      description = "Timer for rust-motd updates";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "0";
+        OnUnitActiveSec = "60s";
+      };
+    };
+    tmpfiles.rules = [
+      "f+ /run/rust-motd/cg_stats.toml"
+      "f+ /run/rust-motd/motd"
+    ];
   };
-  systemd.tmpfiles.rules = [
-    "f+ /run/rust-motd/cg_stats.toml"
-    "f+ /run/rust-motd/motd"
-  ];
   sops.templates."rust-motd/config.kdl" = {
     restartUnits = [ "rust-motd.service" ];
     content = ''
