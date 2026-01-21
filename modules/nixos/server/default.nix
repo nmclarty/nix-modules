@@ -13,6 +13,11 @@ in
     ./ups.nix
   ];
   options.custom.server = {
+    settings.domain = mkOption {
+      type = types.str;
+      default = "example.com";
+      description = "The domain name to use for servers.";
+    };
     ups = {
       enable = mkOption {
         type = types.bool;

@@ -1,4 +1,4 @@
-{ inputs, lib, ... }:
+{ inputs, lib, config, ... }:
 let
   inherit (lib) mkOption types;
   inherit (inputs.helper-tools.lib) mkContainerOptions;
@@ -13,12 +13,18 @@ in
     ./pocket
     ./tinyauth
     ./minecraft
+    ./beszel
   ];
   options.apps = {
     settings = {
       domain = mkOption {
         type = types.str;
-        description = "The domain name to use for all apps.";
+        default = config.custom.server.settings.domain;
+        description = ''
+          The domain name to use for all apps. Set this to something different from
+          the server domain to allow public-facing services to route to that one,
+          while allowing internal-facing ones to still work properly.
+        '';
       };
       cpus = mkOption {
         type = types.str;
@@ -37,5 +43,6 @@ in
     { id = 2006; name = "tinyauth"; tag = "v4"; }
     { id = 2007; name = "minecraft"; tag = "stable"; }
     { id = 2008; name = "media"; tag = "latest"; } # options only
+    { id = 2009; name = "beszel"; tag = "latest"; }
   ];
 }

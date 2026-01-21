@@ -26,10 +26,7 @@
   };
 
   apps = {
-    settings = {
-      domain = "example.com";
-      cpus = "12-19";
-    };
+    settings.cpus = "12-19";
 
     forgejo.enable = true;
     garage.enable = true;
@@ -40,5 +37,6 @@
     tinyauth.enable = true;
     minecraft.enable = true;
     # media.enable = true;
+    beszel.enable = true;
   };
 }

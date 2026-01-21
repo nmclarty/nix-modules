@@ -36,7 +36,7 @@ in
       wantedBy = [ "timers.target" ];
       timerConfig = {
         OnBootSec = "0";
-        OnUnitActiveSec = "60s";
+        OnUnitActiveSec = "300s";
       };
     };
     tmpfiles.rules = [
