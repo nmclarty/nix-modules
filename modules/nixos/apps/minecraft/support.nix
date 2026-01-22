@@ -1,6 +1,6 @@
 { lib, config, ... }:
 let
-  cfg = config.apps.minecraft;
+  cfg = config.custom.apps.minecraft;
   id = toString cfg.user.id;
 in
 {

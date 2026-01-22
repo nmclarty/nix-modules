@@ -1,6 +1,6 @@
 { lib, config, ... }:
 let
-  cfg = config.apps.seafile;
+  cfg = config.custom.apps.seafile;
   id = toString cfg.user.id;
 in
 {

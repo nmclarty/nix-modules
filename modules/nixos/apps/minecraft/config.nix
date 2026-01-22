@@ -1,6 +1,6 @@
 { lib, config, ... }:
 let
-  cfg = config.apps.minecraft;
+  cfg = config.custom.apps.minecraft;
 in
 {
   config = lib.mkIf cfg.enable {

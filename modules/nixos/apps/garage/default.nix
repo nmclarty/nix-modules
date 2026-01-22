@@ -1,7 +1,7 @@
 { inputs, lib, config, ... }:
 let
   inherit (inputs.helper-tools.lib) mkContainerUser;
-  cfg = config.apps.garage;
+  cfg = config.custom.apps.garage;
   id = toString cfg.user.id;
 in
 {

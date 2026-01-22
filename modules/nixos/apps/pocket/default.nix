@@ -1,7 +1,7 @@
 { inputs, lib, config, ... }:
 let
   inherit (inputs.helper-tools.lib) mkContainerUser;
-  cfg = config.apps.pocket;
+  cfg = config.custom.apps.pocket;
   id = toString cfg.user.id;
 in
 {
@@ -18,7 +18,7 @@ in
         autoUpdate = "registry";
         user = "${id}:${id}";
         environments = {
-          APP_URL = "https://pocket.${config.apps.settings.domain}";
+          APP_URL = "https://pocket.${config.custom.apps.settings.domain}";
           TRUST_PROXY = "true";
           MAXMIND_LICENSE_KEY_FILE = "/run/secrets/pocket__maxmind_licence_key";
           ENCRYPTION_KEY_FILE = "/run/secrets/pocket__encryption_key";

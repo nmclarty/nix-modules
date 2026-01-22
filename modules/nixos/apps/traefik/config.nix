@@ -1,7 +1,7 @@
 { inputs, lib, config, ... }:
 let
   inherit (inputs.helper-tools.lib) mkSecrets;
-  cfg = config.apps.traefik;
+  cfg = config.custom.apps.traefik;
 in
 {
   config = lib.mkIf cfg.enable {
@@ -43,9 +43,9 @@ in
                   tls:
                     certResolver: porkbun
                     domains:
-                      - main: "${config.apps.settings.domain}"
+                      - main: "${config.custom.apps.settings.domain}"
                         sans:
-                          - "*.${config.apps.settings.domain}"
+                          - "*.${config.custom.apps.settings.domain}"
                 # fix for immich timeouts
                 transport:
                   respondingTimeouts:
@@ -59,7 +59,7 @@ in
                 exposedByDefault: false
                 network: "exposed"
                 allowEmptyServices: true
-                defaultRule: "Host(`{{ normalize .ContainerName }}.${config.apps.settings.domain}`)"
+                defaultRule: "Host(`{{ normalize .ContainerName }}.${config.custom.apps.settings.domain}`)"
 
             api:
               dashboard: true
@@ -106,8 +106,8 @@ in
                   api_key = config.sops.placeholder."traefik/porkbun/api_key";
                   secret_api_key = config.sops.placeholder."traefik/porkbun/secret_key";
                 }) [
-                { domain = "*.${config.apps.settings.domain}"; ip_version = "ipv4"; }
-                { domain = "${config.apps.settings.domain}"; ip_version = "ipv4"; }
+                { domain = "*.${config.custom.apps.settings.domain}"; ip_version = "ipv4"; }
+                { domain = "${config.custom.apps.settings.domain}"; ip_version = "ipv4"; }
               ];
             in
             builtins.toJSON { inherit settings; }; # expects settings to be a key

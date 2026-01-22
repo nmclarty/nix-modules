@@ -1,7 +1,7 @@
 { inputs, lib, config, ... }:
 let
   inherit (inputs.helper-tools.lib) mkSecrets;
-  cfg = config.apps.immich;
+  cfg = config.custom.apps.immich;
 in
 {
   config = lib.mkIf cfg.enable {
@@ -205,7 +205,7 @@ in
               "clientSecret": "${config.sops.placeholder."immich/pocket/client_secret"}",
               "defaultStorageQuota": 250,
               "enabled": true,
-              "issuerUrl": "https://pocket.${config.apps.settings.domain}",
+              "issuerUrl": "https://pocket.${config.custom.apps.settings.domain}",
               "mobileOverrideEnabled": false,
               "mobileRedirectUri": "",
               "profileSigningAlgorithm": "none",
@@ -224,7 +224,7 @@ in
               "enabled": true
             },
             "server": {
-              "externalDomain": "https://immich.${config.apps.settings.domain}",
+              "externalDomain": "https://immich.${config.custom.apps.settings.domain}",
               "loginPageMessage": "",
               "publicUsers": true
             },

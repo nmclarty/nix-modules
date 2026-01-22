@@ -1,7 +1,7 @@
 { inputs, lib, config, ... }:
 let
   inherit (inputs.helper-tools.lib) mkContainerUser mkContainerDeps;
-  cfg = config.apps.seafile;
+  cfg = config.custom.apps.seafile;
   id = toString cfg.user.id;
 in
 {
@@ -33,7 +33,7 @@ in
               SEAFILE_MYSQL_DB_CCNET_DB_NAME = "ccnet_db";
               SEAFILE_MYSQL_DB_SEAFILE_DB_NAME = "seafile_db";
               SEAFILE_MYSQL_DB_SEAHUB_DB_NAME = "seahub_db";
-              SEAFILE_SERVER_HOSTNAME = "seafile.${config.apps.settings.domain}";
+              SEAFILE_SERVER_HOSTNAME = "seafile.${config.custom.apps.settings.domain}";
               SEAFILE_SERVER_PROTOCOL = "https";
               SITE_ROOT = "/";
               NON_ROOT = "false";
@@ -100,7 +100,7 @@ in
               "traefik.enable" = "true";
               "traefik.http.services.seafile-notification.loadbalancer.server.port" = "8083";
               "traefik.http.routers.seafile-notification.rule" =
-                "Host(`seafile.${config.apps.settings.domain}`) && PathPrefix(`/notification`)";
+                "Host(`seafile.${config.custom.apps.settings.domain}`) && PathPrefix(`/notification`)";
             };
             healthCmd = "bash -c 'echo -n > /dev/tcp/127.0.0.1/8083'";
             healthStartupCmd = "sleep 10";

@@ -1,7 +1,7 @@
 { inputs, lib, config, ... }:
 let
   inherit (inputs.helper-tools.lib) mkContainerUser;
-  cfg = config.apps.tinyauth;
+  cfg = config.custom.apps.tinyauth;
   id = toString cfg.user.id;
 in
 {
@@ -22,17 +22,17 @@ in
         user = "${id}:${id}";
         environments = {
           # general
-          APP_URL = "https://tinyauth.${config.apps.settings.domain}";
+          APP_URL = "https://tinyauth.${config.custom.apps.settings.domain}";
           LOG_LEVEL = "warn";
           OAUTH_AUTO_REDIRECT = "pocketid";
           SECURE_COOKIE = "true";
           TRUSTED_PROXIES = "10.90.0.2";
           # pocket-id oauth
           PROVIDERS_POCKETID_CLIENT_SECRET_FILE = "/run/secrets/tinyauth__client_secret";
-          PROVIDERS_POCKETID_AUTH_URL = "https://pocket.${config.apps.settings.domain}/authorize";
-          PROVIDERS_POCKETID_TOKEN_URL = "https://pocket.${config.apps.settings.domain}/api/oidc/token";
-          PROVIDERS_POCKETID_USER_INFO_URL = "https://pocket.${config.apps.settings.domain}/api/oidc/userinfo";
-          PROVIDERS_POCKETID_REDIRECT_URL = "https://tinyauth.${config.apps.settings.domain}/api/oauth/callback/pocketid";
+          PROVIDERS_POCKETID_AUTH_URL = "https://pocket.${config.custom.apps.settings.domain}/authorize";
+          PROVIDERS_POCKETID_TOKEN_URL = "https://pocket.${config.custom.apps.settings.domain}/api/oidc/token";
+          PROVIDERS_POCKETID_USER_INFO_URL = "https://pocket.${config.custom.apps.settings.domain}/api/oidc/userinfo";
+          PROVIDERS_POCKETID_REDIRECT_URL = "https://tinyauth.${config.custom.apps.settings.domain}/api/oauth/callback/pocketid";
           PROVIDERS_POCKETID_SCOPES = "openid email profile groups";
           PROVIDERS_POCKETID_NAME = "Pocket ID";
         };

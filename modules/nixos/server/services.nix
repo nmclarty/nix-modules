@@ -1,4 +1,11 @@
-{ config, ... }: {
+{ flake, config, lib, ... }:
+let
+  beszelServer = lib.findFirst
+    (name: with flake.nixosConfigurations.${name}.config; custom ? apps && custom.apps.beszel.enable)
+    (throw "No Beszel server found")
+    (builtins.attrNames flake.nixosConfigurations);
+in
+{
   # tailscale (and ssh)
   services = {
     tailscale = {
@@ -37,7 +44,7 @@
         LISTEN=45876
         KEY="${config.sops.placeholder."beszel/key"}"
         TOKEN="${config.sops.placeholder."beszel/token"}"
-        HUB_URL="https://beszel.${config.custom.server.settings.domain}"
+        HUB_URL="http://${beszelServer}:8090"
       '';
     };
   };

@@ -1,7 +1,7 @@
 { inputs, lib, config, ... }:
 let
   inherit (inputs.helper-tools.lib) mkContainerUser;
-  cfg = config.apps.beszel;
+  cfg = config.custom.apps.beszel;
   id = toString cfg.user.id;
 in
 {
@@ -18,7 +18,8 @@ in
       user = "${id}:${id}";
       volumes = [ "/srv/beszel:/beszel_data" ];
       networks = [ "exposed.network" ];
-      labels = { "traefik.enable" = "true"; };
+      publishPorts = [ "8090:8090" ]; # for server connections
+      labels = { "traefik.enable" = "true"; }; # for user access
     };
   };
 }

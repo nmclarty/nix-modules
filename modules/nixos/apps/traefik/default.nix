@@ -1,7 +1,7 @@
 { inputs, lib, config, ... }:
 let
   inherit (inputs.helper-tools.lib) mkContainerUser mkContainerDeps;
-  cfg = config.apps.traefik;
+  cfg = config.custom.apps.traefik;
   id = toString cfg.user.id;
 in
 {

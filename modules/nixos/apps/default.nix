@@ -15,7 +15,7 @@ in
     ./minecraft
     ./beszel
   ];
-  options.apps = {
+  options.custom.apps = {
     settings = {
       domain = mkOption {
         type = types.str;

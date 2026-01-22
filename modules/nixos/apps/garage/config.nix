@@ -1,6 +1,6 @@
 { lib, config, ... }:
 let
-  cfg = config.apps.garage;
+  cfg = config.custom.apps.garage;
 in
 {
   config = lib.mkIf cfg.enable {

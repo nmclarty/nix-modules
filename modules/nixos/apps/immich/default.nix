@@ -1,7 +1,7 @@
 { inputs, lib, config, ... }:
 let
   inherit (inputs.helper-tools.lib) mkContainerUser mkContainerDeps;
-  cfg = config.apps.immich;
+  cfg = config.custom.apps.immich;
   id = toString cfg.user.id;
 in
 {
@@ -68,7 +68,7 @@ in
             healthOnFailure = "kill";
           };
           unitConfig = mkContainerDeps [ "immich-redis" "immich-postgres" "immich-learning" ];
-          serviceConfig.AllowedCPUs = config.apps.settings.cpus;
+          serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;
         };
 
         immich-learning = {
@@ -86,7 +86,7 @@ in
             healthStartupCmd = "sleep 10";
             healthOnFailure = "kill";
           };
-          serviceConfig.AllowedCPUs = config.apps.settings.cpus;
+          serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;
         };
       };
       networks = { immich = { }; };

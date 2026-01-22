@@ -1,7 +1,7 @@
 { inputs, lib, config, ... }:
 let
   inherit (inputs.helper-tools.lib) mkContainerUser;
-  cfg = config.apps.forgejo;
+  cfg = config.custom.apps.forgejo;
   id = toString cfg.user.id;
 in
 {
