@@ -11,6 +11,7 @@ in
     ./podman.nix
     ./system.nix
     ./ups.nix
+    ./beszel.nix
   ];
   options.custom.server = {
     settings.domain = mkOption {

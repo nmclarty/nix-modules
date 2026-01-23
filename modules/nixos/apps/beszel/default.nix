@@ -16,6 +16,11 @@ in
       image = "docker.io/henrygd/beszel:${cfg.tag}";
       autoUpdate = "registry";
       user = "${id}:${id}";
+      environments = {
+        APP_URL = "https://beszel.${config.custom.apps.settings.domain}";
+        DISABLE_PASSWORD_AUTH = "true";
+        USER_CREATION = "true";
+      };
       volumes = [ "/srv/beszel:/beszel_data" ];
       networks = [ "exposed.network" ];
       publishPorts = [ "8090:8090" ]; # for server connections
