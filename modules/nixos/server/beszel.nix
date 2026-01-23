@@ -49,6 +49,7 @@ in
 
         # hardware
         DOCKER_HOST=unix:///run/podman/podman.sock
+        NICS="-podman*,tailscale*"
       '';
     };
   };
