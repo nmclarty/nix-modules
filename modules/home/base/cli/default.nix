@@ -1,7 +1,7 @@
 {
   imports = [
+    ./fish
     ./btop.nix
-    ./fish.nix
     ./git.nix
     ./utils.nix
   ];

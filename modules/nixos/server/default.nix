@@ -1,14 +1,10 @@
-{ inputs, ... }:
 { lib, ... }:
 let
   inherit (lib) mkOption types;
 in
 {
-  imports = with inputs; [
-    quadlet-nix.nixosModules.quadlet
-    helper-tools.nixosModules.sops-podman
+  imports = [
     ./services.nix
-    ./podman.nix
     ./system.nix
     ./ups.nix
     ./beszel.nix

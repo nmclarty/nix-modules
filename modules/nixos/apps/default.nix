@@ -1,10 +1,14 @@
-{ inputs, lib, config, ... }:
+{ inputs, ... }:
+{ lib, config, ... }:
 let
   inherit (lib) mkOption types;
   inherit (inputs.helper-tools.lib) mkContainerOptions;
 in
 {
-  imports = [
+  imports = with inputs; [
+    quadlet-nix.nixosModules.quadlet
+    helper-tools.nixosModules.sops-podman
+    ./podman.nix
     ./forgejo
     ./garage
     ./immich
