@@ -29,8 +29,8 @@
         set -gx EDITOR micro
 
         # ssh agent
-        set op_sock $(path normalize "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock")
-        set win_sock $(path normalize "$XDG_RUNTIME_DIR/wsl2-ssh-agent.sock")
+        set -l op_sock $(path normalize "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock")
+        set -l win_sock $(path normalize "$XDG_RUNTIME_DIR/wsl2-ssh-agent.sock")
         if test -S "$op_sock"
             # if 1password agent socket exists, use it
             set -gx SSH_AUTH_SOCK $op_sock
@@ -41,7 +41,7 @@
 
         # homebrew
         set -gx HOMEBREW_NO_ENV_HINTS 1
-        set brew /opt/homebrew/bin/brew
+        set -l brew /opt/homebrew/bin/brew
         if test -f "$brew"
             # load homebrew environment variables
             eval ($brew shellenv)
@@ -49,14 +49,15 @@
       '';
       interactiveShellInit = ''
         # motd
-        if test "$SHLVL" -eq 1
+        set -l disallowed_terminals "zed" "vscode"
+        if test "$SHLVL" -eq 1; and not contains "$TERM_PROGRAM" $disallowed_terminals
             # show hostname if we're connecting remotely
             if test -n "$SSH_CONNECTION"
                 hostname | figlet | lolcat -f
             end
 
             # display rust-motd, removing blank lines
-            set motd "/run/rust-motd/motd"
+            set -l motd "/run/rust-motd/motd"
             if test -f "$motd"
                 cat "$motd" | grep -v '^$'
             end
