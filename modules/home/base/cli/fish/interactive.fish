@@ -1,5 +1,5 @@
 set -l disallowed_terminals "zed" "vscode"
-if test "$SHLVL" -eq 1; and not contains "$TERM_PROGRAM" $disallowed_terminals
+if not contains "$TERM_PROGRAM" $disallowed_terminals
     # show hostname if we're connecting remotely
     if test -n "$SSH_CONNECTION"
         hostname | figlet | lolcat -f
