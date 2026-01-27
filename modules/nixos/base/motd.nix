@@ -20,6 +20,7 @@ let
     else "";
 in
 {
+  users.motd = "This is a test!";
   systemd = {
     services.rust-motd = {
       description = "Update the motd using rust-motd";
