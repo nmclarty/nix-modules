@@ -1,13 +1,13 @@
-{ inputs, ... }:
-{ lib, config, ... }:
+{ flake, inputs, ... }:
+{ lib, config, customLib, ... }:
 let
   inherit (lib) mkOption types;
-  inherit (inputs.helper-tools.lib) mkContainerOptions;
 in
 {
+  config._module.args.customLib = flake.lib;
   imports = with inputs; [
     quadlet-nix.nixosModules.quadlet
-    helper-tools.nixosModules.sops-podman
+    helper-tools.nixosModules.podman-sops
     ./podman.nix
     ./forgejo
     ./garage
@@ -37,7 +37,7 @@ in
       };
     };
     # apps
-  } // mkContainerOptions [
+  } // customLib.mkContainerOptions [
     { id = 2000; name = "forgejo"; tag = "13-rootless"; }
     { id = 2001; name = "garage"; tag = "v2.1.0"; }
     { id = 2002; name = "immich"; tag = "release"; }

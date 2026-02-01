@@ -1,6 +1,6 @@
-{ inputs, lib, config, ... }:
+{ customLib, lib, config, ... }:
 let
-  inherit (inputs.helper-tools.lib) mkContainerUser;
+  inherit (customLib) mkContainerUser;
   cfg = config.custom.apps.tinyauth;
   id = toString cfg.user.id;
 in

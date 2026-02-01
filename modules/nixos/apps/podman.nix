@@ -1,7 +1,7 @@
 { config, ... }: {
-  services.sops-podman = {
+  services.podman-sops = {
     enable = true;
-    # this means that sops-podman expects to find the encrypted sops file
+    # this means that podman-sops expects to find the encrypted sops file
     # within the consuming flake, in a dir matching the current system hostname
     settings.sopsFile = config.custom.base.secrets.podman;
   };

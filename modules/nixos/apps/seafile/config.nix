@@ -1,6 +1,6 @@
-{ inputs, config, lib, ... }:
+{ lib, customLib, config, ... }:
 let
-  inherit (inputs.helper-tools.lib) mkSecrets;
+  inherit (customLib) mkSecrets;
   cfg = config.custom.apps.seafile;
 in
 {
