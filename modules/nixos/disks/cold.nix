@@ -53,6 +53,10 @@ in
             type = "zfs_fs";
             options.mountpoint = "none";
           };
+          garage = {
+            type = "zfs_fs";
+            options.mountpoint = "/cold/garage";
+          };
           shares = {
             type = "zfs_fs";
             options.mountpoint = "/cold/shares";
