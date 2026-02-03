@@ -10,4 +10,5 @@
     stateVersion = "25.05";
     file.".hushlogin".text = "";
   };
+  xdg.enable = true;
 }
