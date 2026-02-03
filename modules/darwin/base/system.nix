@@ -1,6 +1,6 @@
 { flake, lib, inputs, config, ... }: {
   system = {
-    stateVersion = "25.05";
+    stateVersion = 6;
     configurationRevision = flake.rev or flake.dirtyRev or "unknown";
   };
 
@@ -10,15 +10,15 @@
     nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
     gc = {
       automatic = true;
-      dates = "weekly";
+      interval = [{ Hour = 0; Minute = 0; Weekday = 1; }]; # weekly
       options = "--delete-older-than 7d";
     };
     optimise = {
       automatic = true;
-      dates = "01:00";
+      interval = [{ Hour = 1; Minute = 0; }]; # daily
     };
     settings = {
-      allowed-users = [ "@wheel" ];
+      allowed-users = [ "@admin" ];
       experimental-features = [ "nix-command" "flakes" ];
       warn-dirty = false;
       substituters = [ "https://cache.garnix.io" ];
@@ -52,14 +52,5 @@
     };
   };
 
-  # locale
-  time.timeZone = "America/Vancouver";
-  i18n.defaultLocale = "en_CA.UTF-8";
-  services.xserver.xkb.layout = "us";
-
-  # enable nonfree firmware
-  hardware.enableRedistributableFirmware = true;
-
-  # use zram for memory compression
-  zramSwap.enable = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 }

@@ -4,11 +4,11 @@ let
   inherit (lib) mkEnableOption mkOption types;
 in
 {
-  imports = [
-    inputs.sops-nix.nixosModules.sops
-    inputs.lanzaboote.nixosModules.lanzaboote
+  imports = with inputs; [
+    sops-nix.nixosModules.sops
+    lanzaboote.nixosModules.lanzaboote
     ./motd.nix
-    ./packages.nix
+    ./programs.nix
     ./secrets.nix
     ./secure-boot.nix
     ./system.nix
