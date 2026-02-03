@@ -4,7 +4,7 @@
     log = [ "secretChanges" ];
     age = {
       generateKey = true;
-      sshKeyPaths = [ "/root/.ssh/id_ed25519" ];
+      sshKeyPaths = [ "/var/root/.ssh/id_ed25519" ];
       keyFile = "/var/lib/sops-nix/key.txt";
     };
     secrets = {
