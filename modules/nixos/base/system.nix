@@ -1,7 +1,14 @@
-{ flake, lib, inputs, config, ... }: {
+{
+  flake,
+  lib,
+  inputs,
+  config,
+  ...
+}:
+{
   system = {
     stateVersion = "25.05";
-    configurationRevision = flake.rev or flake.dirtyRev or "unknown";
+    configurationRevision = flake.shortRev or flake.dirtyShortRev or "unknown";
   };
 
   nix = {
@@ -19,7 +26,10 @@
     };
     settings = {
       allowed-users = [ "@wheel" ];
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       warn-dirty = false;
       substituters = [ "https://cache.garnix.io" ];
       trusted-public-keys = [ "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=" ];

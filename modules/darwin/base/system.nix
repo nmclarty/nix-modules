@@ -1,7 +1,14 @@
-{ flake, lib, inputs, config, ... }: {
+{
+  flake,
+  lib,
+  inputs,
+  config,
+  ...
+}:
+{
   system = {
     stateVersion = 6;
-    configurationRevision = flake.rev or flake.dirtyRev or "unknown";
+    configurationRevision = flake.shortRev or flake.dirtyShortRev or "unknown";
   };
 
   nix = {
@@ -10,16 +17,30 @@
     nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
     gc = {
       automatic = true;
-      interval = [{ Hour = 0; Minute = 0; Weekday = 1; }]; # weekly
+      interval = [
+        {
+          Hour = 0;
+          Minute = 0;
+          Weekday = 1;
+        }
+      ]; # weekly
       options = "--delete-older-than 7d";
     };
     optimise = {
       automatic = true;
-      interval = [{ Hour = 1; Minute = 0; }]; # daily
+      interval = [
+        {
+          Hour = 1;
+          Minute = 0;
+        }
+      ]; # daily
     };
     settings = {
       allowed-users = [ "@admin" ];
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       warn-dirty = false;
       substituters = [ "https://cache.garnix.io" ];
       trusted-public-keys = [ "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=" ];
