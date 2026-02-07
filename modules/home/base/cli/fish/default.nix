@@ -1,15 +1,26 @@
-{ pkgs, osConfig, ... }: {
+{ pkgs, osConfig, ... }:
+{
   home = {
-    packages = with pkgs; [ eza figlet lolcat xxd docker-client ];
+    packages = with pkgs; [
+      eza
+      figlet
+      lolcat
+      xxd
+      docker-client
+    ];
     sessionVariables.EDITOR = "micro";
   };
 
   programs = {
     py-motd = {
-      enable = pkgs.stdenv.isLinux;
+      enable = true;
       settings = {
         backup.enable = with osConfig; services ? py-backup && services.py-backup.enable;
-        update.inputs = [ "nixpkgs" "nix-modules" "helper-tools" ];
+        update.inputs = [
+          "nixpkgs"
+          "nix-modules"
+          "helper-tools"
+        ];
       };
     };
 
