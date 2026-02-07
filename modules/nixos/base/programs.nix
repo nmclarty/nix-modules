@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   programs = {
     # fish is mainly configured in home manager
     fish.enable = true;
@@ -13,6 +14,9 @@
 
   # keep editor config to use micro
   security.sudo.extraConfig = ''Defaults env_keep += "EDITOR"'';
+
+  # systems need ghostty terminfo, otherwise lots of features break
+  environment.systemPackages = [ pkgs.ghostty.terminfo ];
 
   # allow btop to monitor system power info
   security.wrappers.btop = {
