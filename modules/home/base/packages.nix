@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   home = {
     packages = with pkgs; [
       # shell
@@ -12,7 +13,6 @@
       doggo
       moreutils
       yq-go
-      goaccess
       iperf
       # secrets
       sops
