@@ -18,7 +18,7 @@ in
     secure-boot.enable = mkEnableOption "If secure boot management should be enabled.";
     secrets =
       let
-        basePath = "${flake}/.sops";
+        basePath = "${flake}/hosts";
         systemPath = "${basePath}/${config.networking.hostName}";
       in
       {

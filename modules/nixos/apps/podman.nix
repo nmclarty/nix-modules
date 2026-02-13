@@ -1,8 +1,8 @@
 { config, ... }: {
   services.podman-sops = {
-    enable = true;
-    # this means that podman-sops expects to find the encrypted sops file
-    # within the consuming flake, in a dir matching the current system hostname
+    # only enabled if the host has a podman.yaml in its hosts/ dir;
+    # services that depend on podman secrets will complain if the file is missing
+    enable = builtins.pathExists config.custom.base.secrets.podman;
     settings.sopsFile = config.custom.base.secrets.podman;
   };
 

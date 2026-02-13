@@ -3,8 +3,6 @@
   programs = {
     # fish is mainly configured in home manager
     fish.enable = true;
-    # to fix vscode remote development
-    nix-ld.enable = true;
     # command-not-found doesn't work with flakes
     command-not-found.enable = false;
   };

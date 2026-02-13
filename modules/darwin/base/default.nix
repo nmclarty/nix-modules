@@ -13,7 +13,7 @@ in
   ];
   options.custom.base.secrets =
     let
-      basePath = "${flake}/.sops";
+      basePath = "${flake}/hosts";
       systemPath = "${basePath}/${config.networking.hostName}";
     in
     {
