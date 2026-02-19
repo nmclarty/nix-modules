@@ -1,4 +1,4 @@
-{ pkgs, osConfig, ... }:
+{ pkgs, ... }:
 {
   imports = [ ./functions.nix ];
   home = {
@@ -13,14 +13,11 @@
   programs = {
     py-motd = {
       enable = true;
-      settings = {
-        backup.enable = with osConfig; services ? py-backup && services.py-backup.enable;
-        update.inputs = [
-          "nixpkgs"
-          "nix-modules"
-          "helper-tools"
-        ];
-      };
+      update.inputs = [
+        "nixpkgs"
+        "nix-modules"
+        "helper-tools"
+      ];
     };
     # disable generating man caches (fish enables it, but it's pretty slow)
     man.generateCaches = false;
