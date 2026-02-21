@@ -1,4 +1,7 @@
-{ pkgs, ... }:
+{ lib, pkgs, osConfig, ... }:
+let
+  inherit (lib) filter strings;
+in
 {
   imports = [ ./functions.nix ];
   home = {
@@ -13,6 +16,8 @@
   programs = {
     py-motd = {
       enable = true;
+      system.services = filter (s: ! strings.hasInfix "-" s)
+        (builtins.attrNames (osConfig.virtualisation.quadlet.containers or { }));
       update.inputs = [
         "nixpkgs"
         "nix-modules"
@@ -29,7 +34,7 @@
         la = "eza -lh --git --all";
         lt = "eza -lh --git --tree --git-ignore --total-size";
       };
-      loginShellInit = ''
+      interactiveShellInit = ''
         # ssh agent
         set -l op_sock $(path normalize "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock")
         set -l win_sock $(path normalize "$XDG_RUNTIME_DIR/wsl2-ssh-agent.sock")
@@ -47,19 +52,14 @@
             set -gx HOMEBREW_NO_ENV_HINTS 1
             eval ($brew shellenv)
         end
-
+      '';
+      loginShellInit = ''
         # motd
         set -l disallowed_terminals "zed" "vscode"
         if test "$SHLVL" -eq 1; and not contains "$TERM_PROGRAM" $disallowed_terminals
-            # show hostname if we're connecting remotely
+            # show hostname if over ssh
             if test -n "$SSH_CONNECTION"
                 hostname | figlet | lolcat -f
-            end
-
-            # display rust-motd, removing blank lines
-            set -l motd "/run/rust-motd/motd"
-            if test -f "$motd"
-                cat "$motd" | grep -v '^$'
             end
 
             # display py_motd

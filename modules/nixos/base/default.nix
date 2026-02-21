@@ -7,7 +7,6 @@ in
   imports = with inputs; [
     sops-nix.nixosModules.sops
     lanzaboote.nixosModules.lanzaboote
-    ./motd.nix
     ./programs.nix
     ./secrets.nix
     ./secure-boot.nix
