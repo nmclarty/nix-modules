@@ -1,4 +1,9 @@
-{ lib, pkgs, osConfig, ... }:
+{
+  lib,
+  pkgs,
+  osConfig,
+  ...
+}:
 let
   inherit (lib) filter strings;
 in
@@ -16,16 +21,15 @@ in
   programs = {
     py-motd = {
       enable = true;
-      system.services = filter (s: ! strings.hasInfix "-" s)
-        (builtins.attrNames (osConfig.virtualisation.quadlet.containers or { }));
+      system.services = filter (s: !strings.hasInfix "-" s) (
+        builtins.attrNames (osConfig.virtualisation.quadlet.containers or { })
+      );
       update.inputs = [
         "nixpkgs"
         "nix-modules"
         "helper-tools"
       ];
     };
-    # disable generating man caches (fish enables it, but it's pretty slow)
-    man.generateCaches = false;
     fish = {
       enable = true;
       shellAbbrs = {

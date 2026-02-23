@@ -7,9 +7,6 @@
     command-not-found.enable = false;
   };
 
-  # disable generating man cache (because fish causes it to hang)
-  documentation.man.generateCaches = false;
-
   # keep editor config to use micro
   security.sudo.extraConfig = ''Defaults env_keep += "EDITOR"'';
 
