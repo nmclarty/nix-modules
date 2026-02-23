@@ -1,4 +1,9 @@
-{ lib, customLib, config, ... }:
+{
+  lib,
+  customLib,
+  config,
+  ...
+}:
 let
   inherit (customLib) mkContainerUser mkContainerDeps;
   cfg = config.custom.apps.traefik;
@@ -21,7 +26,7 @@ in
       containers = {
         traefik = {
           containerConfig = {
-            image = "docker.io/library/traefik:${cfg.tag}";
+            image = "docker.io/library/traefik:${cfg.tags.default}";
             autoUpdate = "registry";
             user = "${id}:${id}";
             secrets = [
@@ -38,7 +43,10 @@ in
               "80:80" # main http
               "443:443" # main https
             ];
-            networks = [ "socket-proxy" "exposed:ip=10.90.0.2" ];
+            networks = [
+              "socket-proxy"
+              "exposed:ip=10.90.0.2"
+            ];
             labels = {
               "traefik.enable" = "true";
               "traefik.http.routers.traefik.service" = "api@internal";
@@ -53,7 +61,7 @@ in
 
         socket-proxy = {
           containerConfig = {
-            image = "lscr.io/linuxserver/socket-proxy:latest";
+            image = "lscr.io/linuxserver/socket-proxy:${cfg.tags.socket-proxy}";
             autoUpdate = "registry";
             readOnly = true;
             tmpfses = [ "/tmp" ];
@@ -71,7 +79,7 @@ in
 
         ddns-updater = {
           containerConfig = {
-            image = "docker.io/qmcgaw/ddns-updater:latest";
+            image = "docker.io/qmcgaw/ddns-updater:${cfg.tags.ddns-updater}";
             autoUpdate = "registry";
             user = "${id}:${id}";
             volumes = [

@@ -1,4 +1,9 @@
-{ customLib, lib, config, ... }:
+{
+  customLib,
+  lib,
+  config,
+  ...
+}:
 let
   inherit (customLib) mkContainerUser;
   cfg = config.custom.apps.tinyauth;
@@ -17,7 +22,7 @@ in
     # containers
     virtualisation.quadlet.containers.tinyauth = {
       containerConfig = {
-        image = "ghcr.io/steveiliop56/tinyauth:${cfg.tag}";
+        image = "ghcr.io/steveiliop56/tinyauth:${cfg.tags.default}";
         autoUpdate = "registry";
         user = "${id}:${id}";
         environments = {

@@ -1,4 +1,9 @@
-{ lib, customLib, config, ... }:
+{
+  lib,
+  customLib,
+  config,
+  ...
+}:
 let
   inherit (customLib) mkContainerUser;
   cfg = config.custom.apps.forgejo;
@@ -13,7 +18,7 @@ in
     ];
 
     virtualisation.quadlet.containers.forgejo.containerConfig = {
-      image = "codeberg.org/forgejo/forgejo:${cfg.tag}";
+      image = "codeberg.org/forgejo/forgejo:${cfg.tags.default}";
       autoUpdate = "registry";
       user = "${id}:${id}";
       volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];

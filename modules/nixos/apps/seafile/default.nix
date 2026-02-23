@@ -1,11 +1,19 @@
-{ lib, customLib, config, ... }:
+{
+  lib,
+  customLib,
+  config,
+  ...
+}:
 let
   inherit (customLib) mkContainerUser mkContainerDeps;
   cfg = config.custom.apps.seafile;
   id = toString cfg.user.id;
 in
 {
-  imports = [ ./support.nix ./config.nix ];
+  imports = [
+    ./support.nix
+    ./config.nix
+  ];
   config = lib.mkIf cfg.enable {
     # user
     users = mkContainerUser { inherit (cfg.user) name id; };
@@ -23,7 +31,7 @@ in
       containers = {
         seafile = {
           containerConfig = {
-            image = "docker.io/seafileltd/seafile-mc:${cfg.tag}";
+            image = "docker.io/seafileltd/seafile-mc:${cfg.tags.default}";
             autoUpdate = "registry";
             userns = "auto:uidmapping=0:${id}:1,gidmapping=0:${id}:1";
             environments = rec {
@@ -63,23 +71,33 @@ in
               "/srv/seafile/nginx:/shared/nginx"
               "/srv/seafile/data:/shared/seafile"
               "${config.sops.templates."seafile/seafile.conf".path}:/shared/seafile/conf/seafile.conf:ro"
-              "${config.sops.templates."seafile/seahub_settings.py".path}:/shared/seafile/conf/seahub_settings.py:ro"
+              "${
+                config.sops.templates."seafile/seahub_settings.py".path
+              }:/shared/seafile/conf/seahub_settings.py:ro"
               "${config.sops.templates."seafile/seafevents.conf".path}:/shared/seafile/conf/seafevents.conf:ro"
               "${config.sops.templates."seafile/seafdav.conf".path}:/shared/seafile/conf/seafdav.conf:ro"
               "${config.sops.templates."seafile/gunicorn.conf.py".path}:/shared/seafile/conf/gunicorn.conf.py:ro"
             ];
-            networks = [ "seafile.network" "exposed.network" ];
-            labels = { "traefik.enable" = "true"; };
+            networks = [
+              "seafile.network"
+              "exposed.network"
+            ];
+            labels = {
+              "traefik.enable" = "true";
+            };
             healthCmd = "wget -O - -q -T 5 127.0.0.1:8000/api2/ping";
             healthStartupCmd = "sleep 10";
             healthOnFailure = "kill";
           };
-          unitConfig = mkContainerDeps [ "seafile-mariadb" "seafile-redis" ];
+          unitConfig = mkContainerDeps [
+            "seafile-mariadb"
+            "seafile-redis"
+          ];
         };
 
         seafile-notification = {
           containerConfig = {
-            image = "docker.io/seafileltd/notification-server:${cfg.tag}";
+            image = "docker.io/seafileltd/notification-server:${cfg.tags.default}";
             autoUpdate = "registry";
             environments = {
               SEAFILE_MYSQL_DB_HOST = "seafile-mariadb";
@@ -95,7 +113,10 @@ in
               "seafile__jwt_private_key,type=env,target=JWT_PRIVATE_KEY"
             ];
             volumes = [ "/srv/seafile/data/logs:/shared/seafile/logs" ];
-            networks = [ "seafile.network" "exposed.network" ];
+            networks = [
+              "seafile.network"
+              "exposed.network"
+            ];
             labels = {
               "traefik.enable" = "true";
               "traefik.http.services.seafile-notification.loadbalancer.server.port" = "8083";

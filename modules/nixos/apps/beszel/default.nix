@@ -1,4 +1,9 @@
-{ lib, customLib, config, ... }:
+{
+  lib,
+  customLib,
+  config,
+  ...
+}:
 let
   inherit (customLib) mkContainerUser;
   cfg = config.custom.apps.beszel;
@@ -13,7 +18,7 @@ in
     ];
 
     virtualisation.quadlet.containers.beszel.containerConfig = {
-      image = "docker.io/henrygd/beszel:${cfg.tag}";
+      image = "docker.io/henrygd/beszel:${cfg.tags.default}";
       autoUpdate = "registry";
       user = "${id}:${id}";
       environments = {
@@ -24,7 +29,9 @@ in
       volumes = [ "/srv/beszel:/beszel_data" ];
       networks = [ "exposed.network" ];
       publishPorts = [ "8090:8090" ]; # for server connections
-      labels = { "traefik.enable" = "true"; }; # for user access
+      labels = {
+        "traefik.enable" = "true";
+      }; # for user access
     };
   };
 }

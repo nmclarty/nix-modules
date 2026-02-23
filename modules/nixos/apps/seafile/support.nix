@@ -9,7 +9,7 @@ in
       containers = {
         seafile-mariadb = {
           containerConfig = {
-            image = "docker.io/library/mariadb:10.11";
+            image = "docker.io/library/mariadb:${cfg.tags.mariadb}";
             autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
@@ -27,10 +27,14 @@ in
 
         seafile-redis = {
           containerConfig = {
-            image = "docker.io/library/redis:8.2";
+            image = "docker.io/library/redis:${cfg.tags.redis}";
             autoUpdate = "registry";
             user = "${id}:${id}";
-            entrypoint = [ "sh" "-c" "redis-server --requirepass $(cat /run/secrets/seafile__redis__password)" ];
+            entrypoint = [
+              "sh"
+              "-c"
+              "redis-server --requirepass $(cat /run/secrets/seafile__redis__password)"
+            ];
             secrets = [ "seafile__redis__password,uid=${id},gid=${id},mode=0400" ];
             volumes = [ "/srv/seafile/redis:/data" ];
             networks = [ "seafile.network" ];

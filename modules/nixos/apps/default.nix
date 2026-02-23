@@ -1,5 +1,10 @@
 { flake, inputs, ... }:
-{ lib, config, customLib, ... }:
+{
+  lib,
+  config,
+  customLib,
+  ...
+}:
 let
   inherit (lib) mkOption types;
 in
@@ -36,17 +41,70 @@ in
         description = "The cpu core(s) that performance-intensive apps will be limited to.";
       };
     };
-    # apps
-  } // customLib.mkContainerOptions [
-    { id = 2000; name = "forgejo"; tag = "13-rootless"; }
-    { id = 2001; name = "garage"; tag = "v2.1.0"; }
-    { id = 2002; name = "immich"; tag = "release"; }
-    { id = 2003; name = "seafile"; tag = "13.0-latest"; }
-    { id = 2004; name = "traefik"; tag = "v3"; }
-    { id = 2005; name = "pocket"; tag = "v2"; }
-    { id = 2006; name = "tinyauth"; tag = "v4"; }
-    { id = 2007; name = "minecraft"; tag = "stable"; }
-    { id = 2008; name = "media"; tag = "latest"; } # options only
-    { id = 2009; name = "beszel"; tag = "latest"; }
+  }
+  // customLib.mkContainerOptions [
+    {
+      id = 2000;
+      name = "forgejo";
+      tags.default = "13-rootless";
+    }
+    {
+      id = 2001;
+      name = "garage";
+      tags.default = "v2.1.0";
+    }
+    {
+      id = 2002;
+      name = "immich";
+      tags = {
+        default = "release";
+        redis = "9";
+        postgres = "14-vectorchord0.4.3-pgvectors0.2.0";
+      };
+    }
+    {
+      id = 2003;
+      name = "seafile";
+      tags = {
+        default = "13.0-latest";
+        mariadb = "10.11";
+        redis = "8.2";
+      };
+    }
+    {
+      id = 2004;
+      name = "traefik";
+      tags = {
+        default = "v3";
+        socket-proxy = "latest";
+        ddns-updater = "latest";
+      };
+    }
+    {
+      id = 2005;
+      name = "pocket";
+      tags.default = "v2";
+    }
+    {
+      id = 2006;
+      name = "tinyauth";
+      tags.default = "v4";
+    }
+    {
+      id = 2007;
+      name = "minecraft";
+      tags.default = "stable";
+    }
+    {
+      # options only
+      id = 2008;
+      name = "media";
+      tags.default = "latest";
+    }
+    {
+      id = 2009;
+      name = "beszel";
+      tags.default = "latest";
+    }
   ];
 }

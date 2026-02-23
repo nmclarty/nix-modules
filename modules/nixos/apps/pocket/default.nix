@@ -1,4 +1,9 @@
-{ lib, customLib, config, ... }:
+{
+  lib,
+  customLib,
+  config,
+  ...
+}:
 let
   inherit (customLib) mkContainerUser;
   cfg = config.custom.apps.pocket;
@@ -14,7 +19,7 @@ in
 
     virtualisation.quadlet.containers.pocket = {
       containerConfig = {
-        image = "ghcr.io/pocket-id/pocket-id:${cfg.tag}";
+        image = "ghcr.io/pocket-id/pocket-id:${cfg.tags.default}";
         autoUpdate = "registry";
         user = "${id}:${id}";
         environments = {
@@ -29,7 +34,9 @@ in
         ];
         volumes = [ "/srv/pocket:/app/data" ];
         networks = [ "exposed.network" ];
-        labels = { "traefik.enable" = "true"; };
+        labels = {
+          "traefik.enable" = "true";
+        };
         healthCmd = "/app/pocket-id healthcheck";
         healthStartupCmd = "sleep 10";
         healthOnFailure = "kill";

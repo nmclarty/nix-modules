@@ -1,11 +1,19 @@
-{ lib, customLib, config, ... }:
+{
+  lib,
+  customLib,
+  config,
+  ...
+}:
 let
   inherit (customLib) mkContainerUser;
   cfg = config.custom.apps.minecraft;
   id = toString cfg.user.id;
 in
 {
-  imports = [ ./config.nix ./support.nix ];
+  imports = [
+    ./config.nix
+    ./support.nix
+  ];
   config = lib.mkIf cfg.enable {
     users = mkContainerUser { inherit (cfg.user) name id; };
 
@@ -22,7 +30,7 @@ in
         velocity = {
           autoStart = false;
           containerConfig = {
-            image = "docker.io/itzg/mc-proxy:${cfg.tag}";
+            image = "docker.io/itzg/mc-proxy:${cfg.tags.default}";
             autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
@@ -41,7 +49,7 @@ in
         minecraft-survival = {
           autoStart = false;
           containerConfig = {
-            image = "docker.io/itzg/minecraft-server:${cfg.tag}";
+            image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
             autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
@@ -61,7 +69,7 @@ in
         minecraft-creative = {
           autoStart = false;
           containerConfig = {
-            image = "docker.io/itzg/minecraft-server:${cfg.tag}";
+            image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
             autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
@@ -81,7 +89,7 @@ in
         minecraft-biomes = {
           autoStart = false;
           containerConfig = {
-            image = "docker.io/itzg/minecraft-server:${cfg.tag}";
+            image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
             autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
@@ -102,7 +110,9 @@ in
         };
 
       };
-      networks = { minecraft = { }; };
+      networks = {
+        minecraft = { };
+      };
     };
   };
 }

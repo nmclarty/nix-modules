@@ -1,4 +1,9 @@
-{ lib, customLib, config, ... }:
+{
+  lib,
+  customLib,
+  config,
+  ...
+}:
 let
   inherit (customLib) mkContainerUser;
   cfg = config.custom.apps.garage;
@@ -15,7 +20,7 @@ in
     ];
 
     virtualisation.quadlet.containers.garage.containerConfig = {
-      image = "docker.io/dxflrs/garage:${cfg.tag}";
+      image = "docker.io/dxflrs/garage:${cfg.tags.default}";
       autoUpdate = "registry";
       user = "${id}:${id}";
       networks = [ "host" ];

@@ -7,7 +7,7 @@ in
   config = lib.mkIf cfg.enable {
     virtualisation.quadlet.containers = {
       immich-redis.containerConfig = {
-        image = "docker.io/valkey/valkey:8-bookworm";
+        image = "docker.io/valkey/valkey:${cfg.tags.redis}";
         autoUpdate = "registry";
         user = "${id}:${id}";
         volumes = [ "/srv/immich/redis:/data" ];
@@ -17,7 +17,7 @@ in
         healthOnFailure = "kill";
       };
       immich-postgres.containerConfig = {
-        image = "ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0";
+        image = "ghcr.io/immich-app/postgres:${cfg.tags.postgres}";
         autoUpdate = "registry";
         user = "${id}:${id}";
         shmSize = "128mb";
