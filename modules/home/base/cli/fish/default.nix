@@ -24,11 +24,7 @@ in
       system.services = filter (s: !strings.hasInfix "-" s) (
         builtins.attrNames (osConfig.virtualisation.quadlet.containers or { })
       );
-      update.inputs = [
-        "nixpkgs"
-        "nix-modules"
-        "helper-tools"
-      ];
+      update.inputs = [ "nixpkgs" "helper-tools" ];
     };
     fish = {
       enable = true;
