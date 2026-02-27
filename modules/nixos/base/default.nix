@@ -1,5 +1,10 @@
 { inputs, ... }:
-{ flake, lib, config, ... }:
+{
+  flake,
+  lib,
+  config,
+  ...
+}:
 let
   inherit (lib) mkEnableOption mkOption types;
 in
@@ -7,6 +12,7 @@ in
   imports = with inputs; [
     sops-nix.nixosModules.sops
     lanzaboote.nixosModules.lanzaboote
+    ./devel.nix
     ./programs.nix
     ./secrets.nix
     ./secure-boot.nix
@@ -14,6 +20,7 @@ in
     ./users.nix
   ];
   options.custom.base = {
+    devel.enable = mkEnableOption "If development tools should be enabled";
     secure-boot.enable = mkEnableOption "If secure boot management should be enabled.";
     secrets =
       let

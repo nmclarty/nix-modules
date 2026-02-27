@@ -1,9 +1,15 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   inherit (lib) mkIf;
+  cfg = config.custom.base.secure-boot;
 in
 {
-  config = mkIf config.custom.base.secure-boot.enable {
+  config = mkIf cfg.enable {
     # sbctl to manage keys and for debugging
     environment.systemPackages = with pkgs; [ sbctl ];
     boot = {
