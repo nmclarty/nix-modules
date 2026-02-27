@@ -8,14 +8,19 @@ let
   inherit (lib) filter strings;
 in
 {
-  imports = [ ./functions.nix ];
   home = {
     packages = with pkgs; [
+      # abbrs
       eza
-      figlet
+      # functions
       lolcat
+      docker-client
+      xxd
+      goaccess
     ];
-    sessionVariables.EDITOR = "micro";
+    sessionVariables = {
+      EDITOR = "micro";
+    };
   };
 
   programs = {
@@ -24,8 +29,13 @@ in
       system.services = filter (s: !strings.hasInfix "-" s) (
         builtins.attrNames (osConfig.virtualisation.quadlet.containers or { })
       );
-      update.inputs = [ "nixpkgs" "nix-modules" "helper-tools" ];
+      update.inputs = [
+        "nixpkgs"
+        "nix-modules"
+        "helper-tools"
+      ];
     };
+
     fish = {
       enable = true;
       shellAbbrs = {
@@ -53,21 +63,27 @@ in
             eval ($brew shellenv)
         end
       '';
-      loginShellInit = ''
-        # motd
-        set -l disallowed_terminals "zed" "vscode"
-        if test "$SHLVL" -eq 1; and not contains "$TERM_PROGRAM" $disallowed_terminals
-            # show hostname if over ssh
-            if test -n "$SSH_CONNECTION"
-                hostname | figlet | lolcat -f
-            end
-
-            # display py_motd
-            if type -q py_motd
-                py_motd
-            end
-        end
-      '';
+      functions = {
+        fish_greeting = ''
+          if status is-login; and not contains "$TERM_PROGRAM" "zed" "vscode"
+            py_motd
+          end
+        '';
+        fish_prompt = ''
+          echo -n "$(hostname | lolcat -f)"
+          set_color brgreen; echo -n " [$(basename $PWD)]";
+          set_color bryellow; echo -n " > ";
+        '';
+        helper-health = "docker inspect $argv[1] | yq -oj '.[0].State.Health'";
+        helper-ps = "docker ps --format='table {{.Names}}\t{{.Status}}\t{{.Image}}'";
+        helper-hostid = "head -c4 /dev/urandom | xxd -p";
+        helper-logs = ''
+          cat /srv/utils/traefik/logs/access.log \
+          | grep "$argv[1]@docker" (if test "(count $argv)" -eq 0; echo "-v"; end) \
+          | goaccess --log-format TRAEFIKCLF
+        '';
+        rrun = "rustc $argv[1].rs && ./$argv[1]";
+      };
     };
   };
 }

@@ -1,6 +1,6 @@
 {
   imports = [
-    ./fish
+    ./fish.nix
     ./git.nix
     ./programs.nix
   ];
