@@ -1,4 +1,9 @@
-{ lib, customLib, config, ... }:
+{
+  lib,
+  customLib,
+  config,
+  ...
+}:
 let
   inherit (customLib) mkSecrets;
   cfg = config.custom.apps.traefik;
@@ -9,8 +14,7 @@ in
       secrets = mkSecrets [
         "traefik/porkbun/api_key"
         "traefik/porkbun/secret_key"
-      ]
-        config.custom.base.secrets.podman;
+      ] config.custom.base.secrets.podman;
 
       templates = {
         "traefik/traefik.yaml" = {
@@ -99,16 +103,24 @@ in
             let
               # Well, I don't know why, but the client seems break with multple domains in that field,
               # even though it says it should support that. Working around this by templating json.
-              settings = map
-                (k: {
-                  inherit (k) domain ip_version;
-                  provider = "porkbun";
-                  api_key = config.sops.placeholder."traefik/porkbun/api_key";
-                  secret_api_key = config.sops.placeholder."traefik/porkbun/secret_key";
-                }) [
-                { domain = "*.${config.custom.apps.settings.domain}"; ip_version = "ipv4"; }
-                { domain = "${config.custom.apps.settings.domain}"; ip_version = "ipv4"; }
-              ];
+              settings =
+                map
+                  (k: {
+                    inherit (k) domain ip_version;
+                    provider = "porkbun";
+                    api_key = config.sops.placeholder."traefik/porkbun/api_key";
+                    secret_api_key = config.sops.placeholder."traefik/porkbun/secret_key";
+                  })
+                  [
+                    {
+                      domain = "*.${config.custom.apps.settings.domain}";
+                      ip_version = "ipv4";
+                    }
+                    {
+                      domain = "${config.custom.apps.settings.domain}";
+                      ip_version = "ipv4";
+                    }
+                  ];
             in
             builtins.toJSON { inherit settings; }; # expects settings to be a key
         };

@@ -1,10 +1,5 @@
 { flake, inputs, ... }:
-{
-  lib,
-  config,
-  customLib,
-  ...
-}:
+{ lib, customLib, ... }:
 let
   inherit (lib) mkOption types;
 in
@@ -17,6 +12,7 @@ in
     ./forgejo
     ./garage
     ./immich
+    ./librespeed
     ./seafile
     ./traefik
     ./pocket
@@ -28,12 +24,8 @@ in
     settings = {
       domain = mkOption {
         type = types.str;
-        default = config.custom.server.settings.domain;
-        description = ''
-          The domain name to use for all apps. Set this to something different from
-          the server domain to allow public-facing services to route to that one,
-          while allowing internal-facing ones to still work properly.
-        '';
+        default = "example.com";
+        description = "The domain name to use for all apps.";
       };
       cpus = mkOption {
         type = types.str;
@@ -46,7 +38,10 @@ in
     {
       id = 2000;
       name = "forgejo";
-      tags.default = "13-rootless";
+      tags = {
+        default = "14-rootless";
+        mariadb = "10.11";
+      };
     }
     {
       id = 2001;
@@ -67,8 +62,8 @@ in
       name = "seafile";
       tags = {
         default = "13.0-latest";
-        mariadb = "10.11";
         redis = "8.2";
+        mariadb = "10.11";
       };
     }
     {
@@ -104,6 +99,11 @@ in
     {
       id = 2009;
       name = "beszel";
+      tags.default = "latest";
+    }
+    {
+      id = 2010;
+      name = "librespeed";
       tags.default = "latest";
     }
   ];

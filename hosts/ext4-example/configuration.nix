@@ -17,6 +17,6 @@
       type = "ext4";
       disks = [ "/dev/nvme0n1" ];
     };
-    server.ups.type = "server";
+    server.ups.mode = "server";
   };
 }

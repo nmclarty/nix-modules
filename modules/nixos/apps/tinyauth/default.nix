@@ -11,15 +11,12 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
-    # user
     users = mkContainerUser { inherit (cfg.user) name id; };
 
-    # dirs
     systemd.tmpfiles.rules = [
       "d /srv/tinyauth - ${id} ${id}"
     ];
 
-    # containers
     virtualisation.quadlet.containers.tinyauth = {
       containerConfig = {
         image = "ghcr.io/steveiliop56/tinyauth:${cfg.tags.default}";
