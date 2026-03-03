@@ -33,8 +33,9 @@ in
             FORGEJO__database__USER = "forgejo";
             # customization
             FORGEJO__server__DOMAIN = "forgejo.${config.custom.apps.settings.domain}";
-            # FORGEJO__server__ROOT_URL = "https://forgejo.${config.custom.apps.settings.domain}";
-            FORGE__RUN_USER = "forgejo";
+            FORGEJO__server__ROOT_URL = "https://forgejo.${config.custom.apps.settings.domain}";
+            # disable ssh (since it seems buggy)
+            FORGEJO____RUN_USER = "forgejo";
             FORGEJO__server__DISABLE_SSH = "true";
             # disable openid (not OIDC sso) signup
             FORGEJO__openid__ENABLE_OPENID_SIGNIN = "false";
