@@ -10,7 +10,10 @@ let
   id = toString cfg.user.id;
 in
 {
-  imports = [ ./support.nix ];
+  imports = [
+    ./config.nix
+    ./support.nix
+  ];
   config = lib.mkIf cfg.enable {
     users = mkContainerUser { inherit (cfg.user) name id; };
 
@@ -45,7 +48,10 @@ in
             FORGEJO__service__DEFAULT_KEEP_EMAIL_PRIVATE = "true";
           };
           secrets = [ "forgejo__mariadb__password,type=env,target=FORGEJO__database__PASSWD" ];
-          volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];
+          volumes = [
+            "/srv/forgejo/data:/var/lib/gitea"
+            "${config.sops.templates."forgejo/app.ini".path}:/var/lib/gitea/custom/conf/app.ini:ro"
+          ];
           networks = [
             "exposed"
             "forgejo"

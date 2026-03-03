@@ -1,4 +1,9 @@
-{ lib, customLib, config, ... }:
+{
+  lib,
+  customLib,
+  config,
+  ...
+}:
 let
   inherit (customLib) mkSecrets;
   cfg = config.custom.apps.seafile;
@@ -10,8 +15,7 @@ in
         "seafile/secret_key"
         "seafile/oauth/client_id"
         "seafile/oauth/client_secret"
-      ]
-        config.custom.base.secrets.podman;
+      ] config.custom.base.secrets.podman;
 
       templates = {
         "seafile/seafile.conf" = {
