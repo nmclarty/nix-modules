@@ -46,6 +46,8 @@ in
             FORGEJO__other__SHOW_FOOTER_VERSION = "false";
             FORGEJO__other__SHOW_FOOTER_TEMPLATE_LOAD_TIME = "false";
             FORGEJO__other__SHOW_FOOTER_POWERED_BY = "false";
+            # quiet logging (access logs are very verbose)
+            FORGEJO__log__LEVEL = "warn";
           };
           secrets = [ "forgejo__mariadb__password,type=env,target=FORGEJO__database__PASSWD" ];
           volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];
