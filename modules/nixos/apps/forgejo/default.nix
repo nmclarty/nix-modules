@@ -25,19 +25,23 @@ in
           image = "codeberg.org/forgejo/forgejo:${cfg.tags.default}";
           autoUpdate = "registry";
           user = "${id}:${id}";
+          # initial setup defaults
           environments = {
-            # mariadb
+            # set name
+            FORGEJO____APP_NAME = "Forgejo";
+            FORGEJO____APP_SLOGAN = "My personal code forge.";
+            # use mariadb instead of sqlite
             FORGEJO__database__DB_TYPE = "mysql";
             FORGEJO__database__HOST = "forgejo-mariadb:3306";
             FORGEJO__database__NAME = "forgejo";
             FORGEJO__database__USER = "forgejo";
-            # customization
+            # set the domain (otherwise it generates it, and might be wrong)
             FORGEJO__server__DOMAIN = "forgejo.${config.custom.apps.settings.domain}";
             FORGEJO__server__ROOT_URL = "https://forgejo.${config.custom.apps.settings.domain}";
-            # disable ssh (since it seems buggy)
+            # disable ssh (it seems buggy, issues with connection timeouts)
             FORGEJO____RUN_USER = "forgejo";
             FORGEJO__server__DISABLE_SSH = "true";
-            # disable openid (not OIDC sso) signup
+            # disable federated openid (not OIDC sso) signup
             FORGEJO__openid__ENABLE_OPENID_SIGNIN = "false";
             FORGEJO__openid__ENABLE_OPENID_SIGNUP = "false";
             # ensure emails are private
