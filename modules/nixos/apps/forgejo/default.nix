@@ -10,10 +10,7 @@ let
   id = toString cfg.user.id;
 in
 {
-  imports = [
-    ./config.nix
-    ./support.nix
-  ];
+  imports = [ ./support.nix ];
   config = lib.mkIf cfg.enable {
     users = mkContainerUser { inherit (cfg.user) name id; };
 
@@ -28,7 +25,6 @@ in
           image = "codeberg.org/forgejo/forgejo:${cfg.tags.default}";
           autoUpdate = "registry";
           user = "${id}:${id}";
-          # initial setup defaults
           environments = {
             # use mariadb instead of sqlite
             FORGEJO__database__DB_TYPE = "mysql";
@@ -48,10 +44,7 @@ in
             FORGEJO__service__DEFAULT_KEEP_EMAIL_PRIVATE = "true";
           };
           secrets = [ "forgejo__mariadb__password,type=env,target=FORGEJO__database__PASSWD" ];
-          volumes = [
-            "/srv/forgejo/data:/var/lib/gitea"
-            "${config.sops.templates."forgejo/app.ini".path}:/var/lib/gitea/custom/conf/app.ini:ro"
-          ];
+          volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];
           networks = [
             "exposed"
             "forgejo"
