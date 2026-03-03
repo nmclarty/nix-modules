@@ -27,9 +27,6 @@ in
           user = "${id}:${id}";
           # initial setup defaults
           environments = {
-            # set name
-            FORGEJO____APP_NAME = "Forgejo";
-            FORGEJO____APP_SLOGAN = "My personal code forge.";
             # use mariadb instead of sqlite
             FORGEJO__database__DB_TYPE = "mysql";
             FORGEJO__database__HOST = "forgejo-mariadb:3306";
