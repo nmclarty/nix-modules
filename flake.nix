@@ -2,8 +2,6 @@
   description = "Nix modules for reuse across systems";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # flake
     blueprint.url = "github:numtide/blueprint";
