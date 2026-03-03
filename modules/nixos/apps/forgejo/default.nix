@@ -33,8 +33,8 @@ in
             FORGEJO__database__USER = "forgejo";
             # customization
             FORGEJO__server__DOMAIN = "forgejo.${config.custom.apps.settings.domain}";
-            FORGEJO__server__ROOT_URL = "https://forgejo.${config.custom.apps.settings.domain}";
-            FORGEJO__server__SSH_PORT = "22";
+            # FORGEJO__server__ROOT_URL = "https://forgejo.${config.custom.apps.settings.domain}";
+            FORGEJO__server__DISABLE_SSH = "true";
             # disable openid (not OIDC sso) signup
             FORGEJO__openid__ENABLE_OPENID_SIGNIN = "false";
             FORGEJO__openid__ENABLE_OPENID_SIGNUP = "false";
@@ -47,7 +47,6 @@ in
             "exposed"
             "forgejo"
           ];
-          publishPorts = [ "22:2222" ];
           labels = {
             "traefik.enable" = "true";
             "traefik.http.services.forgejo.loadbalancer.server.port" = "3000";
