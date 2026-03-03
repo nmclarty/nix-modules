@@ -26,20 +26,28 @@ in
           autoUpdate = "registry";
           user = "${id}:${id}";
           environments = {
-            # mariadb
+            # use mariadb instead of sqlite
             FORGEJO__database__DB_TYPE = "mysql";
             FORGEJO__database__HOST = "forgejo-mariadb:3306";
             FORGEJO__database__NAME = "forgejo";
             FORGEJO__database__USER = "forgejo";
-            # customization
+            # set the domain (otherwise it generates it, and might be wrong)
             FORGEJO__server__DOMAIN = "forgejo.${config.custom.apps.settings.domain}";
             FORGEJO__server__ROOT_URL = "https://forgejo.${config.custom.apps.settings.domain}";
-            FORGEJO__server__SSH_PORT = "22";
-            # disable openid (not OIDC sso) signup
+            # disable ssh (it seems buggy, issues with connection timeouts)
+            FORGEJO____RUN_USER = "forgejo";
+            FORGEJO__server__DISABLE_SSH = "true";
+            # disable federated openid (not OIDC sso) signup
             FORGEJO__openid__ENABLE_OPENID_SIGNIN = "false";
             FORGEJO__openid__ENABLE_OPENID_SIGNUP = "false";
             # ensure emails are private
             FORGEJO__service__DEFAULT_KEEP_EMAIL_PRIVATE = "true";
+            # clean up footer
+            FORGEJO__other__SHOW_FOOTER_VERSION = "false";
+            FORGEJO__other__SHOW_FOOTER_TEMPLATE_LOAD_TIME = "false";
+            FORGEJO__other__SHOW_FOOTER_POWERED_BY = "false";
+            # quiet logging (access logs are very verbose)
+            FORGEJO__log__LEVEL = "warn";
           };
           secrets = [ "forgejo__mariadb__password,type=env,target=FORGEJO__database__PASSWD" ];
           volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];
@@ -47,7 +55,6 @@ in
             "exposed"
             "forgejo"
           ];
-          publishPorts = [ "22:2222" ];
           labels = {
             "traefik.enable" = "true";
             "traefik.http.services.forgejo.loadbalancer.server.port" = "3000";
