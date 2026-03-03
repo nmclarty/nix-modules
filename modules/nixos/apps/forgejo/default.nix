@@ -42,6 +42,10 @@ in
             FORGEJO__openid__ENABLE_OPENID_SIGNUP = "false";
             # ensure emails are private
             FORGEJO__service__DEFAULT_KEEP_EMAIL_PRIVATE = "true";
+            # clean up footer
+            FORGEJO__other__SHOW_FOOTER_VERSION = "false";
+            FORGEJO__other__SHOW_FOOTER_TEMPLATE_LOAD_TIME = "false";
+            FORGEJO__other__SHOW_FOOTER_POWERED_BY = "false";
           };
           secrets = [ "forgejo__mariadb__password,type=env,target=FORGEJO__database__PASSWD" ];
           volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];
