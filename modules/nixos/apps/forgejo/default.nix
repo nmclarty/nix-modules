@@ -26,6 +26,9 @@ in
           autoUpdate = "registry";
           user = "${id}:${id}";
           environments = {
+            # repository defaults
+            FORGEJO__repository__DEFAULT_PRIVATE = "private";
+            FORGEJO__repository__ENABLE_PUSH_CREATE_USER = "true";
             # use mariadb instead of sqlite
             FORGEJO__database__DB_TYPE = "mysql";
             FORGEJO__database__HOST = "forgejo-mariadb:3306";
