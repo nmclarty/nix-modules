@@ -20,8 +20,10 @@ in
 
     # dirs
     systemd.tmpfiles.rules = [
-      "d /srv/traefik ~0750 ${id} ${id}"
-      "Z /srv/traefik ~0750 ${id} ${id}"
+      "d /srv/traefik/data ~0750 ${id} ${id}"
+      "Z /srv/traefik/data ~0750 ${id} ${id}"
+      "d /srv/traefik/ddns-updater ~0750 ${id} ${id}"
+      "Z /srv/traefik/ddns-updater ~0750 ${id} ${id}"
     ];
 
     # containers
