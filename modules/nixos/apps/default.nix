@@ -39,7 +39,7 @@ in
       id = 2000;
       name = "forgejo";
       tags = {
-        default = "14-rootless";
+        default = "14";
         mariadb = "10.11";
       };
     }

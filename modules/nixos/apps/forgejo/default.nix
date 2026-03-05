@@ -24,8 +24,10 @@ in
         containerConfig = {
           image = "codeberg.org/forgejo/forgejo:${cfg.tags.default}";
           autoUpdate = "registry";
-          user = "${id}:${id}";
+          # userns
           environments = {
+            USER_UID = id;
+            USER_GID = id;
             # repository defaults
             FORGEJO__repository__DEFAULT_PRIVATE = "private";
             FORGEJO__repository__ENABLE_PUSH_CREATE_USER = "true";
@@ -45,6 +47,7 @@ in
             FORGEJO__openid__ENABLE_OPENID_SIGNUP = "false";
             # ensure emails are private
             FORGEJO__service__DEFAULT_KEEP_EMAIL_PRIVATE = "true";
+            FORGEJO__service__REQUIRE_SIGNIN_VIEW = "true";
             # clean up footer
             FORGEJO__other__SHOW_FOOTER_VERSION = "false";
             FORGEJO__other__SHOW_FOOTER_TEMPLATE_LOAD_TIME = "false";
@@ -53,7 +56,7 @@ in
             FORGEJO__log__LEVEL = "warn";
           };
           secrets = [ "forgejo__mariadb__password,type=env,target=FORGEJO__database__PASSWD" ];
-          volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];
+          volumes = [ "/srv/forgejo/data:/data" ];
           networks = [
             "exposed"
             "forgejo"
