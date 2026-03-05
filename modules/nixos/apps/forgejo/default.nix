@@ -22,12 +22,10 @@ in
     virtualisation.quadlet = {
       containers.forgejo = {
         containerConfig = {
-          image = "codeberg.org/forgejo/forgejo:${cfg.tags.default}";
+          image = "codeberg.org/forgejo/forgejo:${cfg.tags.default}-rootless";
           autoUpdate = "registry";
-          # userns
+          user = "${id}:${id}";
           environments = {
-            USER_UID = id;
-            USER_GID = id;
             # repository defaults
             FORGEJO__repository__DEFAULT_PRIVATE = "private";
             FORGEJO__repository__ENABLE_PUSH_CREATE_USER = "true";
@@ -56,7 +54,7 @@ in
             FORGEJO__log__LEVEL = "warn";
           };
           secrets = [ "forgejo__mariadb__password,type=env,target=FORGEJO__database__PASSWD" ];
-          volumes = [ "/srv/forgejo/data:/data" ];
+          volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];
           networks = [
             "exposed"
             "forgejo"
