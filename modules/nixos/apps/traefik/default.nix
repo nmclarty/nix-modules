@@ -22,8 +22,6 @@ in
     systemd.tmpfiles.rules = [
       "d /srv/traefik ~0750 ${id} ${id}"
       "Z /srv/traefik ~0750 ${id} ${id}"
-      "d /srv/ddns-updater ~0750 ${id} ${id}"
-      "Z /srv/ddns-updater ~0750 ${id} ${id}"
     ];
 
     # containers
@@ -40,7 +38,7 @@ in
           volumes = [
             "${config.sops.templates."traefik/traefik.yaml".path}:/etc/traefik/traefik.yaml:ro"
             "${config.sops.templates."traefik/dynamic.yaml".path}:/etc/traefik/dynamic.yaml:ro"
-            "/srv/traefik:/data"
+            "/srv/traefik/data:/data"
           ];
           sysctl."net.ipv4.ip_unprivileged_port_start" = "80";
           publishPorts = [

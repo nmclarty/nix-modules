@@ -29,7 +29,7 @@ in
         user = "${id}:${id}";
         volumes = [
           "${config.sops.templates."ddns-updater/config.json".path}:/updater/data/config.json:ro"
-          "/srv/ddns-updater:/updater/data"
+          "/srv/traefik/ddns-updater:/updater/data"
         ];
         networks = [ "exposed.network" ];
         labels = {
