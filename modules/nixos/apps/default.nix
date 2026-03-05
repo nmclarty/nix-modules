@@ -44,12 +44,12 @@ in
       };
     }
     {
-      id = 2010;
+      id = 2001;
       name = "garage";
       tags.default = "v2.1.0";
     }
     {
-      id = 2020;
+      id = 2002;
       name = "immich";
       tags = {
         default = "release";
@@ -58,7 +58,7 @@ in
       };
     }
     {
-      id = 2030;
+      id = 2003;
       name = "seafile";
       tags = {
         default = "13.0-latest";
@@ -67,7 +67,7 @@ in
       };
     }
     {
-      id = 2040;
+      id = 2004;
       name = "traefik";
       tags = {
         default = "v3";
@@ -76,33 +76,33 @@ in
       };
     }
     {
-      id = 2050;
+      id = 2005;
       name = "pocket";
       tags.default = "v2";
     }
     {
-      id = 2060;
+      id = 2006;
       name = "tinyauth";
       tags.default = "v4";
     }
     {
-      id = 2070;
+      id = 2007;
       name = "minecraft";
       tags.default = "stable";
     }
     {
       # options only
-      id = 2080;
+      id = 2008;
       name = "media";
       tags.default = "latest";
     }
     {
-      id = 2090;
+      id = 2009;
       name = "beszel";
       tags.default = "latest";
     }
     {
-      id = 2100;
+      id = 2010;
       name = "librespeed";
       tags.default = "latest";
     }
