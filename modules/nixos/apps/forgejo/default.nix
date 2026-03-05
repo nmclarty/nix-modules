@@ -22,7 +22,7 @@ in
     virtualisation.quadlet = {
       containers.forgejo = {
         containerConfig = {
-          image = "codeberg.org/forgejo/forgejo:${cfg.tags.default}";
+          image = "codeberg.org/forgejo/forgejo:${cfg.tags.default}-rootless";
           autoUpdate = "registry";
           user = "${id}:${id}";
           environments = {
@@ -45,6 +45,7 @@ in
             FORGEJO__openid__ENABLE_OPENID_SIGNUP = "false";
             # ensure emails are private
             FORGEJO__service__DEFAULT_KEEP_EMAIL_PRIVATE = "true";
+            FORGEJO__service__REQUIRE_SIGNIN_VIEW = "true";
             # clean up footer
             FORGEJO__other__SHOW_FOOTER_VERSION = "false";
             FORGEJO__other__SHOW_FOOTER_TEMPLATE_LOAD_TIME = "false";

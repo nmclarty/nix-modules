@@ -28,7 +28,7 @@ in
             ping:
               entryPoint: http
             accessLog:
-              filePath: /data/logs/access.log
+              filePath: /data/access.log
 
             entryPoints:
               http:
