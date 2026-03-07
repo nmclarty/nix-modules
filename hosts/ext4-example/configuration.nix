@@ -9,6 +9,7 @@
   # hardware
   networking.hostName = "ext4-example";
   nixpkgs.hostPlatform = "aarch64-linux";
+  system.stateVersion = "26.05";
 
   custom = {
     base.devel.enable = true;

@@ -12,6 +12,7 @@
     hostId = "076df79e";
   };
   nixpkgs.hostPlatform = "x86_64-linux";
+  system.stateVersion = "26.05";
 
   custom = {
     disks = {
