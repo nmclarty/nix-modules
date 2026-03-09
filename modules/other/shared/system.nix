@@ -32,30 +32,30 @@ in
       warn-dirty = false;
       substituters = [ "https://cache.garnix.io" ];
       trusted-public-keys = [ "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=" ];
-      netrc-file = config.sops.templates."nix/garnix-netrc".path;
+      netrc-file = config.sops.templates."nix/netrc-file".path;
       narinfo-cache-positive-ttl = 3600;
     };
-    extraOptions = "!include ${config.sops.templates."nix/github-token".path}";
+    extraOptions = "!include ${config.sops.templates."nix/access-tokens".path}";
   };
 
   sops = {
     secrets = {
-      "github/token" = { };
-      "garnix/token" = { };
+      "nix/github-token" = { };
+      "nix/garnix-token" = { };
     };
     templates = {
-      "nix/github-token" = {
+      "nix/access-tokens" = {
         owner = "nmclarty";
         content = ''
-          access-tokens = github.com=${config.sops.placeholder."github/token"}
+          access-tokens = github.com=${config.sops.placeholder."nix/github-token"}
         '';
       };
-      "nix/garnix-netrc" = {
+      "nix/netrc-file" = {
         owner = "nmclarty";
         content = ''
           machine cache.garnix.io
             login nmclarty
-            password ${config.sops.placeholder."garnix/token"}
+            password ${config.sops.placeholder."nix/garnix-token"}
         '';
       };
     };
