@@ -18,3 +18,8 @@ jobs:
     uses: nmclarty/helper-tools/.github/workflows/flake-update.yaml@main
     with: 
       nixpkgsOnly: ${{ inputs.nixpkgsOnly }}
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
