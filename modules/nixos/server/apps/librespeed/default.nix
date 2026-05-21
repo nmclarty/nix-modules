@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (customLib.containers) mkOptions mkUser;
+  inherit (customLib.containers) mkOptions;
   cfg = config.custom.apps.librespeed;
 in
 {
