@@ -1,0 +1,20 @@
+name: "Flake: Update"
+
+on:
+  workflow_dispatch:
+    inputs:
+      nixpkgsOnly:
+        description: Update nixpkgs only?
+        required: true
+        default: false
+        type: boolean
+
+
+  schedule:
+    - cron: "0 0 1 * *"
+
+jobs:
+  flake-update:
+    uses: nmclarty/helper-tools/.github/workflows/flake-update.yaml@main
+    with: 
+      nixpkgsOnly: ${{ inputs.nixpkgsOnly }}

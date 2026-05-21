@@ -1,0 +1,84 @@
+{
+  lib,
+  customLib,
+  config,
+  ...
+}:
+let
+  inherit (customLib.containers) mkOptions mkUser mkDeps;
+  cfg = config.custom.apps.forgejo;
+  id = toString cfg.user.id;
+in
+{
+  imports = [ ./support.nix ];
+  options.custom.apps.forgejo = mkOptions {
+    id = 2000;
+    name = "forgejo";
+    tags = {
+      default = "14";
+      mariadb = "10.11";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    users = mkUser { inherit (cfg.user) name id; };
+
+    systemd.tmpfiles.rules = [
+      "d /srv/forgejo/data - ${id} ${id}"
+      "d /srv/forgejo/mariadb - ${id} ${id}"
+    ];
+
+    virtualisation.quadlet = {
+      containers.forgejo = {
+        containerConfig = {
+          image = "codeberg.org/forgejo/forgejo:${cfg.tags.default}-rootless";
+          autoUpdate = "registry";
+          user = "${id}:${id}";
+          environments = {
+            # repository defaults
+            FORGEJO__repository__DEFAULT_PRIVATE = "private";
+            FORGEJO__repository__ENABLE_PUSH_CREATE_USER = "true";
+            # use mariadb instead of sqlite
+            FORGEJO__database__DB_TYPE = "mysql";
+            FORGEJO__database__HOST = "forgejo-mariadb:3306";
+            FORGEJO__database__NAME = "forgejo";
+            FORGEJO__database__USER = "forgejo";
+            # set the domain (otherwise it generates it, and might be wrong)
+            FORGEJO__server__DOMAIN = "forgejo.${config.custom.apps.settings.domain}";
+            FORGEJO__server__ROOT_URL = "https://forgejo.${config.custom.apps.settings.domain}";
+            # disable ssh (it seems buggy, issues with connection timeouts)
+            FORGEJO____RUN_USER = "forgejo";
+            FORGEJO__server__DISABLE_SSH = "true";
+            # disable federated openid (not OIDC sso) signup
+            FORGEJO__openid__ENABLE_OPENID_SIGNIN = "false";
+            FORGEJO__openid__ENABLE_OPENID_SIGNUP = "false";
+            # ensure emails are private
+            FORGEJO__service__DEFAULT_KEEP_EMAIL_PRIVATE = "true";
+            FORGEJO__service__REQUIRE_SIGNIN_VIEW = "true";
+            # clean up footer
+            FORGEJO__other__SHOW_FOOTER_VERSION = "false";
+            FORGEJO__other__SHOW_FOOTER_TEMPLATE_LOAD_TIME = "false";
+            FORGEJO__other__SHOW_FOOTER_POWERED_BY = "false";
+            # quiet logging (access logs are very verbose)
+            FORGEJO__log__LEVEL = "warn";
+          };
+          secrets = [ "forgejo__mariadb__password,type=env,target=FORGEJO__database__PASSWD" ];
+          volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];
+          networks = [
+            "exposed"
+            "forgejo"
+          ];
+          labels = {
+            "traefik.enable" = "true";
+            "traefik.http.services.forgejo.loadbalancer.server.port" = "3000";
+          };
+          healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:3000";
+          healthStartupCmd = "sleep 10";
+          healthOnFailure = "kill";
+        };
+        unitConfig = mkDeps [ "forgejo-mariadb" ];
+      };
+      networks.forgejo = { };
+    };
+  };
+}

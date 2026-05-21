@@ -1,0 +1,8 @@
+name: "Flake: Check"
+
+on:
+  push:
+
+jobs:
+  flake-check:
+    uses: nmclarty/helper-tools/.github/workflows/flake-check.yaml@main

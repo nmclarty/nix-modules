@@ -1,0 +1,27 @@
+{ pkgs, ... }:
+{
+  programs = {
+    # fish is mainly configured in home manager
+    fish.enable = true;
+    # command-not-found doesn't work with flakes
+    command-not-found.enable = false;
+  };
+
+  # keep editor config to use micro
+  security.sudo.extraConfig = ''Defaults env_keep += "EDITOR"'';
+
+  # systems need ghostty terminfo, otherwise lots of features break
+  environment.systemPackages = [ pkgs.ghostty.terminfo ];
+
+  # allow btop to monitor system power info
+  security.wrappers.btop = {
+    enable = true;
+    owner = "root";
+    group = "root";
+    source = "${pkgs.btop}/bin/btop";
+    capabilities = "cap_perfmon=ep";
+  };
+  systemd.tmpfiles.rules = [
+    "z /sys/class/powercap/intel-rapl:0/energy_uj 0444"
+  ];
+}
