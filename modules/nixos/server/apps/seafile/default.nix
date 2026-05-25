@@ -97,7 +97,7 @@ in
             labels = {
               "traefik.enable" = "true";
             };
-            healthCmd = "wget -O - -q -T 5 127.0.0.1:8000/api2/ping";
+            healthCmd = "wget -O - -q -T 5 127.0.0.1:80/api2/ping";
             healthStartupCmd = "sleep 10";
             healthOnFailure = "kill";
           };
