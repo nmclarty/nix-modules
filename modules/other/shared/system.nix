@@ -32,10 +32,6 @@ in
         "flakes"
       ];
       warn-dirty = false;
-      substituters = [ "https://cache.garnix.io" ];
-      trusted-public-keys = [ "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=" ];
-      netrc-file = config.sops.templates."nix/netrc-file".path;
-      narinfo-cache-positive-ttl = 3600;
     };
     extraOptions = "!include ${config.sops.templates."nix/access-tokens".path}";
   };
@@ -43,21 +39,12 @@ in
   sops = {
     secrets = {
       "nix/github-token" = { };
-      "nix/garnix-token" = { };
     };
     templates = {
       "nix/access-tokens" = {
         owner = "nmclarty";
         content = ''
           access-tokens = github.com=${config.sops.placeholder."nix/github-token"}
-        '';
-      };
-      "nix/netrc-file" = {
-        owner = "nmclarty";
-        content = ''
-          machine cache.garnix.io
-            login nmclarty
-            password ${config.sops.placeholder."nix/garnix-token"}
         '';
       };
     };
