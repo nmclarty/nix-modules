@@ -104,9 +104,11 @@ in
     # - config (config to check apps for)
     getServices =
       config:
-      builtins.attrNames (
-        filterAttrs (_: v: v.autoStart) (
-          with config; if virtualisation ? quadlet then virtualisation.quadlet.containers else { }
+      map (s: "${s}.service") (
+        builtins.attrNames (
+          filterAttrs (_: v: v.autoStart) (
+            with config; if virtualisation ? quadlet then virtualisation.quadlet.containers else { }
+          )
         )
       );
 
