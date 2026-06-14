@@ -1,14 +1,18 @@
-{ inputs, ... }:
+{ flake, inputs, ... }:
 let
   inherit (inputs.nixpkgs.lib)
     mkEnableOption
     mkOption
     types
+    filterAttrs
+    findFirst
+    elem
+    attrNames
     ;
 in
 {
-  # Helpers to reduce duplication for server app modules (containers).
-  containers = {
+  # Helpers to reduce duplication for server app modules
+  apps = rec {
     # Creates system user and group
     # - name (of the user)
     # - id (uid/gid of the user)
@@ -28,19 +32,16 @@ in
     # - name (of the user)
     # - id (uid/gid of the user)
     # - tags (container registry tags to use, "tags.default" is expected)
+    # - autoStart (start automatically instead of user-interactively)
     mkOptions =
-      {
+      args@{
         name,
         id,
         tags,
+        ...
       }:
       {
         enable = mkEnableOption "Enable ${name}";
-        tags = mkOption {
-          type = types.attrsOf types.str;
-          default = tags;
-          description = "The image tags to use.";
-        };
         user = {
           name = mkOption {
             type = types.str;
@@ -52,6 +53,16 @@ in
             default = id;
             description = "The uid/gid for the user.";
           };
+        };
+        tags = mkOption {
+          type = types.attrsOf types.str;
+          default = tags;
+          description = "The image tags to use.";
+        };
+        autoStart = mkOption {
+          type = types.bool;
+          default = args.autoStart or true;
+          description = "If app should be auto started. Only some support this.";
         };
       };
 
@@ -79,6 +90,32 @@ in
             inherit key sopsFile;
           };
         }) keys
+      );
+
+    # Returns a list of all apps that should be running.
+    # - config (config to check apps for)
+    getApps =
+      config:
+      builtins.attrNames (
+        filterAttrs (_: v: v.enable or false && v.autoStart or false) (with config; custom.apps or { })
+      );
+
+    # Returns a list of all service containers that should be running.
+    # - config (config to check apps for)
+    getServices =
+      config:
+      builtins.attrNames (
+        filterAttrs (_: v: v.autoStart) (
+          with config; if virtualisation ? quadlet then virtualisation.quadlet.containers else { }
+        )
+      );
+
+    # Returns the name of the first host that has the provided app enabled and running.
+    # - app (name of the app)
+    findHost =
+      app:
+      findFirst (host: elem app (getApps flake.nixosConfigurations.${host}.config)) null (
+        attrNames flake.nixosConfigurations
       );
   };
 }

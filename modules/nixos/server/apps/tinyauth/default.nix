@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (customLib.containers) mkOptions mkUser;
+  inherit (customLib.apps) mkOptions mkUser;
   cfg = config.custom.apps.tinyauth;
   id = toString cfg.user.id;
 in

@@ -1,16 +1,15 @@
 {
   lib,
-  flake,
   config,
   pkgs,
+  customLib,
   ...
 }:
 let
   inherit (lib) mkIf;
+  inherit (customLib.apps) findHost;
   cfg = config.custom.server.beszel;
-  beszelServer = lib.findFirst (
-    name: with flake.nixosConfigurations.${name}.config; custom ? apps && custom.apps.beszel.enable
-  ) null (builtins.attrNames flake.nixosConfigurations);
+  beszelServer = findHost "beszel";
 in
 {
   config = mkIf cfg.enable {

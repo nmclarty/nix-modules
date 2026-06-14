@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (customLib.containers) mkOptions mkUser mkDeps;
+  inherit (customLib.apps) mkOptions mkUser mkDeps;
   cfg = config.custom.apps.traefik;
   id = toString cfg.user.id;
 in

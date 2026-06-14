@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (customLib.containers) mkSecrets;
+  inherit (customLib.apps) mkSecrets;
   cfg = config.custom.apps.traefik;
 in
 {
