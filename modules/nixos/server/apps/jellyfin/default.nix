@@ -21,7 +21,7 @@ in
     users = mkUser { inherit (cfg.user) name id; };
 
     systemd.tmpfiles.rules = [
-      "d /srv/media/jellyfin - ${id} ${id}"
+      "d /srv/jellyfin - ${id} ${id}"
     ];
 
     virtualisation.quadlet.containers.jellyfin.containerConfig = {
