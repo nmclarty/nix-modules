@@ -3,13 +3,14 @@
   config,
   pkgs,
   customLib,
+  flake,
   ...
 }:
 let
   inherit (lib) mkIf;
   inherit (customLib.apps) findHost;
   cfg = config.custom.server.beszel;
-  beszelServer = findHost "beszel";
+  beszelServer = findHost flake "beszel";
 in
 {
   config = mkIf cfg.enable {

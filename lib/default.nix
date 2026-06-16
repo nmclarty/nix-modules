@@ -1,4 +1,4 @@
-{ flake, inputs, ... }:
+{ inputs, ... }:
 let
   inherit (inputs.nixpkgs.lib)
     mkEnableOption
@@ -113,11 +113,13 @@ in
       );
 
     # Returns the name of the first host that has the provided app enabled and running.
+    # - flake (flake that has all hosts as output)
     # - app (name of the app)
     findHost =
+      { nixosConfigurations, ... }:
       app:
-      findFirst (host: elem app (getApps flake.nixosConfigurations.${host}.config)) null (
-        attrNames flake.nixosConfigurations
+      findFirst (host: elem app (getApps nixosConfigurations.${host}.config)) null (
+        attrNames nixosConfigurations
       );
   };
 }
