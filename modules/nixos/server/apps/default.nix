@@ -9,6 +9,7 @@ in
     ./forgejo
     ./garage
     ./immich
+    ./jellyfin
     ./librespeed
     ./minecraft
     ./pocket
