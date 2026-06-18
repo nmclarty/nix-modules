@@ -13,7 +13,7 @@ in
   options.custom.apps.tinyauth = mkOptions {
     id = 2006;
     name = "tinyauth";
-    tags.default = "v4";
+    tags.default = "v5";
   };
 
   config = lib.mkIf cfg.enable {
@@ -30,22 +30,22 @@ in
         user = "${id}:${id}";
         environments = {
           # general
-          APP_URL = "https://tinyauth.${config.custom.apps.settings.domain}";
-          LOG_LEVEL = "warn";
-          OAUTH_AUTO_REDIRECT = "pocketid";
-          SECURE_COOKIE = "true";
-          TRUSTED_PROXIES = "10.90.0.2";
+          TINYAUTH_APPURL = "https://tinyauth.${config.custom.apps.settings.domain}";
+          TINYAUTH_LOG_LEVEL = "warn";
+          TINYAUTH_OAUTH_AUTOREDIRECT = "pocketid";
+          TINYAUTH_AUTH_SECURECOOKIE = "true";
+          TINYAUTH_AUTH_TRUSTEDPROXIES = "10.90.0.2";
           # pocket-id oauth
-          PROVIDERS_POCKETID_CLIENT_SECRET_FILE = "/run/secrets/tinyauth__client_secret";
-          PROVIDERS_POCKETID_AUTH_URL = "https://pocket.${config.custom.apps.settings.domain}/authorize";
-          PROVIDERS_POCKETID_TOKEN_URL = "https://pocket.${config.custom.apps.settings.domain}/api/oidc/token";
-          PROVIDERS_POCKETID_USER_INFO_URL = "https://pocket.${config.custom.apps.settings.domain}/api/oidc/userinfo";
-          PROVIDERS_POCKETID_REDIRECT_URL = "https://tinyauth.${config.custom.apps.settings.domain}/api/oauth/callback/pocketid";
-          PROVIDERS_POCKETID_SCOPES = "openid email profile groups";
-          PROVIDERS_POCKETID_NAME = "Pocket ID";
+          TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTSECRETFILE = "/run/secrets/tinyauth__client_secret";
+          TINYAUTH_OAUTH_PROVIDERS_POCKETID_AUTHURL = "https://pocket.${config.custom.apps.settings.domain}/authorize";
+          TINYAUTH_OAUTH_PROVIDERS_POCKETID_TOKENURL = "https://pocket.${config.custom.apps.settings.domain}/api/oidc/token";
+          TINYAUTH_OAUTH_PROVIDERS_POCKETID_USERINFOURL = "https://pocket.${config.custom.apps.settings.domain}/api/oidc/userinfo";
+          TINYAUTH_OAUTH_PROVIDERS_POCKETID_REDIRECTURL = "https://tinyauth.${config.custom.apps.settings.domain}/api/oauth/callback/pocketid";
+          TINYAUTH_OAUTH_PROVIDERS_POCKETID_SCOPES = "openid email profile groups";
+          TINYAUTH_OAUTH_PROVIDERS_POCKETID_NAME = "Pocket ID";
         };
         secrets = [
-          "tinyauth__client_id,type=env,target=PROVIDERS_POCKETID_CLIENT_ID"
+          "tinyauth__client_id,type=env,target=TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTID"
           "tinyauth__client_secret,uid=${id},gid=${id},mode=0400"
         ];
         volumes = [ "/srv/tinyauth:/data" ];
