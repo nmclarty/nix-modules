@@ -24,7 +24,6 @@ in
       automatic = true;
       # schedule in nixos/darwin system.nix
     };
-    package = pkgs.lixPackageSets.stable.lix;
     settings = {
       # allowed-users in nixos/darwin system.nix
       experimental-features = [
