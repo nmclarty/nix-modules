@@ -33,6 +33,13 @@ in
           TRUST_PROXY = "true";
           MAXMIND_LICENSE_KEY_FILE = "/run/secrets/pocket__maxmind_licence_key";
           ENCRYPTION_KEY_FILE = "/run/secrets/pocket__encryption_key";
+          UI_CONFIG_DISABLED = "true";
+          # UI config
+          SESSION_DURATION = "131400";
+          HOME_PAGE_URL = "/settings/apps";
+          DISABLE_ANIMATIONS = "true";
+          EMAILS_VERIFIED = "true";
+          ALLOW_USER_SIGNUPS = "withToken";
         };
         secrets = [
           "pocket__maxmind_licence_key,uid=${id},gid=${id},mode=0400"

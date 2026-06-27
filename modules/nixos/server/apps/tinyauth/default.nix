@@ -35,6 +35,7 @@ in
           TINYAUTH_OAUTH_AUTOREDIRECT = "pocketid";
           TINYAUTH_AUTH_SECURECOOKIE = "true";
           TINYAUTH_AUTH_TRUSTEDPROXIES = "10.90.0.2";
+          TINYAUTH_AUTH_SESSIONEXPIRY = "604800";
           # pocket-id oauth
           TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTSECRETFILE = "/run/secrets/tinyauth__client_secret";
           TINYAUTH_OAUTH_PROVIDERS_POCKETID_AUTHURL = "https://pocket.${config.custom.apps.settings.domain}/authorize";
