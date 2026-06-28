@@ -96,6 +96,11 @@ in
             ];
             labels = {
               "traefik.enable" = "true";
+              # hide the seafile login page and go straight to SSO (since every user uses Pocket ID)
+              "traefik.http.middlewares.seafile-sso-redirect.redirectregex.regex" = "^(https?://[^/]+)/accounts/login(.*)$";
+              "traefik.http.middlewares.seafile-sso-redirect.redirectregex.replacement" = "\${1}/oauth/login\${2}";
+              "traefik.http.middlewares.seafile-sso-redirect.redirectregex.permanent" = "true";
+              "traefik.http.routers.seafile.middlewares" = "seafile-sso-redirect";
             };
             healthCmd = "wget -O - -q -T 5 127.0.0.1:80/api2/ping";
             healthStartupCmd = "sleep 10";

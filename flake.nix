@@ -22,5 +22,18 @@
     helper-tools.url = "github:nmclarty/helper-tools";
     helper-tools.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = inputs: inputs.blueprint { inherit inputs; };
+
+  outputs =
+    inputs:
+    inputs.blueprint {
+      inherit inputs;
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
+      nixpkgs.config = {
+        allowUnfree = true;
+      };
+    };
 }

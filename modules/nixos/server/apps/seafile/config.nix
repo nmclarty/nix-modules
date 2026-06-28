@@ -38,20 +38,18 @@ in
           restartUnits = [ "seafile.service" ];
           owner = cfg.user.name;
           content = ''
-            # initial
-            SECRET_KEY = "${config.sops.placeholder."seafile/secret_key"}"
+            ENABLE_SETTINGS_VIA_WEB = False
             TIME_ZONE = "Etc/UTC"
+            SITE_NAME = "Seafile"
+            SITE_TITLE = "Seafile"
+            ENABLE_WIKI = False
+            LOGOUT_REDIRECT_URL = "https://pocket.${config.custom.apps.settings.domain}/logout"
 
             # security
             ALLOWED_HOSTS = [ "seafile.${config.custom.apps.settings.domain}", "127.0.0.1" ]
             CSRF_COOKIE_SECURE = True
+            SECRET_KEY = "${config.sops.placeholder."seafile/secret_key"}"
             SESSION_COOKIE_SECURE = True
-
-            # general
-            ENABLE_TWO_FACTOR_AUTH = True
-            ENABLE_WIKI = False
-            SITE_TITLE = "Seafile"
-            LOGOUT_REDIRECT_URL = "https://seafile.${config.custom.apps.settings.domain}/accounts/login/"
 
             # library
             ENCRYPTED_LIBRARY_VERSION = 4
@@ -63,6 +61,7 @@ in
             # oidc for pocket id integration
             ENABLE_OAUTH = True
             CLIENT_SSO_VIA_LOCAL_BROWSER = True
+            ENABLE_SSO_USER_CHANGE_PASSWORD = False
             OAUTH_CLIENT_ID = "${config.sops.placeholder."seafile/oauth/client_id"}"
             OAUTH_CLIENT_SECRET = "${config.sops.placeholder."seafile/oauth/client_secret"}"
             OAUTH_REDIRECT_URL = "https://seafile.${config.custom.apps.settings.domain}/oauth/callback/"
