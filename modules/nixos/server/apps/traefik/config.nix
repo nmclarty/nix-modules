@@ -38,6 +38,7 @@ in
                     entryPoint:
                       to: https
                       scheme: https
+                      permanent: true
               https:
                 address: :443
                 asDefault: true

@@ -54,6 +54,9 @@ in
         labels = {
           "traefik.enable" = "true";
           "traefik.http.middlewares.tinyauth.forwardauth.address" = "http://tinyauth:3000/api/auth/traefik";
+          # traefik should be the entrypoint, as there isn't any proxy in-front of this,
+          # so explicitly remove all forward headers
+          "traefik.http.middlewares.tinyauth.forwardauth.trustForwardHeader" = "false";
         };
         healthCmd = "tinyauth healthcheck";
         healthStartupCmd = "sleep 10";
