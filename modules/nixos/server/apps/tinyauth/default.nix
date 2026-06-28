@@ -57,6 +57,10 @@ in
           # traefik should be the entrypoint, as there isn't any proxy in-front of this,
           # so explicitly remove all forward headers
           "traefik.http.middlewares.tinyauth.forwardauth.trustForwardHeader" = "false";
+          # traefik recommends limiting the body size to prevent DoS so setting this
+          # to 1MB for now...
+          "traefik.http.middlewares.tinyauth.forwardauth.maxBodySize" = "1048576";
+          "traefik.http.middlewares.tinyauth.forwardauth.maxResponseBodySize" = "1048576";
         };
         healthCmd = "tinyauth healthcheck";
         healthStartupCmd = "sleep 10";
