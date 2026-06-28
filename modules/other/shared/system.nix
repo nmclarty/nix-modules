@@ -3,7 +3,6 @@
   flake,
   inputs,
   config,
-  pkgs,
   ...
 }:
 let
