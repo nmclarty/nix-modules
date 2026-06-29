@@ -31,7 +31,7 @@ in
     age.keyFile = "/var/lib/sops-nix/key.txt";
     secrets = {
       # safe since it only contains public keys
-      "known_hosts" = {
+      "ssh/known_hosts" = {
         mode = "0444";
       };
     };
