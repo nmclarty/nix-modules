@@ -29,6 +29,9 @@ in
       volumes = [ "/srv/homepage:/app/config" ];
       networks = [ "exposed" ];
       labels."traefik.enable" = "true";
+      # comes with healthCmd
+      healthStartupCmd = "sleep 10";
+      healthOnFailure = "kill";
     };
   };
 }
