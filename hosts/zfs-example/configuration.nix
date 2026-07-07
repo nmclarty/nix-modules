@@ -16,6 +16,7 @@
     beszel.enable = true;
     forgejo.enable = true;
     garage.enable = true;
+    homepage.enable = true;
     immich.enable = true;
     jellyfin.enable = true;
     librespeed.enable = true;

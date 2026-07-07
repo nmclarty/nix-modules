@@ -8,6 +8,7 @@ in
     ./beszel
     ./forgejo
     ./garage
+    ./homepage
     ./immich
     ./jellyfin
     ./librespeed

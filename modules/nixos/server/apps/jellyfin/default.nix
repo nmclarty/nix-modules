@@ -20,9 +20,7 @@ in
   config = mkIf cfg.enable {
     users = mkUser { inherit (cfg.user) name id; };
 
-    systemd.tmpfiles.rules = [
-      "d /srv/jellyfin - ${id} ${id}"
-    ];
+    systemd.tmpfiles.rules = [ "d /srv/jellyfin - ${id} ${id}" ];
 
     virtualisation.quadlet.containers.jellyfin.containerConfig = {
       image = "ghcr.io/jellyfin/jellyfin:${cfg.tags.default}";
