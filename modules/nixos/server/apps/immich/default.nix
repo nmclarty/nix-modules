@@ -59,6 +59,10 @@ in
             ];
             labels = {
               "traefik.enable" = "true";
+              "homepage.group" = "Cloud";
+              "homepage.name" = "Immich";
+              "homepage.icon" = "immich.svg";
+              "homepage.href" = "https://immich.${config.custom.apps.settings.domain}";
             };
             healthCmd = "curl -fs http://127.0.0.1:2283/api/server/ping";
             healthStartupCmd = "sleep 10";

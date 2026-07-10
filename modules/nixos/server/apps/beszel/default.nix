@@ -37,7 +37,11 @@ in
       publishPorts = [ "8090:8090" ]; # for server connections
       labels = {
         "traefik.enable" = "true";
-      }; # for user access
+        "homepage.group" = "Management";
+        "homepage.name" = "Beszel";
+        "homepage.icon" = "beszel.svg";
+        "homepage.href" = "https://beszel.${config.custom.apps.settings.domain}";
+      };
     };
   };
 }

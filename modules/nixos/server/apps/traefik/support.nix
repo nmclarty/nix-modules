@@ -17,7 +17,7 @@ in
           LOG_LEVEL = "notice";
         };
         volumes = [ "/var/run/podman/podman.sock:/var/run/docker.sock:ro" ];
-        networks = [ "socket-proxy.network" ];
+        networks = [ "traefik" ];
         healthCmd = "wget -O - -q -T 5 http://127.0.0.1:2375/_ping";
         healthStartupCmd = "sleep 10";
         healthOnFailure = "kill";
@@ -31,10 +31,14 @@ in
           "${config.sops.templates."ddns-updater/config.json".path}:/updater/data/config.json:ro"
           "/srv/traefik/ddns-updater:/updater/data"
         ];
-        networks = [ "exposed.network" ];
+        networks = [ "exposed" ];
         labels = {
           "traefik.enable" = "true";
           "traefik.http.routers.ddns-updater.middlewares" = "tinyauth";
+          "homepage.group" = "Proxy";
+          "homepage.name" = "DDNS Updater";
+          "homepage.icon" = "ddns-updater.svg";
+          "homepage.href" = "https://ddns-updater.${config.custom.apps.settings.domain}";
         };
       };
     };

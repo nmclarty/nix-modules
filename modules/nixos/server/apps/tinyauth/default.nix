@@ -61,6 +61,10 @@ in
           # to 1MB for now...
           "traefik.http.middlewares.tinyauth.forwardauth.maxBodySize" = "1048576";
           "traefik.http.middlewares.tinyauth.forwardauth.maxResponseBodySize" = "1048576";
+          "homepage.group" = "Proxy";
+          "homepage.name" = "Tinyauth";
+          "homepage.icon" = "tinyauth.svg";
+          "homepage.href" = "https://tinyauth.${config.custom.apps.settings.domain}";
         };
         healthCmd = "tinyauth healthcheck";
         healthStartupCmd = "sleep 10";

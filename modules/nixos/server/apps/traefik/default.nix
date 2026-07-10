@@ -57,13 +57,17 @@ in
             "443:443" # main https
           ];
           networks = [
-            "socket-proxy"
             "exposed:ip=10.90.0.2"
+            "traefik"
           ];
           labels = {
             "traefik.enable" = "true";
             "traefik.http.routers.traefik.service" = "api@internal";
             "traefik.http.routers.traefik.middlewares" = "tinyauth";
+            "homepage.group" = "Proxy";
+            "homepage.name" = "Traefik";
+            "homepage.icon" = "traefik.svg";
+            "homepage.href" = "https://traefik.${config.custom.apps.settings.domain}";
           };
           healthCmd = "traefik healthcheck";
           healthStartupCmd = "sleep 10";
@@ -76,7 +80,7 @@ in
       };
 
       networks = {
-        socket-proxy.networkConfig.internal = true;
+        traefik.networkConfig.internal = true;
         exposed.networkConfig = {
           subnets = [ "10.90.0.0/24" ];
           ipRanges = [ "10.90.0.5-10.90.0.254" ];

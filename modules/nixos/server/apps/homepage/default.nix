@@ -33,10 +33,17 @@ in
         image = "ghcr.io/gethomepage/homepage:${cfg.tags.default}";
         autoUpdate = "registry";
         user = "${id}:${id}";
-        environments.HOMEPAGE_ALLOWED_HOSTS = "homepage.${config.custom.apps.settings.domain}";
+        environments = {
+          LOG_TARGETS = "stdout"; # removes logpath dir in /app/config
+          HOMEPAGE_ALLOWED_HOSTS = "homepage.${config.custom.apps.settings.domain}";
+        };
         volumes = [
           "/srv/homepage:/app/config"
+          "${config.sops.templates."homepage/bookmarks.yaml".path}:/app/config/bookmarks.yaml:ro"
           "${config.sops.templates."homepage/docker.yaml".path}:/app/config/docker.yaml:ro"
+          "${config.sops.templates."homepage/services.yaml".path}:/app/config/services.yaml:ro"
+          "${config.sops.templates."homepage/settings.yaml".path}:/app/config/settings.yaml:ro"
+          "${config.sops.templates."homepage/widgets.yaml".path}:/app/config/widgets.yaml:ro"
         ];
         networks = [
           "exposed"

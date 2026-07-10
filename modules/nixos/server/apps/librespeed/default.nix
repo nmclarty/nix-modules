@@ -30,6 +30,10 @@ in
         labels = {
           "traefik.enable" = "true";
           "traefik.http.services.librespeed.loadbalancer.server.port" = "8080";
+          "homepage.group" = "Proxy";
+          "homepage.name" = "Librespeed";
+          "homepage.icon" = "librespeed.svg";
+          "homepage.href" = "https://librespeed.${config.custom.apps.settings.domain}";
         };
       };
     };

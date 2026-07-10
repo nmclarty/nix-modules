@@ -49,6 +49,10 @@ in
         networks = [ "exposed.network" ];
         labels = {
           "traefik.enable" = "true";
+          "homepage.group" = "Management";
+          "homepage.name" = "Pocket ID";
+          "homepage.icon" = "pocket-id.svg";
+          "homepage.href" = "https://pocket.${config.custom.apps.settings.domain}";
         };
         healthCmd = "/app/pocket-id healthcheck";
         healthStartupCmd = "sleep 10";

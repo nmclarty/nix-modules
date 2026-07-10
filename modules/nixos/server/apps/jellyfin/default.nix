@@ -33,7 +33,13 @@ in
         "/tank/media:/media:ro"
       ];
       networks = [ "exposed" ];
-      labels."traefik.enable" = "true";
+      labels = {
+        "traefik.enable" = "true";
+        "homepage.group" = "Cloud";
+        "homepage.name" = "Jellyfin";
+        "homepage.icon" = "jellyfin.svg";
+        "homepage.href" = "https://jellyfin.${config.custom.apps.settings.domain}";
+      };
       healthCmd = "curl -fs http://127.0.0.1:8096/health";
       healthStartupCmd = "sleep 10";
       healthOnFailure = "kill";

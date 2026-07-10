@@ -103,6 +103,10 @@ in
                 "\${1}/oauth/login\${2}";
               "traefik.http.middlewares.seafile-sso-redirect.redirectregex.permanent" = "true";
               "traefik.http.routers.seafile.middlewares" = "seafile-sso-redirect";
+              "homepage.group" = "Cloud";
+              "homepage.name" = "Seafile";
+              "homepage.icon" = "seafile.svg";
+              "homepage.href" = "https://seafile.${config.custom.apps.settings.domain}";
             };
             healthCmd = "wget -O - -q -T 5 127.0.0.1:80/api2/ping";
             healthStartupCmd = "sleep 10";
