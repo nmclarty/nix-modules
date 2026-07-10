@@ -17,13 +17,13 @@ in
 
       templates = {
         "homepage/bookmarks.yaml" = {
-          restartUnits = [ "homepage" ];
+          restartUnits = [ "homepage.service" ];
           owner = cfg.user.name;
           content = "";
         };
 
         "homepage/docker.yaml" = {
-          restartUnits = [ "homepage" ];
+          restartUnits = [ "homepage.service" ];
           owner = cfg.user.name;
           content = ''
             docker:
@@ -33,7 +33,7 @@ in
         };
 
         "homepage/services.yaml" = {
-          restartUnits = [ "homepage" ];
+          restartUnits = [ "homepage.service" ];
           owner = cfg.user.name;
           content = ''
             - Management:
@@ -44,13 +44,13 @@ in
         };
 
         "homepage/settings.yaml" = {
-          restartUnits = [ "homepage" ];
+          restartUnits = [ "homepage.service" ];
           owner = cfg.user.name;
           content = "";
         };
 
         "homepage/widgets.yaml" = {
-          restartUnits = [ "homepage" ];
+          restartUnits = [ "homepage.service" ];
           owner = cfg.user.name;
           content = ''
             - resources:
