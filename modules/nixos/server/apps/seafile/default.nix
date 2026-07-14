@@ -34,8 +34,10 @@ in
       "d /srv/seafile/nginx - ${id} ${id}"
       "d /srv/seafile/data - ${id} ${id}"
       "d /srv/seafile/data/logs - ${id} ${id}"
-      "d /srv/seafile/mariadb - ${id} ${id}"
-      "d /srv/seafile/redis - ${id} ${id}"
+
+      # seafile keeps breaking because logrotate changes the perms...
+      # so "politely force" all the files to the right owner recursively.
+      "Z /srv/seafile/data/logs - ${id} ${id}"
     ];
 
     # containers

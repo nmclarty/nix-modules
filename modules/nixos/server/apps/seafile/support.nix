@@ -5,6 +5,11 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
+    systemd.tmpfiles.rules = [
+      "d /srv/seafile/mariadb - ${id} ${id}"
+      "d /srv/seafile/redis - ${id} ${id}"
+    ];
+
     virtualisation.quadlet = {
       containers = {
         seafile-mariadb = {
