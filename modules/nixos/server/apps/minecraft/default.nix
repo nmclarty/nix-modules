@@ -47,10 +47,7 @@ in
               VELOCITY_VERSION = "4.1.0";
             };
             secrets = [ "minecraft__velocity__forwarding_secret,uid=${id},gid=${id},mode=0400" ];
-            volumes = [
-              "/srv/minecraft/velocity:/server"
-              "${config.sops.templates."minecraft/velocity/velocity.toml".path}:/server/velocity.toml:ro"
-            ];
+            volumes = [ "/srv/minecraft/velocity:/server" ];
             networks = [ "minecraft.network" ];
             publishPorts = [ "25565:25565" ];
             healthCmd = "/usr/bin/health.sh";
