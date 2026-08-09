@@ -11,13 +11,16 @@ let
 in
 {
   imports = [
-    ./config.nix
     ./support.nix
   ];
   options.custom.apps.minecraft = mkOptions {
     id = 2007;
     name = "minecraft";
-    tags.default = "stable";
+    tags = {
+      default = "stable";
+      mariadb = "10.11";
+    };
+    autoStart = false;
   };
 
   config = lib.mkIf cfg.enable {
@@ -34,13 +37,14 @@ in
     virtualisation.quadlet = {
       containers = {
         velocity = {
-          autoStart = false;
+          autoStart = cfg.autoStart;
           containerConfig = {
             image = "docker.io/itzg/mc-proxy:${cfg.tags.default}";
             autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
               TYPE = "VELOCITY";
+              VELOCITY_VERSION = "4.1.0";
             };
             secrets = [ "minecraft__velocity__forwarding_secret,uid=${id},gid=${id},mode=0400" ];
             volumes = [
@@ -49,11 +53,14 @@ in
             ];
             networks = [ "minecraft.network" ];
             publishPorts = [ "25565:25565" ];
+            healthCmd = "/usr/bin/health.sh";
+            healthStartupCmd = "sleep 10";
+            healthOnFailure = "kill";
           };
         };
 
         minecraft-survival = {
-          autoStart = false;
+          autoStart = cfg.autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
             autoUpdate = "registry";
@@ -73,7 +80,7 @@ in
         };
 
         minecraft-creative = {
-          autoStart = false;
+          autoStart = cfg.autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
             autoUpdate = "registry";
@@ -93,7 +100,7 @@ in
         };
 
         minecraft-biomes = {
-          autoStart = false;
+          autoStart = cfg.autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
             autoUpdate = "registry";

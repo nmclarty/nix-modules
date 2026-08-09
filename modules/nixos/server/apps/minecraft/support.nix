@@ -9,7 +9,7 @@ in
       containers = {
         minecraft-mariadb = {
           containerConfig = {
-            image = "docker.io/library/mariadb:10.11";
+            image = "docker.io/library/mariadb:${cfg.tags.mariadb}";
             autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
