@@ -37,7 +37,7 @@ in
     virtualisation.quadlet = {
       containers = {
         velocity = {
-          autoStart = cfg.autoStart;
+          inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/mc-proxy:${cfg.tags.default}";
             autoUpdate = "registry";
@@ -57,7 +57,7 @@ in
         };
 
         minecraft-survival = {
-          autoStart = cfg.autoStart;
+          inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
             autoUpdate = "registry";
@@ -77,7 +77,7 @@ in
         };
 
         minecraft-creative = {
-          autoStart = cfg.autoStart;
+          inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
             autoUpdate = "registry";
@@ -97,7 +97,7 @@ in
         };
 
         minecraft-biomes = {
-          autoStart = cfg.autoStart;
+          inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
             autoUpdate = "registry";
