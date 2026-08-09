@@ -42,10 +42,7 @@ in
             image = "docker.io/itzg/mc-proxy:${cfg.tags.default}";
             autoUpdate = "registry";
             user = "${id}:${id}";
-            environments = {
-              TYPE = "VELOCITY";
-              VELOCITY_VERSION = "4.1.0";
-            };
+            environments.TYPE = "VELOCITY";
             secrets = [ "minecraft__velocity__forwarding_secret,uid=${id},gid=${id},mode=0400" ];
             volumes = [ "/srv/minecraft/velocity:/server" ];
             networks = [ "minecraft.network" ];
