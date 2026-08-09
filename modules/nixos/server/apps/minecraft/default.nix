@@ -43,7 +43,6 @@ in
             autoUpdate = "registry";
             user = "${id}:${id}";
             environments.TYPE = "VELOCITY";
-            secrets = [ "minecraft__velocity__forwarding_secret,uid=${id},gid=${id},mode=0400" ];
             volumes = [ "/srv/minecraft/velocity:/server" ];
             networks = [ "minecraft.network" ];
             publishPorts = [ "25565:25565" ];
@@ -68,7 +67,7 @@ in
             volumes = [ "/srv/minecraft/survival:/data" ];
             networks = [ "minecraft.network" ];
             healthCmd = "mc-health";
-            healthStartupCmd = "sleep 30";
+            healthStartupCmd = "sleep 10";
             healthOnFailure = "kill";
           };
         };
@@ -88,7 +87,7 @@ in
             volumes = [ "/srv/minecraft/creative:/data" ];
             networks = [ "minecraft.network" ];
             healthCmd = "mc-health";
-            healthStartupCmd = "sleep 30";
+            healthStartupCmd = "sleep 10";
             healthOnFailure = "kill";
           };
         };
@@ -111,7 +110,7 @@ in
             networks = [ "minecraft.network" ];
             publishPorts = [ "25566:25565" ];
             healthCmd = "mc-health";
-            healthStartupCmd = "sleep 30";
+            healthStartupCmd = "sleep 10";
             healthOnFailure = "kill";
           };
         };
