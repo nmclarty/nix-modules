@@ -32,8 +32,5 @@
         "aarch64-linux"
         "aarch64-darwin"
       ];
-      nixpkgs.config = {
-        allowUnfree = true;
-      };
     };
 }
