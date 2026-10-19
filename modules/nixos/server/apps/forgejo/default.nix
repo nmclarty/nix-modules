@@ -15,7 +15,7 @@ in
     id = 2000;
     name = "forgejo";
     tags = {
-      default = "14";
+      default = "17";
       mariadb = "10.11";
     };
   };

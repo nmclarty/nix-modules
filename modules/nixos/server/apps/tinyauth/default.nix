@@ -8,13 +8,40 @@ let
   inherit (customLib.apps) mkOptions mkUser;
   cfg = config.custom.apps.tinyauth;
   id = toString cfg.user.id;
+  inherit (config.custom.apps.settings) domain;
+
+  # supported oauth providers, keyed by the tinyauth provider id
+  providers = {
+    pocketid = {
+      name = "Pocket ID";
+      authUrl = "https://pocket.${domain}/authorize";
+      tokenUrl = "https://pocket.${domain}/api/oidc/token";
+      userInfoUrl = "https://pocket.${domain}/api/oidc/userinfo";
+    };
+    forgejo = {
+      name = "Forgejo";
+      authUrl = "https://forgejo.${domain}/login/oauth/authorize";
+      tokenUrl = "https://forgejo.${domain}/login/oauth/access_token";
+      userInfoUrl = "https://forgejo.${domain}/login/oauth/userinfo";
+    };
+  };
+  provider = providers.${cfg.provider};
+  envPrefix = "TINYAUTH_OAUTH_PROVIDERS_${lib.toUpper cfg.provider}";
 in
 {
-  options.custom.apps.tinyauth = mkOptions {
-    id = 2006;
-    name = "tinyauth";
-    tags.default = "v5";
-  };
+  options.custom.apps.tinyauth =
+    mkOptions {
+      id = 2006;
+      name = "tinyauth";
+      tags.default = "v5";
+    }
+    // {
+      provider = lib.mkOption {
+        type = lib.types.enum (lib.attrNames providers);
+        default = "pocketid";
+        description = "The oauth provider to use as the source for tinyauth.";
+      };
+    };
 
   config = lib.mkIf cfg.enable {
     users = mkUser { inherit (cfg.user) name id; };
@@ -30,23 +57,23 @@ in
         user = "${id}:${id}";
         environments = {
           # general
-          TINYAUTH_APPURL = "https://tinyauth.${config.custom.apps.settings.domain}";
+          TINYAUTH_APPURL = "https://tinyauth.${domain}";
           TINYAUTH_LOG_LEVEL = "warn";
-          TINYAUTH_OAUTH_AUTOREDIRECT = "pocketid";
+          TINYAUTH_OAUTH_AUTOREDIRECT = cfg.provider;
           TINYAUTH_AUTH_SECURECOOKIE = "true";
           TINYAUTH_AUTH_TRUSTEDPROXIES = "10.90.0.2";
           TINYAUTH_AUTH_SESSIONEXPIRY = "604800";
-          # pocket-id oauth
-          TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTSECRETFILE = "/run/secrets/tinyauth__client_secret";
-          TINYAUTH_OAUTH_PROVIDERS_POCKETID_AUTHURL = "https://pocket.${config.custom.apps.settings.domain}/authorize";
-          TINYAUTH_OAUTH_PROVIDERS_POCKETID_TOKENURL = "https://pocket.${config.custom.apps.settings.domain}/api/oidc/token";
-          TINYAUTH_OAUTH_PROVIDERS_POCKETID_USERINFOURL = "https://pocket.${config.custom.apps.settings.domain}/api/oidc/userinfo";
-          TINYAUTH_OAUTH_PROVIDERS_POCKETID_REDIRECTURL = "https://tinyauth.${config.custom.apps.settings.domain}/api/oauth/callback/pocketid";
-          TINYAUTH_OAUTH_PROVIDERS_POCKETID_SCOPES = "openid email profile groups";
-          TINYAUTH_OAUTH_PROVIDERS_POCKETID_NAME = "Pocket ID";
+          # oauth provider
+          "${envPrefix}_CLIENTSECRETFILE" = "/run/secrets/tinyauth__client_secret";
+          "${envPrefix}_AUTHURL" = provider.authUrl;
+          "${envPrefix}_TOKENURL" = provider.tokenUrl;
+          "${envPrefix}_USERINFOURL" = provider.userInfoUrl;
+          "${envPrefix}_REDIRECTURL" = "https://tinyauth.${domain}/api/oauth/callback/${cfg.provider}";
+          "${envPrefix}_SCOPES" = "openid email profile groups";
+          "${envPrefix}_NAME" = provider.name;
         };
         secrets = [
-          "tinyauth__client_id,type=env,target=TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTID"
+          "tinyauth__client_id,type=env,target=${envPrefix}_CLIENTID"
           "tinyauth__client_secret,uid=${id},gid=${id},mode=0400"
         ];
         volumes = [ "/srv/tinyauth:/data" ];
@@ -64,7 +91,7 @@ in
           "homepage.group" = "Proxy";
           "homepage.name" = "Tinyauth";
           "homepage.icon" = "tinyauth.svg";
-          "homepage.href" = "https://tinyauth.${config.custom.apps.settings.domain}";
+          "homepage.href" = "https://tinyauth.${domain}";
         };
         healthCmd = "tinyauth healthcheck";
         healthStartupCmd = "sleep 10";
