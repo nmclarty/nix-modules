@@ -14,17 +14,52 @@ in
     ./config.nix
     ./support.nix
   ];
-  options.custom.apps.traefik = mkOptions {
-    id = 2004;
-    name = "traefik";
-    tags = {
-      default = "v3";
-      socket-proxy = "latest";
-      ddns-updater = "latest";
+  options.custom.apps.traefik =
+    mkOptions {
+      id = 2004;
+      name = "traefik";
+      tags = {
+        default = "v3";
+        socket-proxy = "latest";
+        ddns-updater = "latest";
+      };
+    }
+    // {
+      routes = lib.mkOption {
+        type = lib.types.attrsOf (
+          lib.types.submodule (
+            { name, ... }:
+            {
+              options = {
+                host = lib.mkOption {
+                  type = lib.types.str;
+                  default = "${name}.${config.custom.apps.settings.domain}";
+                  description = "The hostname to route.";
+                };
+                port = lib.mkOption {
+                  type = lib.types.port;
+                  description = "The port of the host service to proxy to.";
+                };
+                middlewares = lib.mkOption {
+                  type = lib.types.listOf lib.types.str;
+                  default = [ ];
+                  description = "Extra middlewares to apply to the route.";
+                };
+              };
+            }
+          )
+        );
+        default = { };
+        description = "Routes to services running directly on the host, outside of podman.";
+      };
     };
-  };
 
   config = lib.mkIf cfg.enable {
+    # host services are reached through the exposed network's gateway
+    networking.firewall.interfaces.podman-exposed.allowedTCPPorts = lib.mapAttrsToList (
+      _: r: r.port
+    ) cfg.routes;
+
     # user
     users = mkUser { inherit (cfg.user) name id; };
 
@@ -82,7 +117,9 @@ in
       networks = {
         traefik.networkConfig.internal = true;
         exposed.networkConfig = {
+          interfaceName = "podman-exposed";
           subnets = [ "10.90.0.0/24" ];
+          gateways = [ "10.90.0.1" ];
           ipRanges = [ "10.90.0.5-10.90.0.254" ];
         };
       };
