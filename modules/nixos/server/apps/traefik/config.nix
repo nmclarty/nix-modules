@@ -10,6 +10,18 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
+    custom.apps.traefik.dynamicConfig.http.middlewares.security.headers = {
+      contentTypeNosniff = true;
+      frameDeny = true;
+      stsSeconds = 63072000;
+      stsIncludeSubdomains = true;
+      referrerPolicy = "strict-origin-when-cross-origin";
+      customResponseHeaders = {
+        server = "";
+        x-powered-by = "";
+      };
+    };
+
     sops = {
       secrets = mkSecrets [
         "traefik/porkbun/api_key"
@@ -81,29 +93,7 @@ in
         "traefik/dynamic.yaml" = {
           restartUnits = [ "traefik.service" ];
           owner = cfg.user.name;
-          content = builtins.toJSON {
-            http = {
-              middlewares.security.headers = {
-                contentTypeNosniff = true;
-                frameDeny = true;
-                stsSeconds = 63072000;
-                stsIncludeSubdomains = true;
-                referrerPolicy = "strict-origin-when-cross-origin";
-                customResponseHeaders = {
-                  server = "";
-                  x-powered-by = "";
-                };
-              };
-              routers = lib.mapAttrs (name: r: {
-                rule = "Host(`${r.host}`)";
-                service = name;
-                inherit (r) middlewares;
-              }) cfg.routes;
-              services = lib.mapAttrs (_: r: {
-                loadBalancer.servers = [ { url = "http://10.90.0.1:${toString r.port}"; } ];
-              }) cfg.routes;
-            };
-          };
+          content = builtins.toJSON cfg.dynamicConfig;
         };
 
         "ddns-updater/config.json" = {

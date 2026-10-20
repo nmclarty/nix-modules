@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   customLib,
   config,
   ...
@@ -43,7 +44,7 @@ in
                 middlewares = lib.mkOption {
                   type = lib.types.listOf lib.types.str;
                   default = [ ];
-                  description = "Extra middlewares to apply to the route.";
+                  description = "Names of middlewares to apply to the route.";
                 };
               };
             }
@@ -52,10 +53,25 @@ in
         default = { };
         description = "Routes to services running directly on the host, outside of podman.";
       };
+      dynamicConfig = lib.mkOption {
+        inherit (pkgs.formats.json { }) type;
+        default = { };
+        description = "Traefik dynamic configuration, rendered as a sops template so it can contain placeholders.";
+      };
     };
 
   config = lib.mkIf cfg.enable {
     # host services are reached through the exposed network's gateway
+    custom.apps.traefik.dynamicConfig.http = {
+      routers = lib.mapAttrs (name: r: {
+        rule = "Host(`${r.host}`)";
+        service = name;
+        inherit (r) middlewares;
+      }) cfg.routes;
+      services = lib.mapAttrs (_: r: {
+        loadBalancer.servers = [ { url = "http://10.90.0.1:${toString r.port}"; } ];
+      }) cfg.routes;
+    };
     networking.firewall.interfaces.podman-exposed.allowedTCPPorts = lib.mapAttrsToList (
       _: r: r.port
     ) cfg.routes;
