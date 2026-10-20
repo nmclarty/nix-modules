@@ -1,7 +1,7 @@
 {
   nix = {
-    gc.dates = "weekly";
-    optimise.dates = "01:00";
+    gc.dates = "monthly";
+    optimise.dates = "weekly";
     settings.allowed-users = [ "@wheel" ];
   };
 

@@ -16,7 +16,7 @@ in
     nixPath = mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
     gc = {
       automatic = true;
-      options = "--delete-older-than 7d";
+      options = "--delete-older-than 30d";
       # schedule in nixos/darwin system.nix
     };
     optimise = {
