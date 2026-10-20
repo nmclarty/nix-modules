@@ -11,6 +11,9 @@
   nixpkgs.hostPlatform = "aarch64-linux";
   system.stateVersion = "26.05";
 
+  # example host for testing, so secrets don't actually exist
+  sops.validateSopsFiles = false;
+
   custom = {
     base.devel.enable = true;
     disks.root = {

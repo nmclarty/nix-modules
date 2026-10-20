@@ -11,6 +11,9 @@
     hostId = "076df79e";
   };
 
+  # example host for testing, so secrets don't actually exist
+  sops.validateSopsFiles = false;
+
   custom.apps = {
     settings.cpus = "12-19";
     beszel.enable = true;
