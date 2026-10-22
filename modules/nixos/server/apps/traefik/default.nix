@@ -62,7 +62,8 @@ in
 
   config = lib.mkIf cfg.enable {
     # host services are reached through the exposed network's gateway
-    custom.apps.traefik.dynamicConfig.http = {
+    # traefik rejects empty routers/services maps, so only set them when there are routes
+    custom.apps.traefik.dynamicConfig.http = lib.mkIf (cfg.routes != { }) {
       routers = lib.mapAttrs (name: r: {
         rule = "Host(`${r.host}`)";
         service = name;
