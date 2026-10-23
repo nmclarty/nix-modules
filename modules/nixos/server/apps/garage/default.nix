@@ -14,7 +14,7 @@ in
   options.custom.apps.garage = mkOptions {
     id = 2001;
     name = "garage";
-    tags.default = "v2.1.0";
+    tags.default = "v2.4.1";
   };
 
   config = lib.mkIf cfg.enable {
@@ -38,6 +38,8 @@ in
         "/srv/garage/meta:/var/lib/garage/meta"
         "/cold/garage/data:/var/lib/garage/data"
       ];
+      # the image has no shell; a "CMD" prefix makes podman exec this directly
+      healthCmd = "CMD /garage health";
     };
   };
 }
