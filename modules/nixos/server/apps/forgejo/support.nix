@@ -9,7 +9,6 @@ in
     virtualisation.quadlet.containers = {
       forgejo-mariadb.containerConfig = {
         image = "docker.io/library/mariadb:${cfg.tags.mariadb}";
-        autoUpdate = "registry";
         user = "${id}:${id}";
         environments = {
           MARIADB_AUTO_UPGRADE = "true";

@@ -40,7 +40,6 @@ in
           inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/mc-proxy:${cfg.tags.default}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments.TYPE = "VELOCITY";
             volumes = [ "/srv/minecraft/velocity:/server" ];
@@ -54,7 +53,6 @@ in
           inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
               EULA = "TRUE";
@@ -72,7 +70,6 @@ in
           inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
               EULA = "TRUE";
@@ -90,7 +87,6 @@ in
           inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
               EULA = "TRUE";

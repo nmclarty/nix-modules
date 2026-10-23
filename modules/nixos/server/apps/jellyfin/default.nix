@@ -24,7 +24,6 @@ in
 
     virtualisation.quadlet.containers.jellyfin.containerConfig = {
       image = "ghcr.io/jellyfin/jellyfin:${cfg.tags.default}";
-      autoUpdate = "registry";
       user = "${id}:${id}";
       devices = [ "/dev/dri:/dev/dri" ];
       volumes = [

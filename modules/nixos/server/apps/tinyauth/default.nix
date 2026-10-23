@@ -53,7 +53,6 @@ in
     virtualisation.quadlet.containers.tinyauth = {
       containerConfig = {
         image = "ghcr.io/steveiliop56/tinyauth:${cfg.tags.default}";
-        autoUpdate = "registry";
         user = "${id}:${id}";
         environments = {
           # general

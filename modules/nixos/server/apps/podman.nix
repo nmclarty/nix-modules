@@ -20,24 +20,30 @@ in
         {
           config = {
             containerConfig = {
+              autoUpdate = mkDefault "registry";
               noNewPrivileges = mkDefault true;
               # the unit only becomes active once healthy, so rebuilds and
               # dependent containers wait on it instead of racing the healthcheck
               notify = mkIf hasHealth (mkDefault "healthy");
               healthOnFailure = mkIf hasHealth (mkDefault "kill");
               healthStartPeriod = mkIf hasHealth (mkDefault "60s");
+              # no startup retries, since podman would restart the container
+              # itself, bypassing the backoff and start limit below
+              healthStartupCmd = mkIf hasHealth (mkDefault config.containerConfig.healthCmd);
+              healthStartupInterval = mkIf hasHealth (mkDefault "5s");
             };
-            # exponential backoff (5s up to 5min) instead of systemd's 100ms
             serviceConfig = {
               RestartSec = mkDefault "5s";
               RestartSteps = mkDefault 6;
               RestartMaxDelaySec = mkDefault "5min";
+              # with notify = "healthy", quadlet-nix's 15min default would stall
+              # rebuilds that long on a container that never gets healthy
+              TimeoutStartSec = mkDefault "5min";
             };
-            # fail out after 6 starts; the window has to cover 6 health-check
-            # kills (~150s each with the start period) plus the backoff delays,
+            # the window has to cover 6 start timeouts plus the backoff delays,
             # or the counter resets before the limit is reached
             unitConfig = {
-              StartLimitIntervalSec = mkDefault "30min";
+              StartLimitIntervalSec = mkDefault "1h";
               StartLimitBurst = mkDefault 6;
             };
           };

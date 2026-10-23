@@ -31,7 +31,6 @@ in
     virtualisation.quadlet = {
       containers.homepage.containerConfig = {
         image = "ghcr.io/gethomepage/homepage:${cfg.tags.default}";
-        autoUpdate = "registry";
         user = "${id}:${id}";
         environments = {
           LOG_TARGETS = "stdout"; # removes logpath dir in /app/config

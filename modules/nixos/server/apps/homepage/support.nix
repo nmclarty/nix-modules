@@ -7,7 +7,6 @@ in
   config = mkIf cfg.enable {
     virtualisation.quadlet.containers.homepage-proxy.containerConfig = {
       image = "lscr.io/linuxserver/socket-proxy:${cfg.tags.socket-proxy}";
-      autoUpdate = "registry";
       readOnly = true;
       tmpfses = [ "/tmp" ];
       environments = {

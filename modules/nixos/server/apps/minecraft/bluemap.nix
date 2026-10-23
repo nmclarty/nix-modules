@@ -269,7 +269,6 @@ in
       bluemap = {
         containerConfig = {
           image = "ghcr.io/bluemap-minecraft/bluemap:v5";
-          autoUpdate = "registry";
           user = "2005:2005";
           exec = "-r -u -w";
           volumes = [

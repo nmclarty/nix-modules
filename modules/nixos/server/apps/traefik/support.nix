@@ -9,7 +9,6 @@ in
     virtualisation.quadlet.containers = {
       socket-proxy.containerConfig = {
         image = "lscr.io/linuxserver/socket-proxy:${cfg.tags.socket-proxy}";
-        autoUpdate = "registry";
         readOnly = true;
         tmpfses = [ "/tmp" ];
         environments = {
@@ -23,7 +22,6 @@ in
 
       ddns-updater.containerConfig = {
         image = "docker.io/qmcgaw/ddns-updater:${cfg.tags.ddns-updater}";
-        autoUpdate = "registry";
         user = "${id}:${id}";
         volumes = [
           "${config.sops.templates."ddns-updater/config.json".path}:/updater/data/config.json:ro"

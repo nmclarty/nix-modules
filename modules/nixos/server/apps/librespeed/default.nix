@@ -21,7 +21,6 @@ in
     virtualisation.quadlet = {
       containers.librespeed.containerConfig = {
         image = "ghcr.io/librespeed/speedtest:${cfg.tags.default}";
-        autoUpdate = "registry";
         userns = "auto"; # container doesn't work with user set, so it gets namespaced
         environments = {
           MODE = "standalone";

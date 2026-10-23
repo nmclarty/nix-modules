@@ -32,7 +32,6 @@ in
       containers.forgejo = {
         containerConfig = {
           image = "codeberg.org/forgejo/forgejo:${cfg.tags.default}-rootless";
-          autoUpdate = "registry";
           user = "${id}:${id}";
           environments = {
             # repository defaults

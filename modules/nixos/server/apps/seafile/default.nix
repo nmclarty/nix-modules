@@ -42,7 +42,6 @@ in
         seafile = {
           containerConfig = {
             image = "docker.io/seafileltd/seafile-mc:${cfg.tags.default}";
-            autoUpdate = "registry";
             userns = "auto:uidmapping=0:${id}:1,gidmapping=0:${id}:1";
             environments = rec {
               SEAFILE_MYSQL_DB_HOST = "seafile-mariadb";
@@ -121,7 +120,6 @@ in
         seafile-notification = {
           containerConfig = {
             image = "docker.io/seafileltd/notification-server:${cfg.tags.default}";
-            autoUpdate = "registry";
             userns = "auto:uidmapping=0:${id}:1,gidmapping=0:${id}:1";
             environments = {
               SEAFILE_MYSQL_DB_HOST = "seafile-mariadb";

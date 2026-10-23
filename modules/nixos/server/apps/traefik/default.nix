@@ -92,7 +92,6 @@ in
       containers.traefik = {
         containerConfig = {
           image = "docker.io/library/traefik:${cfg.tags.default}";
-          autoUpdate = "registry";
           user = "${id}:${id}";
           secrets = [
             "traefik__porkbun__api_key,type=env,target=PORKBUN_API_KEY"
