@@ -122,8 +122,6 @@ in
             "homepage.href" = "https://traefik.${config.custom.apps.settings.domain}";
           };
           healthCmd = "traefik healthcheck";
-          healthStartupCmd = "sleep 10";
-          healthOnFailure = "kill";
         };
         unitConfig = mkDeps [
           "socket-proxy"

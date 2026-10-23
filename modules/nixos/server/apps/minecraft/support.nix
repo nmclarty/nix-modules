@@ -26,8 +26,6 @@ in
             volumes = [ "/srv/minecraft/mariadb:/var/lib/mysql" ];
             networks = [ "minecraft.network" ];
             healthCmd = "healthcheck.sh --connect --mariadbupgrade --innodb_initialized";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
         };
       };

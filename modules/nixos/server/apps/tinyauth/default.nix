@@ -94,8 +94,6 @@ in
           "homepage.href" = "https://tinyauth.${domain}";
         };
         healthCmd = "tinyauth healthcheck";
-        healthStartupCmd = "sleep 10";
-        healthOnFailure = "kill";
       };
     };
   };

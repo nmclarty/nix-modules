@@ -1,8 +1,51 @@
 { lib, config, ... }:
 let
-  inherit (lib) mkMerge mkIf;
+  inherit (lib)
+    mkMerge
+    mkIf
+    mkDefault
+    mkOption
+    types
+    ;
 in
 {
+  # re-declaring the option merges this submodule into every container as defaults
+  options.virtualisation.quadlet.containers = mkOption {
+    type = types.attrsOf (
+      types.submodule (
+        { config, ... }:
+        let
+          hasHealth = config.containerConfig.healthCmd != null;
+        in
+        {
+          config = {
+            containerConfig = {
+              noNewPrivileges = mkDefault true;
+              # the unit only becomes active once healthy, so rebuilds and
+              # dependent containers wait on it instead of racing the healthcheck
+              notify = mkIf hasHealth (mkDefault "healthy");
+              healthOnFailure = mkIf hasHealth (mkDefault "kill");
+              healthStartPeriod = mkIf hasHealth (mkDefault "60s");
+            };
+            # exponential backoff (5s up to 5min) instead of systemd's 100ms
+            serviceConfig = {
+              RestartSec = mkDefault "5s";
+              RestartSteps = mkDefault 6;
+              RestartMaxDelaySec = mkDefault "5min";
+            };
+            # fail out after 6 starts; the window has to cover 6 health-check
+            # kills (~150s each with the start period) plus the backoff delays,
+            # or the counter resets before the limit is reached
+            unitConfig = {
+              StartLimitIntervalSec = mkDefault "30min";
+              StartLimitBurst = mkDefault 6;
+            };
+          };
+        }
+      )
+    );
+  };
+
   config = mkMerge [
     {
       systemd.services.podman.environment.LOGGING = "--log-level=warn";

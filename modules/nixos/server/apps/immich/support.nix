@@ -13,8 +13,6 @@ in
         volumes = [ "/srv/immich/redis:/data" ];
         networks = [ "immich.network" ];
         healthCmd = "redis-cli ping";
-        healthStartupCmd = "sleep 10";
-        healthOnFailure = "kill";
       };
       immich-postgres.containerConfig = {
         image = "ghcr.io/immich-app/postgres:${cfg.tags.postgres}";
@@ -31,8 +29,6 @@ in
         volumes = [ "/srv/immich/postgres:/var/lib/postgresql/data" ];
         networks = [ "immich.network" ];
         healthCmd = "pg_isready -U postgres -d immich";
-        healthStartupCmd = "sleep 10";
-        healthOnFailure = "kill";
       };
     };
   };

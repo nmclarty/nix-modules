@@ -111,8 +111,6 @@ in
               "homepage.href" = "https://seafile.${config.custom.apps.settings.domain}";
             };
             healthCmd = "wget -O - -q -T 5 127.0.0.1:80/api2/ping";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
           unitConfig = mkDeps [
             "seafile-mariadb"
@@ -124,6 +122,7 @@ in
           containerConfig = {
             image = "docker.io/seafileltd/notification-server:${cfg.tags.default}";
             autoUpdate = "registry";
+            userns = "auto:uidmapping=0:${id}:1,gidmapping=0:${id}:1";
             environments = {
               SEAFILE_MYSQL_DB_HOST = "seafile-mariadb";
               SEAFILE_MYSQL_DB_PORT = "3306";
@@ -149,8 +148,6 @@ in
                 "Host(`seafile.${config.custom.apps.settings.domain}`) && PathPrefix(`/notification`)";
             };
             healthCmd = "bash -c 'echo -n > /dev/tcp/127.0.0.1/8083'";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
           unitConfig = mkDeps [ "seafile-mariadb" ];
         };

@@ -293,8 +293,6 @@ in
             "traefik.http.services.bluemap.loadbalancer.server.port" = "8100";
           };
           healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:8100";
-          healthStartupCmd = "sleep 10";
-          healthOnFailure = "kill";
         };
         serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;
         unitConfig = {

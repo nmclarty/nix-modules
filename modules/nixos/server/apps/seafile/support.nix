@@ -25,8 +25,6 @@ in
             volumes = [ "/srv/seafile/mariadb:/var/lib/mysql" ];
             networks = [ "seafile.network" ];
             healthCmd = "healthcheck.sh --connect --mariadbupgrade --innodb_initialized";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
         };
 
@@ -44,8 +42,6 @@ in
             volumes = [ "/srv/seafile/redis:/data" ];
             networks = [ "seafile.network" ];
             healthCmd = "redis-cli ping";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
         };
       };

@@ -55,8 +55,6 @@ in
           "homepage.href" = "https://pocket.${config.custom.apps.settings.domain}";
         };
         healthCmd = "/app/pocket-id healthcheck";
-        healthStartupCmd = "sleep 10";
-        healthOnFailure = "kill";
       };
     };
   };

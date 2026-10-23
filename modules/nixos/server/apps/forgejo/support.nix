@@ -25,8 +25,6 @@ in
         volumes = [ "/srv/forgejo/mariadb:/var/lib/mysql" ];
         networks = [ "forgejo" ];
         healthCmd = "healthcheck.sh --connect --mariadbupgrade --innodb_initialized";
-        healthStartupCmd = "sleep 10";
-        healthOnFailure = "kill";
       };
     };
   };

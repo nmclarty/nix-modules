@@ -41,8 +41,6 @@ in
         "homepage.href" = "https://jellyfin.${config.custom.apps.settings.domain}";
       };
       healthCmd = "curl -fs http://127.0.0.1:8096/health";
-      healthStartupCmd = "sleep 10";
-      healthOnFailure = "kill";
     };
   };
 }

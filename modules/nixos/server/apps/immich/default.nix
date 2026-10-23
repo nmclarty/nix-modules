@@ -65,8 +65,6 @@ in
               "homepage.href" = "https://immich.${config.custom.apps.settings.domain}";
             };
             healthCmd = "curl -fs http://127.0.0.1:2283/api/server/ping";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
           unitConfig = mkDeps [
             "immich-redis"
@@ -96,8 +94,6 @@ in
             ];
             networks = [ "immich.network" ];
             healthCmd = "true";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
           unitConfig = mkDeps [
             "immich-redis"
@@ -123,8 +119,6 @@ in
             ];
             networks = [ "immich.network" ];
             healthCmd = "bash -c 'echo -n > /dev/tcp/127.0.0.1/3003'";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
           serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;
         };
