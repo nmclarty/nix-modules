@@ -18,7 +18,7 @@ in
     id = 2002;
     name = "immich";
     tags = {
-      default = "release";
+      default = "v3";
       redis = "9";
       postgres = "14-vectorchord0.4.3-pgvectors0.2.0";
     };

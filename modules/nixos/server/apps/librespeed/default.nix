@@ -12,7 +12,7 @@ in
   options.custom.apps.librespeed = mkOptions {
     id = 2010;
     name = "librespeed";
-    tags.default = "latest";
+    tags.default = "6";
   };
 
   config = lib.mkIf cfg.enable {

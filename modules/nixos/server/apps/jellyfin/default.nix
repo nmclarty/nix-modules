@@ -14,7 +14,7 @@ in
   options.custom.apps.jellyfin = mkOptions {
     id = 2008;
     name = "jellyfin";
-    tags.default = "latest";
+    tags.default = "12";
   };
 
   config = mkIf cfg.enable {

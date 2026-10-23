@@ -18,7 +18,7 @@ in
     id = 2011;
     name = "homepage";
     tags = {
-      default = "latest";
+      default = "v2";
       socket-proxy = "latest";
     };
   };
