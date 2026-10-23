@@ -10,7 +10,6 @@ in
         minecraft-mariadb = {
           containerConfig = {
             image = "docker.io/library/mariadb:${cfg.tags.mariadb}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
               MARIADB_AUTO_UPGRADE = "true";
@@ -26,8 +25,6 @@ in
             volumes = [ "/srv/minecraft/mariadb:/var/lib/mysql" ];
             networks = [ "minecraft.network" ];
             healthCmd = "healthcheck.sh --connect --mariadbupgrade --innodb_initialized";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
         };
       };

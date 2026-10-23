@@ -31,7 +31,6 @@ in
     virtualisation.quadlet = {
       containers.homepage.containerConfig = {
         image = "ghcr.io/gethomepage/homepage:${cfg.tags.default}";
-        autoUpdate = "registry";
         user = "${id}:${id}";
         environments = {
           LOG_TARGETS = "stdout"; # removes logpath dir in /app/config
@@ -54,8 +53,6 @@ in
           "traefik.http.routers.homepage.middlewares" = "tinyauth";
         };
         healthCmd = "wget -O - -q -T 5 127.0.0.1:3000/api/healthcheck";
-        healthStartupCmd = "sleep 10";
-        healthOnFailure = "kill";
       };
 
       networks.homepage.networkConfig.internal = true;

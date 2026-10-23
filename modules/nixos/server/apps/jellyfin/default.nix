@@ -24,7 +24,6 @@ in
 
     virtualisation.quadlet.containers.jellyfin.containerConfig = {
       image = "ghcr.io/jellyfin/jellyfin:${cfg.tags.default}";
-      autoUpdate = "registry";
       user = "${id}:${id}";
       devices = [ "/dev/dri:/dev/dri" ];
       volumes = [
@@ -41,8 +40,6 @@ in
         "homepage.href" = "https://jellyfin.${config.custom.apps.settings.domain}";
       };
       healthCmd = "curl -fs http://127.0.0.1:8096/health";
-      healthStartupCmd = "sleep 10";
-      healthOnFailure = "kill";
     };
   };
 }

@@ -38,7 +38,6 @@ in
         immich = {
           containerConfig = {
             image = "ghcr.io/immich-app/immich-server:${cfg.tags.default}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
               DB_PASSWORD_FILE = "/run/secrets/immich__postgres__password";
@@ -65,8 +64,6 @@ in
               "homepage.href" = "https://immich.${config.custom.apps.settings.domain}";
             };
             healthCmd = "curl -fs http://127.0.0.1:2283/api/server/ping";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
           unitConfig = mkDeps [
             "immich-redis"
@@ -79,7 +76,6 @@ in
         immich-microservices = {
           containerConfig = {
             image = "ghcr.io/immich-app/immich-server:${cfg.tags.default}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
               DB_PASSWORD_FILE = "/run/secrets/immich__postgres__password";
@@ -96,8 +92,6 @@ in
             ];
             networks = [ "immich.network" ];
             healthCmd = "true";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
           unitConfig = mkDeps [
             "immich-redis"
@@ -110,7 +104,6 @@ in
         immich-learning = {
           containerConfig = {
             image = "ghcr.io/immich-app/immich-machine-learning:${cfg.tags.default}-openvino";
-            autoUpdate = "registry";
             userns = "auto:uidmapping=0:${id}:1,gidmapping=0:${id}:1";
             environments = {
               MACHINE_LEARNING_MODEL_INTRA_OP_THREADS = "2";
@@ -123,8 +116,6 @@ in
             ];
             networks = [ "immich.network" ];
             healthCmd = "bash -c 'echo -n > /dev/tcp/127.0.0.1/3003'";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
           serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;
         };

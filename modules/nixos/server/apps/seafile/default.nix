@@ -34,10 +34,6 @@ in
       "d /srv/seafile/nginx - ${id} ${id}"
       "d /srv/seafile/data - ${id} ${id}"
       "d /srv/seafile/data/logs - ${id} ${id}"
-
-      # seafile keeps breaking because logrotate changes the perms...
-      # so "politely force" all the files to the right owner recursively.
-      "Z /srv/seafile/data/logs - ${id} ${id}"
     ];
 
     # containers
@@ -46,7 +42,6 @@ in
         seafile = {
           containerConfig = {
             image = "docker.io/seafileltd/seafile-mc:${cfg.tags.default}";
-            autoUpdate = "registry";
             userns = "auto:uidmapping=0:${id}:1,gidmapping=0:${id}:1";
             environments = rec {
               SEAFILE_MYSQL_DB_HOST = "seafile-mariadb";
@@ -84,6 +79,10 @@ in
               "/srv/seafile/logs:/shared/logs"
               "/srv/seafile/nginx:/shared/nginx"
               "/srv/seafile/data:/shared/seafile"
+              # logrotate recreates logs as non-root container users, which land in the
+              # userns=auto range; that range can change between starts, leaving the
+              # files owned by an unmapped uid that nginx can no longer open
+              "/srv/seafile/data/logs:/shared/seafile/logs:U"
               "${config.sops.templates."seafile/seafile.conf".path}:/shared/seafile/conf/seafile.conf:ro"
               "${
                 config.sops.templates."seafile/seahub_settings.py".path
@@ -111,8 +110,6 @@ in
               "homepage.href" = "https://seafile.${config.custom.apps.settings.domain}";
             };
             healthCmd = "wget -O - -q -T 5 127.0.0.1:80/api2/ping";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
           unitConfig = mkDeps [
             "seafile-mariadb"
@@ -123,7 +120,7 @@ in
         seafile-notification = {
           containerConfig = {
             image = "docker.io/seafileltd/notification-server:${cfg.tags.default}";
-            autoUpdate = "registry";
+            userns = "auto:uidmapping=0:${id}:1,gidmapping=0:${id}:1";
             environments = {
               SEAFILE_MYSQL_DB_HOST = "seafile-mariadb";
               SEAFILE_MYSQL_DB_PORT = "3306";
@@ -137,7 +134,7 @@ in
               "seafile__mariadb__password,type=env,target=SEAFILE_MYSQL_DB_PASSWORD"
               "seafile__jwt_private_key,type=env,target=JWT_PRIVATE_KEY"
             ];
-            volumes = [ "/srv/seafile/data/logs:/shared/seafile/logs" ];
+            volumes = [ "/srv/seafile/data/logs:/shared/seafile/logs:U" ];
             networks = [
               "seafile.network"
               "exposed.network"
@@ -149,8 +146,6 @@ in
                 "Host(`seafile.${config.custom.apps.settings.domain}`) && PathPrefix(`/notification`)";
             };
             healthCmd = "bash -c 'echo -n > /dev/tcp/127.0.0.1/8083'";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
           unitConfig = mkDeps [ "seafile-mariadb" ];
         };

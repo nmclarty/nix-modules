@@ -27,7 +27,6 @@ in
 
     virtualisation.quadlet.containers.garage.containerConfig = {
       image = "docker.io/dxflrs/garage:${cfg.tags.default}";
-      autoUpdate = "registry";
       user = "${id}:${id}";
       networks = [ "host" ];
       environments = {

@@ -26,7 +26,6 @@ in
     virtualisation.quadlet.containers.pocket = {
       containerConfig = {
         image = "ghcr.io/pocket-id/pocket-id:${cfg.tags.default}";
-        autoUpdate = "registry";
         user = "${id}:${id}";
         environments = {
           APP_URL = "https://pocket.${config.custom.apps.settings.domain}";
@@ -55,8 +54,6 @@ in
           "homepage.href" = "https://pocket.${config.custom.apps.settings.domain}";
         };
         healthCmd = "/app/pocket-id healthcheck";
-        healthStartupCmd = "sleep 10";
-        healthOnFailure = "kill";
       };
     };
   };

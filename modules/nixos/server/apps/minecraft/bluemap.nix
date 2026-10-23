@@ -269,7 +269,6 @@ in
       bluemap = {
         containerConfig = {
           image = "ghcr.io/bluemap-minecraft/bluemap:v5";
-          autoUpdate = "registry";
           user = "2005:2005";
           exec = "-r -u -w";
           volumes = [
@@ -293,8 +292,6 @@ in
             "traefik.http.services.bluemap.loadbalancer.server.port" = "8100";
           };
           healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:8100";
-          healthStartupCmd = "sleep 10";
-          healthOnFailure = "kill";
         };
         serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;
         unitConfig = {

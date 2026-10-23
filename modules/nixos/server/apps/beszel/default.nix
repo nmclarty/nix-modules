@@ -25,7 +25,6 @@ in
 
     virtualisation.quadlet.containers.beszel.containerConfig = {
       image = "docker.io/henrygd/beszel:${cfg.tags.default}";
-      autoUpdate = "registry";
       user = "${id}:${id}";
       environments = {
         APP_URL = "https://beszel.${config.custom.apps.settings.domain}";

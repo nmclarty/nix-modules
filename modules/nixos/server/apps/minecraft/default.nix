@@ -40,15 +40,12 @@ in
           inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/mc-proxy:${cfg.tags.default}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments.TYPE = "VELOCITY";
             volumes = [ "/srv/minecraft/velocity:/server" ];
             networks = [ "minecraft.network" ];
             publishPorts = [ "25565:25565" ];
             healthCmd = "/usr/bin/health.sh";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
         };
 
@@ -56,7 +53,6 @@ in
           inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
               EULA = "TRUE";
@@ -67,8 +63,6 @@ in
             volumes = [ "/srv/minecraft/survival:/data" ];
             networks = [ "minecraft.network" ];
             healthCmd = "mc-health";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
         };
 
@@ -76,7 +70,6 @@ in
           inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
               EULA = "TRUE";
@@ -87,8 +80,6 @@ in
             volumes = [ "/srv/minecraft/creative:/data" ];
             networks = [ "minecraft.network" ];
             healthCmd = "mc-health";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
         };
 
@@ -96,7 +87,6 @@ in
           inherit (cfg) autoStart;
           containerConfig = {
             image = "docker.io/itzg/minecraft-server:${cfg.tags.default}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
               EULA = "TRUE";
@@ -110,8 +100,6 @@ in
             networks = [ "minecraft.network" ];
             publishPorts = [ "25566:25565" ];
             healthCmd = "mc-health";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
         };
 

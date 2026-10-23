@@ -53,7 +53,6 @@ in
     virtualisation.quadlet.containers.tinyauth = {
       containerConfig = {
         image = "ghcr.io/steveiliop56/tinyauth:${cfg.tags.default}";
-        autoUpdate = "registry";
         user = "${id}:${id}";
         environments = {
           # general
@@ -94,8 +93,6 @@ in
           "homepage.href" = "https://tinyauth.${domain}";
         };
         healthCmd = "tinyauth healthcheck";
-        healthStartupCmd = "sleep 10";
-        healthOnFailure = "kill";
       };
     };
   };

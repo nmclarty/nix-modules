@@ -15,7 +15,6 @@ in
         seafile-mariadb = {
           containerConfig = {
             image = "docker.io/library/mariadb:${cfg.tags.mariadb}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             environments = {
               MARIADB_AUTO_UPGRADE = "true";
@@ -25,15 +24,12 @@ in
             volumes = [ "/srv/seafile/mariadb:/var/lib/mysql" ];
             networks = [ "seafile.network" ];
             healthCmd = "healthcheck.sh --connect --mariadbupgrade --innodb_initialized";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
         };
 
         seafile-redis = {
           containerConfig = {
             image = "docker.io/library/redis:${cfg.tags.redis}";
-            autoUpdate = "registry";
             user = "${id}:${id}";
             entrypoint = [
               "sh"
@@ -44,8 +40,6 @@ in
             volumes = [ "/srv/seafile/redis:/data" ];
             networks = [ "seafile.network" ];
             healthCmd = "redis-cli ping";
-            healthStartupCmd = "sleep 10";
-            healthOnFailure = "kill";
           };
         };
       };

@@ -32,7 +32,6 @@ in
       containers.forgejo = {
         containerConfig = {
           image = "codeberg.org/forgejo/forgejo:${cfg.tags.default}-rootless";
-          autoUpdate = "registry";
           user = "${id}:${id}";
           environments = {
             # repository defaults
@@ -73,8 +72,6 @@ in
             "traefik.http.services.forgejo.loadbalancer.server.port" = "3000";
           };
           healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:3000";
-          healthStartupCmd = "sleep 10";
-          healthOnFailure = "kill";
         };
         unitConfig = mkDeps [ "forgejo-mariadb" ];
       };

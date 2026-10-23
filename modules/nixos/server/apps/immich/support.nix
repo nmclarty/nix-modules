@@ -8,17 +8,13 @@ in
     virtualisation.quadlet.containers = {
       immich-redis.containerConfig = {
         image = "docker.io/valkey/valkey:${cfg.tags.redis}";
-        autoUpdate = "registry";
         user = "${id}:${id}";
         volumes = [ "/srv/immich/redis:/data" ];
         networks = [ "immich.network" ];
         healthCmd = "redis-cli ping";
-        healthStartupCmd = "sleep 10";
-        healthOnFailure = "kill";
       };
       immich-postgres.containerConfig = {
         image = "ghcr.io/immich-app/postgres:${cfg.tags.postgres}";
-        autoUpdate = "registry";
         user = "${id}:${id}";
         shmSize = "128mb";
         environments = {
@@ -31,8 +27,6 @@ in
         volumes = [ "/srv/immich/postgres:/var/lib/postgresql/data" ];
         networks = [ "immich.network" ];
         healthCmd = "pg_isready -U postgres -d immich";
-        healthStartupCmd = "sleep 10";
-        healthOnFailure = "kill";
       };
     };
   };

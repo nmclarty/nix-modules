@@ -92,7 +92,6 @@ in
       containers.traefik = {
         containerConfig = {
           image = "docker.io/library/traefik:${cfg.tags.default}";
-          autoUpdate = "registry";
           user = "${id}:${id}";
           secrets = [
             "traefik__porkbun__api_key,type=env,target=PORKBUN_API_KEY"
@@ -122,8 +121,6 @@ in
             "homepage.href" = "https://traefik.${config.custom.apps.settings.domain}";
           };
           healthCmd = "traefik healthcheck";
-          healthStartupCmd = "sleep 10";
-          healthOnFailure = "kill";
         };
         unitConfig = mkDeps [
           "socket-proxy"
