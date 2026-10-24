@@ -9,6 +9,8 @@ let
   inherit (customLib.apps) mkOptions mkUser mkDeps;
   cfg = config.custom.apps.traefik;
   id = toString cfg.user.id;
+  # host services are reached through the exposed network's gateway
+  gateway = "10.90.0.1";
 in
 {
   imports = [
@@ -37,9 +39,14 @@ in
                   default = "${name}.${config.custom.apps.settings.domain}";
                   description = "The hostname to route.";
                 };
+                address = lib.mkOption {
+                  type = lib.types.str;
+                  default = gateway;
+                  description = "The address of the service to proxy to, defaulting to this host.";
+                };
                 port = lib.mkOption {
                   type = lib.types.port;
-                  description = "The port of the host service to proxy to.";
+                  description = "The port of the service to proxy to.";
                 };
                 middlewares = lib.mkOption {
                   type = lib.types.listOf lib.types.str;
@@ -51,7 +58,7 @@ in
           )
         );
         default = { };
-        description = "Routes to services running directly on the host, outside of podman.";
+        description = "Routes to services outside of podman, on this host or another.";
       };
       dynamicConfig = lib.mkOption {
         inherit (pkgs.formats.json { }) type;
@@ -61,7 +68,6 @@ in
     };
 
   config = lib.mkIf cfg.enable {
-    # host services are reached through the exposed network's gateway
     # traefik rejects empty routers/services maps, so only set them when there are routes
     custom.apps.traefik.dynamicConfig.http = lib.mkIf (cfg.routes != { }) {
       routers = lib.mapAttrs (name: r: {
@@ -70,12 +76,13 @@ in
         inherit (r) middlewares;
       }) cfg.routes;
       services = lib.mapAttrs (_: r: {
-        loadBalancer.servers = [ { url = "http://10.90.0.1:${toString r.port}"; } ];
+        loadBalancer.servers = [ { url = "http://${r.address}:${toString r.port}"; } ];
       }) cfg.routes;
     };
-    networking.firewall.interfaces.podman-exposed.allowedTCPPorts = lib.mapAttrsToList (
-      _: r: r.port
-    ) cfg.routes;
+    # remote routes are firewalled on their own host instead
+    networking.firewall.interfaces.podman-exposed.allowedTCPPorts = lib.mapAttrsToList (_: r: r.port) (
+      lib.filterAttrs (_: r: r.address == gateway) cfg.routes
+    );
 
     # user
     users = mkUser { inherit (cfg.user) name id; };
