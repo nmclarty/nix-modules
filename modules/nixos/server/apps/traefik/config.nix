@@ -71,12 +71,6 @@ in
             providers:
               file:
                 filename: /etc/traefik/dynamic.yaml
-              docker:
-                endpoint: "tcp://socket-proxy:2375"
-                exposedByDefault: false
-                network: "exposed"
-                allowEmptyServices: true
-                defaultRule: "Host(`{{ normalize .ContainerName }}.${config.custom.apps.settings.domain}`)"
 
             api:
               dashboard: true

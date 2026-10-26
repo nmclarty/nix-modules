@@ -18,22 +18,19 @@ in
   config = lib.mkIf cfg.enable {
     # users = mkUser { inherit (cfg.user) name id; }; # see userns below, not needed
 
-    virtualisation.quadlet = {
-      containers.librespeed.containerConfig = {
-        image = "ghcr.io/librespeed/speedtest:${cfg.tags.default}";
-        userns = "auto"; # container doesn't work with user set, so it gets namespaced
-        environments = {
-          MODE = "standalone";
-        };
-        networks = [ "exposed" ];
-        labels = {
-          "traefik.enable" = "true";
-          "traefik.http.services.librespeed.loadbalancer.server.port" = "8080";
-          "homepage.group" = "Proxy";
-          "homepage.name" = "Librespeed";
-          "homepage.icon" = "librespeed.svg";
-          "homepage.href" = "https://librespeed.${config.custom.apps.settings.domain}";
-        };
+    custom.apps.traefik.routes.librespeed = {
+      container = "librespeed";
+      port = 8080;
+      internal = true;
+      public = true;
+      homepage.group = "Proxy";
+    };
+
+    virtualisation.quadlet.containers.librespeed.containerConfig = {
+      image = "ghcr.io/librespeed/speedtest:${cfg.tags.default}";
+      userns = "auto"; # container doesn't work with user set, so it gets namespaced
+      environments = {
+        MODE = "standalone";
       };
     };
   };

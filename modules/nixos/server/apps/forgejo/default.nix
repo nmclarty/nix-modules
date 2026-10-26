@@ -28,6 +28,12 @@ in
       "d /srv/forgejo/mariadb - ${id} ${id}"
     ];
 
+    custom.apps.traefik.routes.forgejo = {
+      container = "forgejo";
+      port = 3000;
+      public = true;
+    };
+
     virtualisation.quadlet = {
       containers.forgejo = {
         containerConfig = {
@@ -63,14 +69,7 @@ in
           };
           secrets = [ "forgejo__mariadb__password,type=env,target=FORGEJO__database__PASSWD" ];
           volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];
-          networks = [
-            "exposed"
-            "forgejo"
-          ];
-          labels = {
-            "traefik.enable" = "true";
-            "traefik.http.services.forgejo.loadbalancer.server.port" = "3000";
-          };
+          networks = [ "forgejo.network" ];
           healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:3000";
         };
         unitConfig = mkDeps [ "forgejo-mariadb" ];

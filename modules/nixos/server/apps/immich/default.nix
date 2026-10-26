@@ -33,6 +33,13 @@ in
       "d /srv/immich/postgres - ${id} ${id}"
     ];
 
+    custom.apps.traefik.routes.immich = {
+      container = "immich";
+      port = 2283;
+      public = true;
+      homepage.group = "Cloud";
+    };
+
     virtualisation.quadlet = {
       containers = {
         immich = {
@@ -52,17 +59,7 @@ in
               "/srv/immich/library:/data"
               "${config.sops.templates."immich/config.json".path}:/etc/immich/immich.json:ro"
             ];
-            networks = [
-              "immich.network"
-              "exposed.network"
-            ];
-            labels = {
-              "traefik.enable" = "true";
-              "homepage.group" = "Cloud";
-              "homepage.name" = "Immich";
-              "homepage.icon" = "immich.svg";
-              "homepage.href" = "https://immich.${config.custom.apps.settings.domain}";
-            };
+            networks = [ "immich.network" ];
             healthCmd = "curl -fs http://127.0.0.1:2283/api/server/ping";
           };
           unitConfig = mkDeps [
