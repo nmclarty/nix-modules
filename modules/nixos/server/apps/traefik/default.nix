@@ -23,8 +23,8 @@ let
   cfg = config.custom.apps.traefik;
   id = toString cfg.user.id;
   inherit (config.custom.apps.settings) domain;
-  # host services are reached through the exposed network's gateway
-  gateway = "10.90.0.1";
+  # podman resolves this to the host inside containers, so host routes need no fixed addressing
+  hostAddress = "host.containers.internal";
 
   routes = attrValues cfg.routes;
   inherit (config.virtualisation.quadlet) containers;
@@ -42,7 +42,7 @@ let
   routedPods = unique (map (r: r.pod) (filter (r: r.pod != null) routes));
   addressOf =
     r:
-    findFirst (x: x != null) gateway [
+    findFirst (x: x != null) hostAddress [
       (targetOf r)
       r.address
     ];
@@ -222,7 +222,7 @@ in
       };
     };
     # container and remote routes don't go through the host, so only host routes are opened
-    networking.firewall.interfaces.podman-exposed.allowedTCPPorts = map (r: r.port) (
+    networking.firewall.interfaces.podman-traefik.allowedTCPPorts = map (r: r.port) (
       filter (r: isHostRoute r && r.port != null) routes
     );
 
@@ -261,9 +261,10 @@ in
                 "80:80" # main http
                 "443:443" # main https
               ];
-              # exposed is only traefik's uplink (published ports, host routes); apps sit on their ingress networks
+              # the uplink carries published ports and traefik's own traffic, so it has to stay first:
+              # its default route is what host routes (and the firewall rule above) go through
               networks = [
-                "exposed:ip=10.90.0.2"
+                "traefik-uplink.network"
               ]
               ++ map (
                 n:
@@ -293,14 +294,7 @@ in
             }
           ) ingressNetworks
         ))
-        {
-          exposed.networkConfig = {
-            interfaceName = "podman-exposed";
-            subnets = [ "10.90.0.0/24" ];
-            gateways = [ "10.90.0.1" ];
-            ipRanges = [ "10.90.0.5-10.90.0.254" ];
-          };
-        }
+        { traefik-uplink.networkConfig.interfaceName = "podman-traefik"; }
       ];
     };
   };
