@@ -43,7 +43,7 @@ in
             user = "${id}:${id}";
             environments.TYPE = "VELOCITY";
             volumes = [ "/srv/minecraft/velocity:/server" ];
-            networks = [ "minecraft.network" ];
+            networks = [ "minecraft-support.network" ];
             publishPorts = [ "25565:25565" ];
             healthCmd = "/usr/bin/health.sh";
           };
@@ -61,7 +61,7 @@ in
               MEMORY = "4G";
             };
             volumes = [ "/srv/minecraft/survival:/data" ];
-            networks = [ "minecraft.network" ];
+            networks = [ "minecraft-support.network" ];
             healthCmd = "mc-health";
           };
         };
@@ -78,7 +78,7 @@ in
               MEMORY = "4G";
             };
             volumes = [ "/srv/minecraft/creative:/data" ];
-            networks = [ "minecraft.network" ];
+            networks = [ "minecraft-support.network" ];
             healthCmd = "mc-health";
           };
         };
@@ -97,7 +97,7 @@ in
               MAX_MEMORY = "8G";
             };
             volumes = [ "/srv/minecraft/biomes:/data" ];
-            networks = [ "minecraft.network" ];
+            networks = [ "minecraft-support.network" ];
             publishPorts = [ "25566:25565" ];
             healthCmd = "mc-health";
           };
@@ -105,7 +105,7 @@ in
 
       };
       networks = {
-        minecraft = { };
+        minecraft-support = { };
       };
     };
   };

@@ -6,37 +6,22 @@ let
 in
 {
   config = mkIf cfg.enable {
-    virtualisation.quadlet.containers = {
-      socket-proxy.containerConfig = {
-        image = "lscr.io/linuxserver/socket-proxy:${cfg.tags.socket-proxy}";
-        readOnly = true;
-        tmpfses = [ "/tmp" ];
-        environments = {
-          CONTAINERS = "1";
-          LOG_LEVEL = "notice";
-        };
-        volumes = [ "/var/run/podman/podman.sock:/var/run/docker.sock:ro" ];
-        networks = [ "traefik" ];
-        healthCmd = "wget -O - -q -T 5 http://127.0.0.1:2375/_ping";
+    custom.apps.traefik.routes.ddns-updater = {
+      container = "ddns-updater";
+      port = 8000;
+      homepage = {
+        group = "Proxy";
+        name = "DDNS Updater";
       };
+    };
 
-      ddns-updater.containerConfig = {
-        image = "docker.io/qmcgaw/ddns-updater:${cfg.tags.ddns-updater}";
-        user = "${id}:${id}";
-        volumes = [
-          "${config.sops.templates."ddns-updater/config.json".path}:/updater/data/config.json:ro"
-          "/srv/traefik/ddns-updater:/updater/data"
-        ];
-        networks = [ "exposed" ];
-        labels = {
-          "traefik.enable" = "true";
-          "traefik.http.routers.ddns-updater.middlewares" = "tinyauth";
-          "homepage.group" = "Proxy";
-          "homepage.name" = "DDNS Updater";
-          "homepage.icon" = "ddns-updater.svg";
-          "homepage.href" = "https://ddns-updater.${config.custom.apps.settings.domain}";
-        };
-      };
+    virtualisation.quadlet.containers.ddns-updater.containerConfig = {
+      image = "docker.io/qmcgaw/ddns-updater:${cfg.tags.ddns-updater}";
+      user = "${id}:${id}";
+      volumes = [
+        "${config.sops.templates."ddns-updater/config.json".path}:/updater/data/config.json:ro"
+        "/srv/traefik/ddns-updater:/updater/data"
+      ];
     };
   };
 }

@@ -23,6 +23,13 @@ in
       "d /srv/beszel - ${id} ${id}"
     ];
 
+    custom.apps.traefik.routes.beszel = {
+      container = "beszel";
+      port = 8090;
+      public = true;
+      homepage.group = "Management";
+    };
+
     virtualisation.quadlet.containers.beszel.containerConfig = {
       image = "docker.io/henrygd/beszel:${cfg.tags.default}";
       user = "${id}:${id}";
@@ -32,15 +39,7 @@ in
         USER_CREATION = "true";
       };
       volumes = [ "/srv/beszel:/beszel_data" ];
-      networks = [ "exposed.network" ];
       publishPorts = [ "8090:8090" ]; # for server connections
-      labels = {
-        "traefik.enable" = "true";
-        "homepage.group" = "Management";
-        "homepage.name" = "Beszel";
-        "homepage.icon" = "beszel.svg";
-        "homepage.href" = "https://beszel.${config.custom.apps.settings.domain}";
-      };
     };
   };
 }

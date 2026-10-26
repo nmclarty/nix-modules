@@ -22,6 +22,13 @@ in
 
     systemd.tmpfiles.rules = [ "d /srv/jellyfin - ${id} ${id}" ];
 
+    custom.apps.traefik.routes.jellyfin = {
+      container = "jellyfin";
+      port = 8096;
+      public = true;
+      homepage.group = "Cloud";
+    };
+
     virtualisation.quadlet.containers.jellyfin.containerConfig = {
       image = "ghcr.io/jellyfin/jellyfin:${cfg.tags.default}";
       user = "${id}:${id}";
@@ -31,14 +38,6 @@ in
         "jellyfin-cache:/cache"
         "/tank/media:/media:ro"
       ];
-      networks = [ "exposed" ];
-      labels = {
-        "traefik.enable" = "true";
-        "homepage.group" = "Cloud";
-        "homepage.name" = "Jellyfin";
-        "homepage.icon" = "jellyfin.svg";
-        "homepage.href" = "https://jellyfin.${config.custom.apps.settings.domain}";
-      };
       healthCmd = "curl -fs http://127.0.0.1:8096/health";
     };
   };

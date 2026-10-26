@@ -1,11 +1,6 @@
-{
-  lib,
-  config,
-  pkgs,
-  ...
-}:
+{ lib, config, ... }:
 let
-  inherit (lib) mkIf lists;
+  inherit (lib) mkIf;
   cfg = config.custom.base.devel;
 in
 {

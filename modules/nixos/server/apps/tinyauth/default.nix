@@ -9,6 +9,7 @@ let
   cfg = config.custom.apps.tinyauth;
   id = toString cfg.user.id;
   inherit (config.custom.apps.settings) domain;
+  traefikAddress = "10.90.1.2";
 
   # supported oauth providers, keyed by the tinyauth provider id
   providers = {
@@ -50,6 +51,27 @@ in
       "d /srv/tinyauth - ${id} ${id}"
     ];
 
+    custom.apps.traefik = {
+      ingressAddresses.tinyauth-ingress = traefikAddress;
+      routes.tinyauth = {
+        container = "tinyauth";
+        port = 3000;
+        # tinyauth can't be behind itself
+        public = true;
+        homepage.group = "Proxy";
+      };
+      dynamicConfig.http.middlewares.tinyauth.forwardAuth = {
+        address = "http://tinyauth:3000/api/auth/traefik";
+        # traefik should be the entrypoint, as there isn't any proxy in-front of this,
+        # so explicitly remove all forward headers
+        trustForwardHeader = false;
+        # traefik recommends limiting the body size to prevent DoS so setting this
+        # to 1MB for now...
+        maxBodySize = 1048576;
+        maxResponseBodySize = 1048576;
+      };
+    };
+
     virtualisation.quadlet.containers.tinyauth = {
       containerConfig = {
         image = "ghcr.io/steveiliop56/tinyauth:${cfg.tags.default}";
@@ -60,7 +82,7 @@ in
           TINYAUTH_LOG_LEVEL = "warn";
           TINYAUTH_OAUTH_AUTOREDIRECT = cfg.provider;
           TINYAUTH_AUTH_SECURECOOKIE = "true";
-          TINYAUTH_AUTH_TRUSTEDPROXIES = "10.90.0.2";
+          TINYAUTH_AUTH_TRUSTEDPROXIES = traefikAddress;
           TINYAUTH_AUTH_SESSIONEXPIRY = "604800";
           # oauth provider
           "${envPrefix}_CLIENTSECRETFILE" = "/run/secrets/tinyauth__client_secret";
@@ -76,24 +98,13 @@ in
           "tinyauth__client_secret,uid=${id},gid=${id},mode=0400"
         ];
         volumes = [ "/srv/tinyauth:/data" ];
-        networks = [ "exposed.network" ];
-        labels = {
-          "traefik.enable" = "true";
-          "traefik.http.middlewares.tinyauth.forwardauth.address" = "http://tinyauth:3000/api/auth/traefik";
-          # traefik should be the entrypoint, as there isn't any proxy in-front of this,
-          # so explicitly remove all forward headers
-          "traefik.http.middlewares.tinyauth.forwardauth.trustForwardHeader" = "false";
-          # traefik recommends limiting the body size to prevent DoS so setting this
-          # to 1MB for now...
-          "traefik.http.middlewares.tinyauth.forwardauth.maxBodySize" = "1048576";
-          "traefik.http.middlewares.tinyauth.forwardauth.maxResponseBodySize" = "1048576";
-          "homepage.group" = "Proxy";
-          "homepage.name" = "Tinyauth";
-          "homepage.icon" = "tinyauth.svg";
-          "homepage.href" = "https://tinyauth.${domain}";
-        };
         healthCmd = "tinyauth healthcheck";
       };
+    };
+    # traefik's fixed address is kept out of the dynamic range so tinyauth can't take it first
+    virtualisation.quadlet.networks.tinyauth-ingress.networkConfig = {
+      subnets = [ "10.90.1.0/24" ];
+      ipRanges = [ "10.90.1.5-10.90.1.254" ];
     };
   };
 }

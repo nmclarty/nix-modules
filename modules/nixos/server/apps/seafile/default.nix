@@ -36,6 +36,30 @@ in
       "d /srv/seafile/data/logs - ${id} ${id}"
     ];
 
+    custom.apps.traefik = {
+      routes = {
+        seafile = {
+          container = "seafile";
+          port = 80;
+          public = true;
+          middlewares = [ "seafile-sso-redirect" ];
+          homepage.group = "Cloud";
+        };
+        seafile-notification = {
+          container = "seafile-notification";
+          port = 8083;
+          public = true;
+          rule = "Host(`seafile.${config.custom.apps.settings.domain}`) && PathPrefix(`/notification`)";
+        };
+      };
+      # hide the seafile login page and go straight to SSO (since every user uses Pocket ID)
+      dynamicConfig.http.middlewares.seafile-sso-redirect.redirectRegex = {
+        regex = "^(https?://[^/]+)/accounts/login(.*)$";
+        replacement = "\${1}/oauth/login\${2}";
+        permanent = true;
+      };
+    };
+
     # containers
     virtualisation.quadlet = {
       containers = {
@@ -91,24 +115,7 @@ in
               "${config.sops.templates."seafile/seafdav.conf".path}:/shared/seafile/conf/seafdav.conf:ro"
               "${config.sops.templates."seafile/gunicorn.conf.py".path}:/shared/seafile/conf/gunicorn.conf.py:ro"
             ];
-            networks = [
-              "seafile.network"
-              "exposed.network"
-            ];
-            labels = {
-              "traefik.enable" = "true";
-              # hide the seafile login page and go straight to SSO (since every user uses Pocket ID)
-              "traefik.http.middlewares.seafile-sso-redirect.redirectregex.regex" =
-                "^(https?://[^/]+)/accounts/login(.*)$";
-              "traefik.http.middlewares.seafile-sso-redirect.redirectregex.replacement" =
-                "\${1}/oauth/login\${2}";
-              "traefik.http.middlewares.seafile-sso-redirect.redirectregex.permanent" = "true";
-              "traefik.http.routers.seafile.middlewares" = "seafile-sso-redirect";
-              "homepage.group" = "Cloud";
-              "homepage.name" = "Seafile";
-              "homepage.icon" = "seafile.svg";
-              "homepage.href" = "https://seafile.${config.custom.apps.settings.domain}";
-            };
+            networks = [ "seafile-support.network" ];
             healthCmd = "wget -O - -q -T 5 127.0.0.1:80/api2/ping";
           };
           unitConfig = mkDeps [
@@ -135,23 +142,14 @@ in
               "seafile__jwt_private_key,type=env,target=JWT_PRIVATE_KEY"
             ];
             volumes = [ "/srv/seafile/data/logs:/shared/seafile/logs:U" ];
-            networks = [
-              "seafile.network"
-              "exposed.network"
-            ];
-            labels = {
-              "traefik.enable" = "true";
-              "traefik.http.services.seafile-notification.loadbalancer.server.port" = "8083";
-              "traefik.http.routers.seafile-notification.rule" =
-                "Host(`seafile.${config.custom.apps.settings.domain}`) && PathPrefix(`/notification`)";
-            };
+            networks = [ "seafile-support.network" ];
             healthCmd = "bash -c 'echo -n > /dev/tcp/127.0.0.1/8083'";
           };
           unitConfig = mkDeps [ "seafile-mariadb" ];
         };
       };
 
-      networks.seafile = { };
+      networks.seafile-support = { };
     };
   };
 }
