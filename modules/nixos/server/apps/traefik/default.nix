@@ -23,8 +23,9 @@ let
   cfg = config.custom.apps.traefik;
   id = toString cfg.user.id;
   inherit (config.custom.apps.settings) domain;
-  # podman resolves this to the host inside containers, so host routes need no fixed addressing
-  hostAddress = "host.containers.internal";
+  # not host.containers.internal, which podman points at whichever network sorts first,
+  # so traffic would miss the firewall rule on podman-traefik
+  hostAddress = "10.90.0.1";
 
   routes = attrValues cfg.routes;
   inherit (config.virtualisation.quadlet) containers;
@@ -261,8 +262,6 @@ in
                 "80:80" # main http
                 "443:443" # main https
               ];
-              # the uplink carries published ports and traefik's own traffic, so it has to stay first:
-              # its default route is what host routes (and the firewall rule above) go through
               networks = [
                 "traefik-uplink.network"
               ]
@@ -294,7 +293,13 @@ in
             }
           ) ingressNetworks
         ))
-        { traefik-uplink.networkConfig.interfaceName = "podman-traefik"; }
+        {
+          traefik-uplink.networkConfig = {
+            interfaceName = "podman-traefik";
+            subnets = [ "10.90.0.0/24" ];
+            gateways = [ hostAddress ];
+          };
+        }
       ];
     };
   };
