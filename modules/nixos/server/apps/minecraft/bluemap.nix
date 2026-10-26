@@ -292,7 +292,7 @@ in
               "/srv/minecraft/creative:/worlds/creative:ro"
               "/srv/minecraft/biomes:/worlds/biomes:ro"
             ];
-            networks = [ "minecraft.network" ];
+            networks = [ "minecraft-support.network" ];
             healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:8100";
           };
           serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;

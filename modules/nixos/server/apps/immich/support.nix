@@ -10,7 +10,7 @@ in
         image = "docker.io/valkey/valkey:${cfg.tags.redis}";
         user = "${id}:${id}";
         volumes = [ "/srv/immich/redis:/data" ];
-        networks = [ "immich.network" ];
+        networks = [ "immich-support.network" ];
         healthCmd = "redis-cli ping";
       };
       immich-postgres.containerConfig = {
@@ -25,7 +25,7 @@ in
         };
         secrets = [ "immich__postgres__password,uid=${id},gid=${id},mode=0400" ];
         volumes = [ "/srv/immich/postgres:/var/lib/postgresql/data" ];
-        networks = [ "immich.network" ];
+        networks = [ "immich-support.network" ];
         healthCmd = "pg_isready -U postgres -d immich";
       };
     };

@@ -22,7 +22,7 @@ in
           "forgejo__mariadb__password,uid=${id},gid=${id},mode=0400"
         ];
         volumes = [ "/srv/forgejo/mariadb:/var/lib/mysql" ];
-        networks = [ "forgejo.network" ];
+        networks = [ "forgejo-support.network" ];
         healthCmd = "healthcheck.sh --connect --mariadbupgrade --innodb_initialized";
       };
     };

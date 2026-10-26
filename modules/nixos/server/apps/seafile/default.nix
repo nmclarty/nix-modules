@@ -115,7 +115,7 @@ in
               "${config.sops.templates."seafile/seafdav.conf".path}:/shared/seafile/conf/seafdav.conf:ro"
               "${config.sops.templates."seafile/gunicorn.conf.py".path}:/shared/seafile/conf/gunicorn.conf.py:ro"
             ];
-            networks = [ "seafile.network" ];
+            networks = [ "seafile-support.network" ];
             healthCmd = "wget -O - -q -T 5 127.0.0.1:80/api2/ping";
           };
           unitConfig = mkDeps [
@@ -142,14 +142,14 @@ in
               "seafile__jwt_private_key,type=env,target=JWT_PRIVATE_KEY"
             ];
             volumes = [ "/srv/seafile/data/logs:/shared/seafile/logs:U" ];
-            networks = [ "seafile.network" ];
+            networks = [ "seafile-support.network" ];
             healthCmd = "bash -c 'echo -n > /dev/tcp/127.0.0.1/8083'";
           };
           unitConfig = mkDeps [ "seafile-mariadb" ];
         };
       };
 
-      networks.seafile = { };
+      networks.seafile-support = { };
     };
   };
 }

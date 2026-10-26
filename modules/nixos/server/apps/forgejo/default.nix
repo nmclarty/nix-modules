@@ -69,12 +69,12 @@ in
           };
           secrets = [ "forgejo__mariadb__password,type=env,target=FORGEJO__database__PASSWD" ];
           volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];
-          networks = [ "forgejo.network" ];
+          networks = [ "forgejo-support.network" ];
           healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:3000";
         };
         unitConfig = mkDeps [ "forgejo-mariadb" ];
       };
-      networks.forgejo = { };
+      networks.forgejo-support = { };
     };
   };
 }

@@ -22,7 +22,7 @@ in
             };
             secrets = [ "seafile__mariadb__root_password,uid=${id},gid=${id},mode=0400" ];
             volumes = [ "/srv/seafile/mariadb:/var/lib/mysql" ];
-            networks = [ "seafile.network" ];
+            networks = [ "seafile-support.network" ];
             healthCmd = "healthcheck.sh --connect --mariadbupgrade --innodb_initialized";
           };
         };
@@ -38,7 +38,7 @@ in
             ];
             secrets = [ "seafile__redis__password,uid=${id},gid=${id},mode=0400" ];
             volumes = [ "/srv/seafile/redis:/data" ];
-            networks = [ "seafile.network" ];
+            networks = [ "seafile-support.network" ];
             healthCmd = "redis-cli ping";
           };
         };
