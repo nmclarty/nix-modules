@@ -1,3 +1,4 @@
+{ lib, ... }:
 {
   nix = {
     gc.dates = "monthly";
@@ -14,5 +15,5 @@
   hardware.enableRedistributableFirmware = true;
 
   # use zram for memory compression
-  zramSwap.enable = true;
+  zramSwap.enable = lib.mkDefault true;
 }

@@ -3,16 +3,26 @@ let
   cfg = config.custom.disks.root;
   listLength = builtins.length cfg.disks;
   secondDisk = if builtins.length cfg.disks == 2 then builtins.elemAt cfg.disks 1 else "";
+  # added to every disk so mirrored zfs partitions stay the same size
+  swapPartition = lib.optionalAttrs (cfg.swapSize != null) {
+    swap = {
+      size = cfg.swapSize;
+      content = {
+        type = "swap";
+        randomEncryption = true;
+      };
+    };
+  };
 in
 {
-  config = lib.mkIf (cfg.enable && cfg.type == "zfs") {
+  config = lib.mkIf cfg.enable {
     assertions = [
       {
         assertion = builtins.elem listLength [
           1
           2
         ];
-        message = "Root disk type 'zfs' requires 1 or 2 disks.";
+        message = "Root disk requires 1 or 2 disks.";
       }
     ];
 
@@ -37,6 +47,9 @@ in
                   mountOptions = [ "umask=0077" ];
                 };
               };
+            }
+            // swapPartition
+            // {
               zfs = {
                 size = "100%";
                 content = {
@@ -54,7 +67,7 @@ in
           device = secondDisk;
           content = {
             type = "gpt";
-            partitions = {
+            partitions = swapPartition // {
               zfs = {
                 size = "100%";
                 content = {

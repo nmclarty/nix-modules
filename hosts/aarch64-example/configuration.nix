@@ -7,7 +7,10 @@
   ];
 
   # hardware
-  networking.hostName = "ext4-example";
+  networking = {
+    hostName = "aarch64-example";
+    hostId = "a7c3e19d";
+  };
   nixpkgs.hostPlatform = "aarch64-linux";
   system.stateVersion = "26.05";
 
@@ -18,7 +21,6 @@
     base.devel.enable = true;
     disks.root = {
       enable = true;
-      type = "ext4";
       disks = [ "/dev/nvme0n1" ];
     };
     server.ups.mode = "server";
