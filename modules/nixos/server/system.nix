@@ -1,5 +1,6 @@
 { config, ... }:
 {
+  boot.tmp.cleanOnBoot = true;
   boot.kernel.sysctl = {
     "net.ipv4.tcp_congestion_control" = "bbr";
     "vm.overcommit_memory" = 1; # allow overcommit for redis
@@ -16,5 +17,17 @@
       };
     };
     services.sudo.rssh = true;
+  };
+
+  systemd = {
+    enableEmergencyMode = false;
+    sleep.settings.Sleep = {
+      AllowSuspend = "no";
+      AllowHibernation = "no";
+    };
+    settings.Manager = {
+      RuntimeWatchdogSec = "15s";
+      RebootWatchdogSec = "30s";
+    };
   };
 }

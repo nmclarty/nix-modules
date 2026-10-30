@@ -28,6 +28,7 @@ in
 
     # To silence eval warning "`boot.zfs.forceImportRoot` is using the default value of `true"...
     boot.zfs.forceImportRoot = false;
+    services.zfs.autoScrub.enable = true;
 
     disko.devices = {
       disk = {
