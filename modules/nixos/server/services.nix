@@ -7,10 +7,6 @@
     };
     # clean up lingering apps (gdu)
     logind.settings.Login.KillUserProcesses = true;
-    iperf3 = {
-      enable = true;
-      openFirewall = true;
-    };
   };
 
   # networkd is needed for tailscale dns
