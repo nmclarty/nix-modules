@@ -97,9 +97,10 @@ in
             type = "zfs_fs";
             mountpoint = "/";
           };
+          # no fileSystems entry, since it would race zfs-mount at boot
           srv = {
             type = "zfs_fs";
-            mountpoint = "/srv";
+            options.mountpoint = "/srv";
           };
           # these datasets should only contain cached/generated data
           # so they don't need to be backed up by zfs replication
@@ -110,13 +111,17 @@ in
           };
           "nixos/cache" = {
             type = "zfs_fs";
-            mountpoint = "/var/cache";
-            options."syncoid:sync" = "false";
+            options = {
+              mountpoint = "/var/cache";
+              "syncoid:sync" = "false";
+            };
           };
           "nixos/containers" = {
             type = "zfs_fs";
-            mountpoint = "/var/lib/containers";
-            options."syncoid:sync" = "false";
+            options = {
+              mountpoint = "/var/lib/containers";
+              "syncoid:sync" = "false";
+            };
           };
         };
       };
