@@ -55,14 +55,14 @@ in
         };
       };
     })
-    # zram has higher priority than disk swap, so it would fill with cold pages
-    # and push new ones to disk; zswap evicts its coldest pages to disk instead
+    # migrate hosts to zswap incrementally, when they are repartitioned
     (mkIf (cfg.root.enable && cfg.root.swapSize != null) {
       zramSwap.enable = false;
       boot.kernelParams = [
         "zswap.enabled=1"
         "zswap.compressor=zstd"
         "zswap.max_pool_percent=25"
+        "zswap.shrinker_enabled=1"
       ];
     })
   ];
