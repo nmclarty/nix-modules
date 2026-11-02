@@ -227,6 +227,16 @@ in
       filter (r: isHostRoute r && r.port != null) routes
     );
 
+    environment.etc."alloy/traefik.alloy" = lib.mkIf config.custom.server.alloy.enable {
+      text = ''
+        prometheus.scrape "traefik" {
+          targets    = [{ __address__ = "127.0.0.1:8082", instance = constants.hostname }]
+          job_name   = "traefik"
+          forward_to = [prometheus.remote_write.default.receiver]
+        }
+      '';
+    };
+
     # user
     users = mkUser { inherit (cfg.user) name id; };
 
@@ -261,6 +271,7 @@ in
               publishPorts = [
                 "80:80" # main http
                 "443:443" # main https
+                "127.0.0.1:8082:8082" # metrics, for alloy
               ];
               networks = [
                 "traefik-uplink.network"

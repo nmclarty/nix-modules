@@ -39,6 +39,9 @@ in
               level: INFO
             ping:
               entryPoint: http
+            metrics:
+              prometheus:
+                entryPoint: metrics
             accessLog:
               filePath: /data/access.log
 
@@ -67,6 +70,8 @@ in
                 transport:
                   respondingTimeouts:
                     readTimeout: "0s"
+              metrics:
+                address: :8082
 
             providers:
               file:

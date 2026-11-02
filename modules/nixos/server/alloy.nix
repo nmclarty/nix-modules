@@ -42,7 +42,9 @@ in
         }
       }
 
-      prometheus.exporter.unix "default" { }
+      prometheus.exporter.unix "default" {
+        enable_collectors = ["systemd"]
+      }
 
       prometheus.scrape "unix" {
         targets    = prometheus.exporter.unix.default.targets
