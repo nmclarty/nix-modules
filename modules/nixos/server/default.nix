@@ -13,8 +13,16 @@ in
     ./system.nix
     ./ups.nix
     ./beszel.nix
+    ./alloy.nix
   ];
   options.custom.server = {
+    alloy = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "If alloy should be enabled to ship journald logs to loki.";
+      };
+    };
     beszel = {
       enable = mkOption {
         type = types.bool;

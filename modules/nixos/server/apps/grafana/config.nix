@@ -34,7 +34,7 @@ in
             check_for_plugin_updates = false
 
             [security]
-            # otherwise an admin/admin user is created, which still works over the api's basic auth
+            # otherwise an admin/admin user is created
             disable_initial_admin_creation = true
 
             [auth]
@@ -52,7 +52,6 @@ in
             api_url = https://pocket.${domain}/api/oidc/userinfo
             scopes = openid email profile groups
             use_pkce = true
-            # members of the pocket id "admin" group get full access, everyone else can only view
             role_attribute_path = contains(groups[*], 'admin') && 'GrafanaAdmin' || 'Viewer'
             allow_assign_grafana_admin = true
           '';
@@ -106,14 +105,13 @@ in
                     prefix: index_
                     period: 24h
 
-            # loki keeps everything forever by default
             compactor:
               retention_enabled: true
               delete_request_store: filesystem
             limits_config:
               retention_period: 30d
 
-            # needed by grafana's logs drilldown, the rest of its requirements are default
+            # needed by grafana's logs drilldown
             pattern_ingester:
               enabled: true
 
