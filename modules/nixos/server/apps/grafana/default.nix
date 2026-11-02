@@ -20,6 +20,7 @@ in
     tags = {
       default = "13.3";
       loki = "3";
+      prometheus = "v3";
     };
   };
 
@@ -29,6 +30,7 @@ in
     systemd.tmpfiles.rules = [
       "d /srv/grafana/data - ${id} ${id}"
       "d /srv/grafana/loki - ${id} ${id}"
+      "d /srv/grafana/prometheus - ${id} ${id}"
     ];
 
     custom.apps.traefik.routes.grafana = {

@@ -72,6 +72,11 @@ in
                 jsonData.httpHeaderName1 = "X-Scope-OrgID";
                 secureJsonData.httpHeaderValue1 = "fake";
               }
+              {
+                name = "Prometheus";
+                type = "prometheus";
+                url = "http://grafana-prometheus:9090";
+              }
             ];
           };
         };

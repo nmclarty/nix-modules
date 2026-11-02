@@ -41,6 +41,19 @@ in
           url = "http://loki:3100/loki/api/v1/push"
         }
       }
+
+      prometheus.exporter.unix "default" { }
+
+      prometheus.scrape "unix" {
+        targets    = prometheus.exporter.unix.default.targets
+        forward_to = [prometheus.remote_write.default.receiver]
+      }
+
+      prometheus.remote_write "default" {
+        endpoint {
+          url = "http://prometheus:9090/api/v1/write"
+        }
+      }
     '';
   };
 }

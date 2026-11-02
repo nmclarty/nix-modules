@@ -6,10 +6,11 @@ let
 in
 {
   config = mkIf cfg.enable {
-    # loki has no auth of its own, so access is left to the tailnet's grants
+    # neither has auth of its own, so access is left to the tailnet's grants
     services.tailscale.serve = {
       enable = true;
       services.loki.endpoints."tcp:3100" = "tcp://127.0.0.1:3100";
+      services.prometheus.endpoints."tcp:9090" = "tcp://127.0.0.1:9090";
     };
 
     virtualisation.quadlet.containers = {
@@ -26,6 +27,22 @@ in
         publishPorts = [ "127.0.0.1:3100:3100" ];
         # the image has no shell; a "CMD" prefix makes podman exec this directly
         healthCmd = "CMD /usr/bin/loki -health";
+      };
+
+      grafana-prometheus.containerConfig = {
+        image = "docker.io/prom/prometheus:${cfg.tags.prometheus}";
+        user = "${id}:${id}";
+        exec = [
+          # the image's defaults, which setting exec replaces
+          "--config.file=/etc/prometheus/prometheus.yml"
+          "--storage.tsdb.path=/prometheus"
+          # alloy pushes instead of being scraped
+          "--web.enable-remote-write-receiver"
+        ];
+        volumes = [ "/srv/grafana/prometheus:/prometheus" ];
+        networks = [ "grafana-support.network" ];
+        publishPorts = [ "127.0.0.1:9090:9090" ];
+        healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:9090/-/ready";
       };
     };
   };
