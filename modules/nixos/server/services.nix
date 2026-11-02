@@ -3,7 +3,6 @@
     tailscale = {
       enable = true;
       openFirewall = true;
-      useRoutingFeatures = "server";
     };
     # clean up lingering apps (gdu)
     logind.settings.Login.KillUserProcesses = true;
