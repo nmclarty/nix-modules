@@ -68,6 +68,9 @@ in
                 type = "loki";
                 url = "http://grafana-loki:3100";
                 isDefault = true;
+                # drilldown-limits skips loki's default tenant injection
+                jsonData.httpHeaderName1 = "X-Scope-OrgID";
+                secureJsonData.httpHeaderValue1 = "fake";
               }
             ];
           };
