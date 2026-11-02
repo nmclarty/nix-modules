@@ -55,11 +55,24 @@ in
       };
 
       systemd.services.upsdrv.serviceConfig = {
-        # for some reason, nut seems to spam this (seemingly) benign error
-        LogFilterPatterns = "~nut_libusb_get_(report|string): Input/Output Error";
         # the driver sometimes fails to initialize the ups on first start
         Restart = "on-failure";
         RestartSec = "10s";
+      };
+      # stale pid files survive reboots and make the driver kill an unrelated process
+      systemd.tmpfiles.rules = [ "r /var/lib/nut/*.pid" ];
+      # the driver can go stale without exiting (networkupstools/nut#3576)
+      systemd.services.ups-watchdog = {
+        after = [ "upsdrv.service" ];
+        path = [ config.power.ups.package ];
+        startAt = "minutely";
+        script = ''
+          if systemctl is-active --quiet upsdrv &&
+            upsc primary@127.0.0.1 ups.status 2>&1 | grep -qE "Data stale|Driver not connected"; then
+            echo "UPS data is stale, restarting driver"
+            systemctl restart upsdrv
+          fi
+        '';
       };
       power.ups = {
         enable = true;
