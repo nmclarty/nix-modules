@@ -54,9 +54,13 @@ in
         metricsPath = "/ups_metrics";
       };
 
-      # for some reason, nut seems to spam this (seemingly) benign error
-      systemd.services.upsdrv.serviceConfig.LogFilterPatterns =
-        "~nut_libusb_get_(report|string): Input/Output Error";
+      systemd.services.upsdrv.serviceConfig = {
+        # for some reason, nut seems to spam this (seemingly) benign error
+        LogFilterPatterns = "~nut_libusb_get_(report|string): Input/Output Error";
+        # the driver sometimes fails to initialize the ups on first start
+        Restart = "on-failure";
+        RestartSec = "10s";
+      };
       power.ups = {
         enable = true;
         mode = "netserver";
