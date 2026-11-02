@@ -14,6 +14,7 @@ in
     ./beszel
     ./forgejo
     ./garage
+    ./grafana
     ./homepage
     ./immich
     ./jellyfin

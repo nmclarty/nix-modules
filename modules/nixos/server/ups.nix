@@ -45,6 +45,15 @@ in
     (mkIf (cfg.enable && cfg.mode == "server") {
       sops.secrets."nut/admin".sopsFile = config.custom.base.secrets.system;
 
+      services.prometheus.exporters.nut = {
+        enable = true;
+        listenAddress = "127.0.0.1";
+      };
+      custom.server.alloy.scrapes.ups = {
+        address = "127.0.0.1:9199";
+        metricsPath = "/ups_metrics";
+      };
+
       # for some reason, nut seems to spam this (seemingly) benign error
       systemd.services.upsdrv.serviceConfig.LogFilterPatterns =
         "~nut_libusb_get_(report|string): Input/Output Error";

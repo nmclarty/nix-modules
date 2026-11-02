@@ -227,6 +227,8 @@ in
       filter (r: isHostRoute r && r.port != null) routes
     );
 
+    custom.server.alloy.scrapes.traefik.address = "127.0.0.1:8082";
+
     # user
     users = mkUser { inherit (cfg.user) name id; };
 
@@ -261,6 +263,7 @@ in
               publishPorts = [
                 "80:80" # main http
                 "443:443" # main https
+                "127.0.0.1:8082:8082" # metrics, for alloy
               ];
               networks = [
                 "traefik-uplink.network"
