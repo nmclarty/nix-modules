@@ -6,6 +6,12 @@
     "vm.overcommit_memory" = 1; # allow overcommit for redis
   };
 
+  # logs are shipped to loki, so the local journal only needs to cover short outages
+  services.journald.settings.Journal = {
+    Storage = "volatile";
+    RuntimeMaxUse = "256M";
+  };
+
   sops.secrets."ssh/authorized_keys" = { };
   security.pam = {
     rssh = {

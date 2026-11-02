@@ -1,3 +1,4 @@
+{ lib, config, ... }:
 {
   services = {
     tailscale = {
@@ -14,5 +15,10 @@
     # stop ssh connection from dropping while rebuilding
     restartIfChanged = false;
     serviceConfig.LogLevelMax = "notice";
+  };
+  # serve fails with "unexpected state: NoState" if tailscaled hasn't finished starting
+  systemd.services.tailscale-serve = lib.mkIf config.services.tailscale.serve.enable {
+    wants = [ "tailscale-online.target" ];
+    after = [ "tailscale-online.target" ];
   };
 }
