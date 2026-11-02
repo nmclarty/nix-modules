@@ -49,15 +49,9 @@ in
         enable = true;
         listenAddress = "127.0.0.1";
       };
-      environment.etc."alloy/ups.alloy" = mkIf config.custom.server.alloy.enable {
-        text = ''
-          prometheus.scrape "ups" {
-            targets      = [{ __address__ = "127.0.0.1:9199", instance = constants.hostname }]
-            job_name     = "ups"
-            metrics_path = "/ups_metrics"
-            forward_to   = [prometheus.remote_write.default.receiver]
-          }
-        '';
+      custom.server.alloy.scrapes.ups = {
+        address = "127.0.0.1:9199";
+        metricsPath = "/ups_metrics";
       };
 
       # for some reason, nut seems to spam this (seemingly) benign error

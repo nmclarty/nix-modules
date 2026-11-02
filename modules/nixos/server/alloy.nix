@@ -4,7 +4,7 @@
   ...
 }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf concatStrings mapAttrsToList;
   cfg = config.custom.server.alloy;
 in
 {
@@ -56,6 +56,17 @@ in
           url = "http://prometheus:9090/api/v1/write"
         }
       }
-    '';
+    ''
+    + concatStrings (
+      mapAttrsToList (name: s: ''
+
+        prometheus.scrape "${name}" {
+          targets      = [{ __address__ = "${s.address}", instance = constants.hostname }]
+          job_name     = "${name}"
+          metrics_path = "${s.metricsPath}"
+          forward_to   = [prometheus.remote_write.default.receiver]
+        }
+      '') cfg.scrapes
+    );
   };
 }

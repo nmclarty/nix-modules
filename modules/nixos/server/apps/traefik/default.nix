@@ -227,15 +227,7 @@ in
       filter (r: isHostRoute r && r.port != null) routes
     );
 
-    environment.etc."alloy/traefik.alloy" = lib.mkIf config.custom.server.alloy.enable {
-      text = ''
-        prometheus.scrape "traefik" {
-          targets    = [{ __address__ = "127.0.0.1:8082", instance = constants.hostname }]
-          job_name   = "traefik"
-          forward_to = [prometheus.remote_write.default.receiver]
-        }
-      '';
-    };
+    custom.server.alloy.scrapes.traefik.address = "127.0.0.1:8082";
 
     # user
     users = mkUser { inherit (cfg.user) name id; };
