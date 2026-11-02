@@ -38,6 +38,7 @@ in
           "--storage.tsdb.path=/prometheus"
           # alloy pushes instead of being scraped
           "--web.enable-remote-write-receiver"
+          "--storage.tsdb.retention.time=30d"
         ];
         volumes = [ "/srv/grafana/prometheus:/prometheus" ];
         networks = [ "grafana-support.network" ];
