@@ -23,6 +23,11 @@ in
       "d /srv/beszel - ${id} ${id}"
     ];
 
+    services.tailscale.serve = {
+      enable = true;
+      services.beszel.endpoints."tcp:8090" = "tcp://127.0.0.1:8090";
+    };
+
     custom.apps.traefik.routes.beszel = {
       container = "beszel";
       port = 8090;
@@ -39,7 +44,7 @@ in
         USER_CREATION = "true";
       };
       volumes = [ "/srv/beszel:/beszel_data" ];
-      publishPorts = [ "8090:8090" ]; # for server connections
+      publishPorts = [ "127.0.0.1:8090:8090" ];
     };
   };
 }

@@ -2,25 +2,14 @@
   lib,
   config,
   pkgs,
-  customLib,
-  flake,
   ...
 }:
 let
   inherit (lib) mkIf;
-  inherit (customLib.apps) findHost;
   cfg = config.custom.server.beszel;
-  beszelServer = findHost flake "beszel";
 in
 {
   config = mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = beszelServer != null;
-        message = "Beszel agent is enabled, but no beszel server can be found.";
-      }
-    ];
-
     systemd.services.beszel-agent = {
       enable = true;
       wantedBy = [ "default.target" ];
@@ -62,7 +51,8 @@ in
           LISTEN=45876
           KEY="${config.sops.placeholder."beszel/key"}"
           TOKEN="${config.sops.placeholder."beszel/token"}"
-          HUB_URL="http://${beszelServer}:8090"
+          # the tailscale service, wherever it's hosted
+          HUB_URL="http://beszel:8090"
 
           # hardware
           DOCKER_HOST=unix:///run/podman/podman.sock

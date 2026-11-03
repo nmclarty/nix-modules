@@ -5,9 +5,6 @@ let
     mkOption
     types
     filterAttrs
-    findFirst
-    elem
-    attrNames
     ;
 in
 {
@@ -110,16 +107,6 @@ in
             with config; if virtualisation ? quadlet then virtualisation.quadlet.containers else { }
           )
         )
-      );
-
-    # Returns the name of the first host that has the provided app enabled and running.
-    # - flake (flake that has all hosts as output)
-    # - app (name of the app)
-    findHost =
-      { nixosConfigurations, ... }:
-      app:
-      findFirst (host: elem app (getApps nixosConfigurations.${host}.config)) null (
-        attrNames nixosConfigurations
       );
   };
 }
