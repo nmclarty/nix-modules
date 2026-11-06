@@ -1,16 +1,25 @@
 { config, lib, ... }:
 let
+  inherit (lib) mkEnableOption mkOption types;
   cfg = config.custom.disks.cold;
-  listLength = builtins.length cfg.disks;
 in
 {
+  options.custom.disks.cold = {
+    enable = mkEnableOption "If cold zfs pool config should be enabled.";
+    disks = mkOption {
+      type = with types; listOf str;
+      description = "The list of disk devices to use.";
+    };
+  };
+
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = listLength == 2;
+        assertion = builtins.length cfg.disks == 2;
         message = "Cold disk type 'zfs' requires 2 disks.";
       }
     ];
+    sops.secrets."zfs/cold_key".sopsFile = config.custom.base.secrets.system;
     boot.zfs.extraPools = [ "cold" ];
     disko.devices = {
       disk = builtins.listToAttrs (
@@ -36,15 +45,19 @@ in
       zpool.cold = {
         type = "zpool";
         mode = "mirror";
-        options.ashift = "12";
+        options = {
+          ashift = "12";
+          autoexpand = "on";
+        };
         rootFsOptions = {
           compression = "lz4";
           xattr = "sa";
+          dnodesize = "auto";
+          acltype = "posixacl";
           mountpoint = "none";
-          # encryption
-          encryption = "aes-256-gcm";
-          keyformat = "passphrase";
-          keylocation = "file:///run/secrets/zfs/cold";
+          encryption = "on";
+          keyformat = "hex";
+          keylocation = "file://${config.sops.secrets."zfs/cold_key".path}";
         };
         datasets = {
           backup = {

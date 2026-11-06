@@ -1,8 +1,14 @@
 { config, lib, ... }:
 let
+  inherit (lib)
+    mkEnableOption
+    mkOption
+    types
+    mkIf
+    mkMerge
+    ;
   cfg = config.custom.disks.root;
-  listLength = builtins.length cfg.disks;
-  secondDisk = if builtins.length cfg.disks == 2 then builtins.elemAt cfg.disks 1 else "";
+  mirrored = builtins.length cfg.disks == 2;
   # added to every disk so mirrored zfs partitions stay the same size
   swapPartition = lib.optionalAttrs (cfg.swapSize != null) {
     swap = {
@@ -13,119 +19,193 @@ let
       };
     };
   };
-in
-{
-  config = lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = builtins.elem listLength [
-          1
-          2
-        ];
-        message = "Root disk requires 1 or 2 disks.";
-      }
-    ];
-
-    # To silence eval warning "`boot.zfs.forceImportRoot` is using the default value of `true"...
-    boot.zfs.forceImportRoot = false;
-    services.zfs.autoScrub.enable = true;
-
-    disko.devices = {
-      disk = {
-        primary = {
-          type = "disk";
-          device = builtins.elemAt cfg.disks 0;
-          content = {
-            type = "gpt";
-            partitions = {
-              ESP = {
-                size = "1G";
-                type = "EF00";
-                content = {
-                  type = "filesystem";
-                  format = "vfat";
-                  mountpoint = "/boot";
-                  mountOptions = [ "umask=0077" ];
-                };
-              };
-            }
-            // swapPartition
-            // {
-              zfs = {
-                size = "100%";
-                content = {
-                  type = "zfs";
-                  pool = "zroot";
-                };
-              };
-            };
-          };
-        };
-      }
-      // lib.optionalAttrs (listLength == 2) {
-        ${secondDisk} = {
-          type = "disk";
-          device = secondDisk;
-          content = {
-            type = "gpt";
-            partitions = swapPartition // {
-              zfs = {
-                size = "100%";
-                content = {
-                  type = "zfs";
-                  pool = "zroot";
-                };
-              };
-            };
-          };
-        };
+  zfsContent =
+    name:
+    let
+      pool = {
+        type = "zfs";
+        pool = "zroot";
       };
-
-      zpool.zroot = {
-        type = "zpool";
-        mode = lib.mkIf (listLength == 2 && cfg.mode == "mirror") "mirror";
-        options = {
-          ashift = "12";
-          autotrim = "on";
+    in
+    if cfg.encrypt then
+      {
+        type = "luks";
+        name = "crypt-${name}";
+        settings = {
+          allowDiscards = true;
+          crypttabExtraOpts = [ "tpm2-device=auto" ];
         };
-        rootFsOptions = {
-          compression = "lz4";
-          xattr = "sa";
-          mountpoint = "none";
-        };
-        datasets = {
-          nixos = {
-            type = "zfs_fs";
-            mountpoint = "/";
-          };
-          # no fileSystems entry, since it would race zfs-mount at boot
-          srv = {
-            type = "zfs_fs";
-            options.mountpoint = "/srv";
-          };
-          # these datasets should only contain cached/generated data
-          # so they don't need to be backed up by zfs replication
-          "nixos/nix" = {
-            type = "zfs_fs";
-            mountpoint = "/nix";
-            options."syncoid:sync" = "false";
-          };
-          "nixos/cache" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "/var/cache";
-              "syncoid:sync" = "false";
+        content = pool;
+      }
+    else
+      pool;
+  mkDisk =
+    index: device:
+    let
+      primary = index == 0;
+      name = if primary then "primary" else "secondary";
+    in
+    lib.nameValuePair name {
+      type = "disk";
+      inherit device;
+      content = {
+        type = "gpt";
+        partitions = {
+          ESP = {
+            size = "1G";
+            type = "EF00";
+            content = {
+              type = "filesystem";
+              format = "vfat";
+              mountpoint = if primary then "/boot" else "/boot2";
+              # either disk may be the one that died
+              mountOptions = [ "umask=0077" ] ++ lib.optional mirrored "nofail";
             };
           };
-          "nixos/containers" = {
-            type = "zfs_fs";
-            options = {
-              mountpoint = "/var/lib/containers";
-              "syncoid:sync" = "false";
-            };
+        }
+        // swapPartition
+        // {
+          zfs = {
+            size = "100%";
+            content = zfsContent name;
           };
         };
       };
     };
+in
+{
+  options.custom.disks.root = {
+    enable = mkEnableOption "If root disko config should be enabled.";
+    disks = mkOption {
+      type = with types; listOf str;
+      description = "The list of disk devices to use, mirrored when there are two.";
+    };
+    swapSize = mkOption {
+      type = with types; nullOr str;
+      default = "4G";
+      description = "Size of the swap partition added to each root disk, or null for none. When set, zswap is used instead of zram.";
+    };
+    encrypt = mkEnableOption "If root zfs partitions should be LUKS encrypted and unlocked by the TPM via measured boot.";
   };
+
+  config = mkIf cfg.enable (mkMerge [
+    {
+      assertions = [
+        {
+          assertion = builtins.elem (builtins.length cfg.disks) [
+            1
+            2
+          ];
+          message = "Root disk requires 1 or 2 disks.";
+        }
+        {
+          assertion = mirrored -> config.custom.base.secure-boot.enable;
+          message = "Mirrored root disks require secure boot, since only lanzaboote installs to both ESPs.";
+        }
+      ];
+
+      boot = {
+        loader = {
+          efi.canTouchEfiVariables = true;
+          systemd-boot = {
+            configurationLimit = 5;
+            enable = true;
+          };
+        };
+        lanzaboote.extraEfiSysMountPoints = mkIf mirrored [ "/boot2" ];
+        # To silence eval warning "`boot.zfs.forceImportRoot` is using the default value of `true"...
+        zfs.forceImportRoot = false;
+      };
+      services.zfs.autoScrub.enable = true;
+
+      disko.devices = {
+        disk = builtins.listToAttrs (lib.imap0 mkDisk cfg.disks);
+        zpool.zroot = {
+          type = "zpool";
+          mode = mkIf mirrored "mirror";
+          options = {
+            ashift = "12";
+            autotrim = "on";
+          };
+          rootFsOptions = {
+            compression = "lz4";
+            xattr = "sa";
+            dnodesize = "auto";
+            acltype = "posixacl";
+            mountpoint = "none";
+          };
+          datasets = {
+            nixos = {
+              type = "zfs_fs";
+              mountpoint = "/";
+            };
+            # no fileSystems entry, since it would race zfs-mount at boot
+            srv = {
+              type = "zfs_fs";
+              options.mountpoint = "/srv";
+            };
+            # these datasets should only contain cached/generated data
+            # so they don't need to be backed up by zfs replication
+            "nixos/nix" = {
+              type = "zfs_fs";
+              mountpoint = "/nix";
+              options."syncoid:sync" = "false";
+            };
+            "nixos/cache" = {
+              type = "zfs_fs";
+              options = {
+                mountpoint = "/var/cache";
+                "syncoid:sync" = "false";
+              };
+            };
+            "nixos/containers" = {
+              type = "zfs_fs";
+              options = {
+                mountpoint = "/var/lib/containers";
+                "syncoid:sync" = "false";
+              };
+            };
+          };
+        };
+      };
+    }
+    (mkIf cfg.encrypt {
+      assertions = [
+        {
+          assertion = config.custom.base.secure-boot.enable;
+          message = "Root disk encryption requires secure boot for measured boot.";
+        }
+      ];
+      boot = {
+        # the import only polls for the pool briefly, so it can time out while a passphrase is typed
+        initrd.systemd.services.zfs-import-zroot = {
+          wants = [ "cryptsetup.target" ];
+          after = [ "cryptsetup.target" ];
+        };
+        lanzaboote = {
+          # pcrlock refuses policies with more than 8 variants of PCR 4 (2 boot loaders × 4 generations)
+          configurationLimit = 4;
+          measuredBoot = {
+            enable = true;
+            # 1-3 are skipped since they change with firmware settings and add-in cards
+            pcrs = [
+              0
+              4
+              7
+            ];
+          };
+        };
+      };
+    })
+    # migrate hosts to zswap incrementally, when they are repartitioned
+    (mkIf (cfg.swapSize != null) {
+      zramSwap.enable = false;
+      boot.kernelParams = [
+        "zswap.enabled=1"
+        "zswap.compressor=zstd"
+        "zswap.max_pool_percent=25"
+        "zswap.shrinker_enabled=1"
+      ];
+    })
+  ]);
 }
