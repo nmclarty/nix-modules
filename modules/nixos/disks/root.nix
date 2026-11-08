@@ -197,6 +197,31 @@ in
         };
       };
     })
+    # pcrlock only writes the policy credential to /boot, but the stub reads it from whichever ESP booted
+    (mkIf (cfg.encrypt && mirrored) {
+      systemd = {
+        paths.pcrlock-credential-sync = {
+          wantedBy = [ "paths.target" ];
+          pathConfig.PathChanged = "/boot/loader/credentials";
+        };
+        services.pcrlock-credential-sync = {
+          # the boot-time policy update runs before the path unit is watching
+          wantedBy = [ "multi-user.target" ];
+          after = [ "systemd-pcrlock-make-policy.service" ];
+          # with a dead primary, the empty /boot would wipe the copy on /boot2
+          unitConfig.RequiresMountsFor = [
+            "/boot"
+            "/boot2"
+          ];
+          serviceConfig.Type = "oneshot";
+          script = ''
+            mkdir -p /boot2/loader
+            rm -rf /boot2/loader/credentials
+            cp -r /boot/loader/credentials /boot2/loader/credentials
+          '';
+        };
+      };
+    })
     # migrate hosts to zswap incrementally, when they are repartitioned
     (mkIf (cfg.swapSize != null) {
       zramSwap.enable = false;
