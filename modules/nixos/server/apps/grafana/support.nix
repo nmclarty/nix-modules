@@ -1,6 +1,7 @@
 { lib, config, ... }:
 let
   inherit (lib) mkIf;
+  inherit (config.virtualisation.quadlet) networks;
   cfg = config.custom.apps.grafana;
   id = toString cfg.user.id;
 in
@@ -22,7 +23,7 @@ in
           "${config.sops.templates."grafana/loki.yaml".path}:/etc/loki/config.yaml:ro"
           "/srv/grafana/loki:/loki"
         ];
-        networks = [ "grafana-support.network" ];
+        networks = [ networks.grafana-support.ref ];
         # published ports bypass the firewall, so binding to loopback keeps it off the lan
         publishPorts = [ "127.0.0.1:3100:3100" ];
         # the image has no shell; a "CMD" prefix makes podman exec this directly
@@ -41,7 +42,7 @@ in
           "--storage.tsdb.retention.time=30d"
         ];
         volumes = [ "/srv/grafana/prometheus:/prometheus" ];
-        networks = [ "grafana-support.network" ];
+        networks = [ networks.grafana-support.ref ];
         publishPorts = [ "127.0.0.1:9090:9090" ];
         healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:9090/-/ready";
       };

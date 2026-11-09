@@ -6,6 +6,7 @@
 }:
 let
   inherit (customLib.apps) mkOptions mkUser;
+  inherit (config.virtualisation.quadlet) networks;
   cfg = config.custom.apps.minecraft;
   id = toString cfg.user.id;
 in
@@ -43,7 +44,7 @@ in
             user = "${id}:${id}";
             environments.TYPE = "VELOCITY";
             volumes = [ "/srv/minecraft/velocity:/server" ];
-            networks = [ "minecraft-support.network" ];
+            networks = [ networks.minecraft-support.ref ];
             publishPorts = [ "25565:25565" ];
             healthCmd = "/usr/bin/health.sh";
           };
@@ -61,7 +62,7 @@ in
               MEMORY = "4G";
             };
             volumes = [ "/srv/minecraft/survival:/data" ];
-            networks = [ "minecraft-support.network" ];
+            networks = [ networks.minecraft-support.ref ];
             healthCmd = "mc-health";
           };
         };
@@ -78,7 +79,7 @@ in
               MEMORY = "4G";
             };
             volumes = [ "/srv/minecraft/creative:/data" ];
-            networks = [ "minecraft-support.network" ];
+            networks = [ networks.minecraft-support.ref ];
             healthCmd = "mc-health";
           };
         };
@@ -97,7 +98,7 @@ in
               MAX_MEMORY = "8G";
             };
             volumes = [ "/srv/minecraft/biomes:/data" ];
-            networks = [ "minecraft-support.network" ];
+            networks = [ networks.minecraft-support.ref ];
             publishPorts = [ "25566:25565" ];
             healthCmd = "mc-health";
           };

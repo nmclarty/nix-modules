@@ -1,5 +1,6 @@
 { lib, config, ... }:
 let
+  inherit (config.virtualisation.quadlet) containers networks;
   cfg = config.custom.apps.minecraft;
   overworld =
     {
@@ -292,13 +293,13 @@ in
               "/srv/minecraft/creative:/worlds/creative:ro"
               "/srv/minecraft/biomes:/worlds/biomes:ro"
             ];
-            networks = [ "minecraft-support.network" ];
+            networks = [ networks.minecraft-support.ref ];
             healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:8100";
           };
           serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;
           unitConfig = {
-            Wants = [ "minecraft-mariadb.service" ];
-            After = [ "minecraft-mariadb.service" ];
+            Wants = [ containers.minecraft-mariadb.ref ];
+            After = [ containers.minecraft-mariadb.ref ];
           };
         };
       };

@@ -6,6 +6,7 @@
 }:
 let
   inherit (customLib.apps) mkOptions mkUser;
+  inherit (config.virtualisation.quadlet) networks;
   cfg = config.custom.apps.grafana;
   id = toString cfg.user.id;
 in
@@ -51,7 +52,7 @@ in
           }:/etc/grafana/provisioning/datasources/datasources.yaml:ro"
           "/srv/grafana/data:/var/lib/grafana"
         ];
-        networks = [ "grafana-support.network" ];
+        networks = [ networks.grafana-support.ref ];
         healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:3000/api/health";
       };
       networks.grafana-support = { };

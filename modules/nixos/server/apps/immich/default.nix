@@ -6,6 +6,7 @@
 }:
 let
   inherit (customLib.apps) mkOptions mkUser mkDeps;
+  inherit (config.virtualisation.quadlet) containers networks;
   cfg = config.custom.apps.immich;
   id = toString cfg.user.id;
 in
@@ -59,14 +60,14 @@ in
               "/srv/immich/library:/data"
               "${config.sops.templates."immich/config.json".path}:/etc/immich/immich.json:ro"
             ];
-            networks = [ "immich-support.network" ];
+            networks = [ networks.immich-support.ref ];
             healthCmd = "curl -fs http://127.0.0.1:2283/api/server/ping";
           };
           unitConfig = mkDeps [
-            "immich-redis"
-            "immich-postgres"
-            "immich-learning"
-            "immich-microservices"
+            containers.immich-redis.ref
+            containers.immich-postgres.ref
+            containers.immich-learning.ref
+            containers.immich-microservices.ref
           ];
         };
 
@@ -87,13 +88,13 @@ in
               "/srv/immich/library:/data"
               "${config.sops.templates."immich/config.json".path}:/etc/immich/immich.json:ro"
             ];
-            networks = [ "immich-support.network" ];
+            networks = [ networks.immich-support.ref ];
             healthCmd = "true";
           };
           unitConfig = mkDeps [
-            "immich-redis"
-            "immich-postgres"
-            "immich-learning"
+            containers.immich-redis.ref
+            containers.immich-postgres.ref
+            containers.immich-learning.ref
           ];
           serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;
         };
@@ -111,7 +112,7 @@ in
               "/dev/bus/usb:/dev/bus/usb"
               "immich-learning-cache:/cache"
             ];
-            networks = [ "immich-support.network" ];
+            networks = [ networks.immich-support.ref ];
             healthCmd = "bash -c 'echo -n > /dev/tcp/127.0.0.1/3003'";
           };
           serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;

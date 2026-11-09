@@ -28,7 +28,7 @@ let
   hostAddress = "10.90.0.1";
 
   routes = attrValues cfg.routes;
-  inherit (config.virtualisation.quadlet) containers;
+  inherit (config.virtualisation.quadlet) containers networks pods;
   isHostRoute = r: r.container == null && r.pod == null && r.address == null;
   targetOf =
     r:
@@ -191,7 +191,7 @@ in
           }
           {
             assertion =
-              r.pod == null || lib.any (c: c.containerConfig.pod == "${r.pod}.pod") (attrValues containers);
+              r.pod == null || lib.any (c: c.containerConfig.pod == pods.${r.pod}.ref) (attrValues containers);
             message = "Traefik route '${name}' targets pod '${r.pod}', which no container is in.";
           }
         ]) cfg.routes
@@ -243,7 +243,7 @@ in
     virtualisation.quadlet = {
       containers = mkMerge [
         (genAttrs routedContainers (c: {
-          containerConfig.networks = [ "${c}-ingress.network" ];
+          containerConfig.networks = [ networks."${c}-ingress".ref ];
         }))
         {
           traefik = {
@@ -266,22 +266,23 @@ in
                 "127.0.0.1:8082:8082" # metrics, for alloy
               ];
               networks = [
-                "traefik-uplink.network"
+                networks.traefik-uplink.ref
               ]
               ++ map (
                 n:
-                "${n}.network" + lib.optionalString (cfg.ingressAddresses ? ${n}) ":ip=${cfg.ingressAddresses.${n}}"
+                networks.${n}.ref
+                + lib.optionalString (cfg.ingressAddresses ? ${n}) ":ip=${cfg.ingressAddresses.${n}}"
               ) ingressNetworks;
               healthCmd = "traefik healthcheck";
             };
-            unitConfig = mkDeps [ "ddns-updater" ];
+            unitConfig = mkDeps [ containers.ddns-updater.ref ];
           };
         }
       ];
 
       pods = genAttrs routedPods (p: {
         podConfig = {
-          networks = [ "${p}-ingress.network" ];
+          networks = [ networks."${p}-ingress".ref ];
           # pod members don't resolve by name, so routes reach the pod through this alias
           networkAliases = [ p ];
         };

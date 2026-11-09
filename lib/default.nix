@@ -63,17 +63,12 @@ in
         };
       };
 
-    # Creates systemd service dependencies on other containers
-    # - deps (list of container names)
-    mkDeps =
-      deps:
-      let
-        services = map (dep: "${dep}.service") deps;
-      in
-      {
-        Requires = services;
-        After = services;
-      };
+    # Creates systemd service dependencies on other quadlets
+    # - deps (list of quadlet refs, e.g. containers.foo.ref, which quadlet translates to services)
+    mkDeps = deps: {
+      Requires = deps;
+      After = deps;
+    };
 
     # Creates multiple sops-nix secrets
     # - keys (list of the keys to create secrets for)

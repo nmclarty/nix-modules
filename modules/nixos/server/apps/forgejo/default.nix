@@ -6,6 +6,7 @@
 }:
 let
   inherit (customLib.apps) mkOptions mkUser mkDeps;
+  inherit (config.virtualisation.quadlet) containers networks;
   cfg = config.custom.apps.forgejo;
   id = toString cfg.user.id;
 in
@@ -69,10 +70,10 @@ in
           };
           secrets = [ "forgejo__mariadb__password,type=env,target=FORGEJO__database__PASSWD" ];
           volumes = [ "/srv/forgejo/data:/var/lib/gitea" ];
-          networks = [ "forgejo-support.network" ];
+          networks = [ networks.forgejo-support.ref ];
           healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:3000";
         };
-        unitConfig = mkDeps [ "forgejo-mariadb" ];
+        unitConfig = mkDeps [ containers.forgejo-mariadb.ref ];
       };
       networks.forgejo-support = { };
     };

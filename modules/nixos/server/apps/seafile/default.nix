@@ -6,6 +6,7 @@
 }:
 let
   inherit (customLib.apps) mkOptions mkUser mkDeps;
+  inherit (config.virtualisation.quadlet) containers networks;
   cfg = config.custom.apps.seafile;
   id = toString cfg.user.id;
 in
@@ -115,12 +116,12 @@ in
               "${config.sops.templates."seafile/seafdav.conf".path}:/shared/seafile/conf/seafdav.conf:ro"
               "${config.sops.templates."seafile/gunicorn.conf.py".path}:/shared/seafile/conf/gunicorn.conf.py:ro"
             ];
-            networks = [ "seafile-support.network" ];
+            networks = [ networks.seafile-support.ref ];
             healthCmd = "wget -O - -q -T 5 127.0.0.1:80/api2/ping";
           };
           unitConfig = mkDeps [
-            "seafile-mariadb"
-            "seafile-redis"
+            containers.seafile-mariadb.ref
+            containers.seafile-redis.ref
           ];
         };
 
@@ -142,10 +143,10 @@ in
               "seafile__jwt_private_key,type=env,target=JWT_PRIVATE_KEY"
             ];
             volumes = [ "/srv/seafile/data/logs:/shared/seafile/logs:U" ];
-            networks = [ "seafile-support.network" ];
+            networks = [ networks.seafile-support.ref ];
             healthCmd = "bash -c 'echo -n > /dev/tcp/127.0.0.1/8083'";
           };
-          unitConfig = mkDeps [ "seafile-mariadb" ];
+          unitConfig = mkDeps [ containers.seafile-mariadb.ref ];
         };
       };
 

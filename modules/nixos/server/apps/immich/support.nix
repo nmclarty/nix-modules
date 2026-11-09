@@ -1,5 +1,6 @@
 { lib, config, ... }:
 let
+  inherit (config.virtualisation.quadlet) networks;
   cfg = config.custom.apps.immich;
   id = toString cfg.user.id;
 in
@@ -10,7 +11,7 @@ in
         image = "docker.io/valkey/valkey:${cfg.tags.redis}";
         user = "${id}:${id}";
         volumes = [ "/srv/immich/redis:/data" ];
-        networks = [ "immich-support.network" ];
+        networks = [ networks.immich-support.ref ];
         healthCmd = "redis-cli ping";
       };
       immich-postgres.containerConfig = {
@@ -25,7 +26,7 @@ in
         };
         secrets = [ "immich__postgres__password,uid=${id},gid=${id},mode=0400" ];
         volumes = [ "/srv/immich/postgres:/var/lib/postgresql/data" ];
-        networks = [ "immich-support.network" ];
+        networks = [ networks.immich-support.ref ];
         healthCmd = "pg_isready -U postgres -d immich";
       };
     };

@@ -1,6 +1,7 @@
 { lib, config, ... }:
 let
   inherit (lib) mkIf;
+  inherit (config.virtualisation.quadlet) networks;
   cfg = config.custom.apps.forgejo;
   id = toString cfg.user.id;
 in
@@ -22,7 +23,7 @@ in
           "forgejo__mariadb__password,uid=${id},gid=${id},mode=0400"
         ];
         volumes = [ "/srv/forgejo/mariadb:/var/lib/mysql" ];
-        networks = [ "forgejo-support.network" ];
+        networks = [ networks.forgejo-support.ref ];
         healthCmd = "healthcheck.sh --connect --mariadbupgrade --innodb_initialized";
       };
     };

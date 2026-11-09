@@ -1,5 +1,6 @@
 { lib, config, ... }:
 let
+  inherit (config.virtualisation.quadlet) networks;
   cfg = config.custom.apps.minecraft;
   id = toString cfg.user.id;
 in
@@ -23,7 +24,7 @@ in
               "minecraft__mariadb__password,uid=${id},gid=${id},mode=0400"
             ];
             volumes = [ "/srv/minecraft/mariadb:/var/lib/mysql" ];
-            networks = [ "minecraft-support.network" ];
+            networks = [ networks.minecraft-support.ref ];
             healthCmd = "healthcheck.sh --connect --mariadbupgrade --innodb_initialized";
           };
         };

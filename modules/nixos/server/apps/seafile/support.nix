@@ -1,5 +1,6 @@
 { lib, config, ... }:
 let
+  inherit (config.virtualisation.quadlet) networks;
   cfg = config.custom.apps.seafile;
   id = toString cfg.user.id;
 in
@@ -22,7 +23,7 @@ in
             };
             secrets = [ "seafile__mariadb__root_password,uid=${id},gid=${id},mode=0400" ];
             volumes = [ "/srv/seafile/mariadb:/var/lib/mysql" ];
-            networks = [ "seafile-support.network" ];
+            networks = [ networks.seafile-support.ref ];
             healthCmd = "healthcheck.sh --connect --mariadbupgrade --innodb_initialized";
           };
         };
@@ -38,7 +39,7 @@ in
             ];
             secrets = [ "seafile__redis__password,uid=${id},gid=${id},mode=0400" ];
             volumes = [ "/srv/seafile/redis:/data" ];
-            networks = [ "seafile-support.network" ];
+            networks = [ networks.seafile-support.ref ];
             healthCmd = "redis-cli ping";
           };
         };
