@@ -8,7 +8,7 @@
 
   # hardware
   networking = {
-    hostName = "aarch64-example";
+    hostName = "minimal";
     hostId = "a7c3e19d";
   };
   nixpkgs.hostPlatform = "aarch64-linux";
