@@ -5,8 +5,9 @@
   ...
 }:
 let
-  inherit (customLib.apps) mkOptions;
+  inherit (customLib.apps) mkOptions mkUser;
   cfg = config.custom.apps.librespeed;
+  id = toString cfg.user.id;
 in
 {
   options.custom.apps.librespeed = mkOptions {
@@ -16,7 +17,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # users = mkUser { inherit (cfg.user) name id; }; # see userns below, not needed
+    users = mkUser { inherit (cfg.user) name id; };
 
     custom.apps.traefik.routes.librespeed = {
       container = "librespeed";
@@ -28,7 +29,8 @@ in
 
     virtualisation.quadlet.containers.librespeed.containerConfig = {
       image = "ghcr.io/librespeed/speedtest:${cfg.tags.default}";
-      userns = "auto"; # container doesn't work with user set, so it gets namespaced
+      # container doesn't work with user set, and runs as www-data (33)
+      userns = "auto:uidmapping=33:${id}:1,gidmapping=33:${id}:1";
       environments = {
         MODE = "standalone";
       };
