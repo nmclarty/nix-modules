@@ -234,9 +234,9 @@ in
 
     # dirs
     systemd.tmpfiles.rules = [
-      "d /srv/traefik/data - ${id} ${id}"
+      "d /srv/traefik/data 0750 ${id} ${id}"
       "f /srv/traefik/data/access.log 0600 ${id} ${id}"
-      "d /srv/traefik/ddns-updater - ${id} ${id}"
+      "d /srv/traefik/ddns-updater 0750 ${id} ${id}"
     ];
 
     # containers

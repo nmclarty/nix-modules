@@ -29,9 +29,9 @@ in
     users = mkUser { inherit (cfg.user) name id; };
 
     systemd.tmpfiles.rules = [
-      "d /srv/immich/library - ${id} ${id}"
-      "d /srv/immich/redis - ${id} ${id}"
-      "d /srv/immich/postgres - ${id} ${id}"
+      "d /srv/immich/library 0750 ${id} ${id}"
+      "d /srv/immich/redis 0750 ${id} ${id}"
+      "d /srv/immich/postgres 0750 ${id} ${id}"
     ];
 
     custom.apps.traefik.routes.immich = {

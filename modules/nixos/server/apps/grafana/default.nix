@@ -29,9 +29,9 @@ in
     users = mkUser { inherit (cfg.user) name id; };
 
     systemd.tmpfiles.rules = [
-      "d /srv/grafana/data - ${id} ${id}"
-      "d /srv/grafana/loki - ${id} ${id}"
-      "d /srv/grafana/prometheus - ${id} ${id}"
+      "d /srv/grafana/data 0750 ${id} ${id}"
+      "d /srv/grafana/loki 0750 ${id} ${id}"
+      "d /srv/grafana/prometheus 0750 ${id} ${id}"
     ];
 
     custom.apps.traefik.routes.grafana = {

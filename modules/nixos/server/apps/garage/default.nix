@@ -21,8 +21,8 @@ in
     users = mkUser { inherit (cfg.user) name id; };
 
     systemd.tmpfiles.rules = [
-      "d /srv/garage/meta - ${id} ${id}"
-      "d /cold/garage/data - ${id} ${id}"
+      "d /srv/garage/meta 0750 ${id} ${id}"
+      "d /cold/garage/data 0750 ${id} ${id}"
     ];
 
     virtualisation.quadlet.containers.garage.containerConfig = {

@@ -25,8 +25,8 @@ in
     users = mkUser { inherit (cfg.user) name id; };
 
     systemd.tmpfiles.rules = [
-      "d /srv/forgejo/data - ${id} ${id}"
-      "d /srv/forgejo/mariadb - ${id} ${id}"
+      "d /srv/forgejo/data 0750 ${id} ${id}"
+      "d /srv/forgejo/mariadb 0750 ${id} ${id}"
     ];
 
     custom.apps.traefik.routes.forgejo = {

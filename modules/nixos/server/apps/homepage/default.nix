@@ -20,7 +20,7 @@ in
   config = lib.mkIf cfg.enable {
     users = mkUser { inherit (cfg.user) name id; };
 
-    systemd.tmpfiles.rules = [ "d /srv/homepage - ${id} ${id}" ];
+    systemd.tmpfiles.rules = [ "d /srv/homepage 0750 ${id} ${id}" ];
 
     custom.apps.traefik.routes.homepage = {
       container = "homepage";

@@ -20,7 +20,7 @@ in
     users = mkUser { inherit (cfg.user) name id; };
 
     systemd.tmpfiles.rules = [
-      "d /srv/beszel - ${id} ${id}"
+      "d /srv/beszel 0750 ${id} ${id}"
     ];
 
     services.tailscale.serve = {

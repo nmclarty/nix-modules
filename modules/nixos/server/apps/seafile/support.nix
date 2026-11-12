@@ -7,8 +7,8 @@ in
 {
   config = lib.mkIf cfg.enable {
     systemd.tmpfiles.rules = [
-      "d /srv/seafile/mariadb - ${id} ${id}"
-      "d /srv/seafile/redis - ${id} ${id}"
+      "d /srv/seafile/mariadb 0750 ${id} ${id}"
+      "d /srv/seafile/redis 0750 ${id} ${id}"
     ];
 
     virtualisation.quadlet = {

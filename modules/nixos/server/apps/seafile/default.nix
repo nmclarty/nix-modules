@@ -31,10 +31,12 @@ in
 
     # dirs
     systemd.tmpfiles.rules = [
-      "d /srv/seafile/logs - ${id} ${id}"
-      "d /srv/seafile/nginx - ${id} ${id}"
-      "d /srv/seafile/data - ${id} ${id}"
-      "d /srv/seafile/data/logs - ${id} ${id}"
+      # with userns=auto only the container's root is the app's user, so the other
+      # users inside (like nginx's workers) rely on these being world-readable
+      "d /srv/seafile/logs 0755 ${id} ${id}"
+      "d /srv/seafile/nginx 0755 ${id} ${id}"
+      "d /srv/seafile/data 0755 ${id} ${id}"
+      "d /srv/seafile/data/logs 0755 ${id} ${id}"
     ];
 
     custom.apps.traefik = {

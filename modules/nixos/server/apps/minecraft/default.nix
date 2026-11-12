@@ -28,11 +28,11 @@ in
     users = mkUser { inherit (cfg.user) name id; };
 
     systemd.tmpfiles.rules = [
-      "d /srv/minecraft/velocity - ${id} ${id}"
-      "d /srv/minecraft/survival - ${id} ${id}"
-      "d /srv/minecraft/creative - ${id} ${id}"
-      "d /srv/minecraft/biomes - ${id} ${id}"
-      "d /srv/minecraft/mariadb - ${id} ${id}"
+      "d /srv/minecraft/velocity 0750 ${id} ${id}"
+      "d /srv/minecraft/survival 0750 ${id} ${id}"
+      "d /srv/minecraft/creative 0750 ${id} ${id}"
+      "d /srv/minecraft/biomes 0750 ${id} ${id}"
+      "d /srv/minecraft/mariadb 0750 ${id} ${id}"
     ];
 
     virtualisation.quadlet = {

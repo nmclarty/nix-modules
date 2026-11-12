@@ -20,7 +20,7 @@ in
     users = mkUser { inherit (cfg.user) name id; };
 
     systemd.tmpfiles.rules = [
-      "d /srv/pocket - ${id} ${id}"
+      "d /srv/pocket 0750 ${id} ${id}"
     ];
 
     custom.apps.traefik.routes.pocket = {

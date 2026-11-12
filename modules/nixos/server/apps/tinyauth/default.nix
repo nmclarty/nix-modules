@@ -48,7 +48,7 @@ in
     users = mkUser { inherit (cfg.user) name id; };
 
     systemd.tmpfiles.rules = [
-      "d /srv/tinyauth - ${id} ${id}"
+      "d /srv/tinyauth 0750 ${id} ${id}"
     ];
 
     custom.apps.traefik = {
