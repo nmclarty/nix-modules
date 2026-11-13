@@ -45,7 +45,7 @@ in
       };
 
       services.helper-tools.secret = {
-        # only enabled if the host has a podman.yaml in its hosts/ dir;
+        # only enabled if the host has a podman.yaml in its secrets/ dir;
         # services that depend on podman secrets will complain if the file is missing
         enable = true;
         settings.file = config.sops.secrets."podman-sops.yaml".path;

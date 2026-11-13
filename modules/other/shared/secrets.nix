@@ -6,18 +6,18 @@
 }:
 let
   inherit (lib) mkOption types;
-  basePath = "${flake}/hosts";
+  basePath = "${flake}/secrets";
   systemPath = "${basePath}/${config.networking.hostName}";
 in
 {
   options.custom.base.secrets = {
     global = mkOption {
       type = types.str;
-      default = "${basePath}/secrets.yaml";
+      default = "${basePath}/system.yaml";
     };
     system = mkOption {
       type = types.str;
-      default = "${systemPath}/secrets.yaml";
+      default = "${systemPath}/system.yaml";
     };
     podman = mkOption {
       type = types.str;
