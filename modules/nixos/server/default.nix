@@ -52,7 +52,7 @@ in
     ups = {
       enable = mkOption {
         type = types.bool;
-        default = true;
+        default = false;
         description = "If ups monitoring should be enabled.";
       };
       mode = mkOption {
