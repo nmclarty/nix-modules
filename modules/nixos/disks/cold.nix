@@ -10,6 +10,11 @@ in
       type = with types; listOf str;
       description = "The list of disk devices to use.";
     };
+    datasets = mkOption {
+      type = with types; listOf str;
+      default = [ ];
+      description = "Datasets on the cold pool, mounted at /cold/<name>. Disko only creates them with the pool, so add new ones to an existing pool by hand.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -51,6 +56,8 @@ in
         };
         rootFsOptions = {
           compression = "lz4";
+          # everything on this pool is large, write-once data
+          recordsize = "1M";
           xattr = "sa";
           dnodesize = "auto";
           acltype = "posixacl";
@@ -59,20 +66,11 @@ in
           keyformat = "hex";
           keylocation = "file://${config.sops.secrets."zfs/cold_key".path}";
         };
-        datasets = {
-          garage = {
-            type = "zfs_fs";
-            options.mountpoint = "/cold/garage";
-          };
-          shares = {
-            type = "zfs_fs";
-            options.mountpoint = "/cold/shares";
-          };
-          vault = {
-            type = "zfs_fs";
-            options.mountpoint = "/cold/vault";
-          };
-        };
+        # no fileSystems entries, since they would race zfs-mount at boot
+        datasets = lib.genAttrs cfg.datasets (name: {
+          type = "zfs_fs";
+          options.mountpoint = "/cold/${name}";
+        });
       };
     };
   };

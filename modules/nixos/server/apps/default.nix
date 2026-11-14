@@ -21,6 +21,7 @@ in
     ./librespeed
     ./minecraft
     ./pocket
+    ./restic
     ./seafile
     ./tinyauth
     ./traefik
