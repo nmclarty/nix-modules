@@ -144,26 +144,17 @@ in
               type = "zfs_fs";
               options.mountpoint = "/srv";
             };
-            # these datasets should only contain cached/generated data
-            # so they don't need to be backed up by zfs replication
             "nixos/nix" = {
               type = "zfs_fs";
               mountpoint = "/nix";
-              options."syncoid:sync" = "false";
             };
             "nixos/cache" = {
               type = "zfs_fs";
-              options = {
-                mountpoint = "/var/cache";
-                "syncoid:sync" = "false";
-              };
+              options.mountpoint = "/var/cache";
             };
             "nixos/containers" = {
               type = "zfs_fs";
-              options = {
-                mountpoint = "/var/lib/containers";
-                "syncoid:sync" = "false";
-              };
+              options.mountpoint = "/var/lib/containers";
             };
           };
         };

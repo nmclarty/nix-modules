@@ -60,10 +60,6 @@ in
           keylocation = "file://${config.sops.secrets."zfs/cold_key".path}";
         };
         datasets = {
-          backup = {
-            type = "zfs_fs";
-            options.mountpoint = "none";
-          };
           garage = {
             type = "zfs_fs";
             options.mountpoint = "/cold/garage";
