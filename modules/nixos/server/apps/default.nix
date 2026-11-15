@@ -18,6 +18,7 @@ in
     ./homepage
     ./immich
     ./jellyfin
+    ./knot
     ./librespeed
     ./minecraft
     ./pocket

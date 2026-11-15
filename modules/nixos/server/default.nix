@@ -4,7 +4,10 @@ let
   inherit (lib) mkOption types;
 in
 {
-  config._module.args.customLib = inputs.self.lib;
+  config._module.args = {
+    customLib = inputs.self.lib;
+    inherit (inputs) tangled;
+  };
   imports = with inputs; [
     quadlet-nix.nixosModules.quadlet
     helper-tools.nixosModules.secret

@@ -23,6 +23,5 @@
       enable = true;
       disks = [ "/dev/nvme0n1" ];
     };
-    server.ups.mode = "server";
   };
 }

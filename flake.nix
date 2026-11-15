@@ -18,6 +18,11 @@
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
+    # apps
+    tangled.url = "git+https://tangled.org/did:plc:j5hmlfdrwkvtxm7cjmu7j2is";
+    tangled.inputs.nixpkgs.follows = "nixpkgs";
+    tangled.inputs.nixpkgs-pds.follows = "nixpkgs";
+
     # personal
     helper-tools.url = "github:nmclarty/helper-tools";
     helper-tools.inputs.nixpkgs.follows = "nixpkgs";
