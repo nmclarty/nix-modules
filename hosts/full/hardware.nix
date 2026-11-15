@@ -6,10 +6,10 @@
   system.stateVersion = "26.05";
 
   custom = {
-    base.secure-boot.enable = true;
     disks = {
       root = {
         enable = true;
+        secureBoot = true;
         disks = [
           "/dev/nvme0n1"
           "/dev/nvme1n1"

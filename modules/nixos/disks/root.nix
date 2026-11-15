@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib)
     mkEnableOption
@@ -85,6 +90,7 @@ in
       default = "4G";
       description = "Size of the swap partition added to each root disk, or null for none. When set, zswap is used instead of zram.";
     };
+    secureBoot = mkEnableOption "If lanzaboote should replace systemd-boot, with keys generated and enrolled automatically.";
     encrypt = mkEnableOption "If root zfs partitions should be LUKS encrypted and unlocked by the TPM via measured boot.";
   };
 
@@ -99,7 +105,7 @@ in
           message = "Root disk requires 1 or 2 disks.";
         }
         {
-          assertion = mirrored -> config.custom.base.secure-boot.enable;
+          assertion = mirrored -> cfg.secureBoot;
           message = "Mirrored root disks require secure boot, since only lanzaboote installs to both ESPs.";
         }
       ];
@@ -109,7 +115,7 @@ in
           efi.canTouchEfiVariables = true;
           systemd-boot = {
             configurationLimit = 5;
-            enable = true;
+            enable = !cfg.secureBoot;
           };
         };
         lanzaboote.extraEfiSysMountPoints = mkIf mirrored [ "/boot2" ];
@@ -160,10 +166,23 @@ in
         };
       };
     }
+    (mkIf cfg.secureBoot {
+      # sbctl to manage keys and for debugging
+      environment.systemPackages = [ pkgs.sbctl ];
+      boot.lanzaboote = {
+        enable = true;
+        pkiBundle = "/var/lib/sbctl";
+        autoGenerateKeys.enable = true;
+        autoEnrollKeys = {
+          enable = true;
+          autoReboot = true;
+        };
+      };
+    })
     (mkIf cfg.encrypt {
       assertions = [
         {
-          assertion = config.custom.base.secure-boot.enable;
+          assertion = cfg.secureBoot;
           message = "Root disk encryption requires secure boot for measured boot.";
         }
       ];
