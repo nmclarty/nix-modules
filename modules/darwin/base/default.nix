@@ -6,6 +6,5 @@
     self.modules.other.shared
     ./programs.nix
     ./system.nix
-    ./users.nix
   ];
 }

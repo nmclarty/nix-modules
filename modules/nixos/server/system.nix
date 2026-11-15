@@ -1,4 +1,3 @@
-{ config, ... }:
 {
   boot.tmp.cleanOnBoot = true;
   boot.kernel.sysctl = {
@@ -12,18 +11,8 @@
     RuntimeMaxUse = "256M";
   };
 
-  sops.secrets."ssh/authorized_keys" = { };
-  security.pam = {
-    rssh = {
-      enable = true;
-      settings = {
-        cue = true;
-        cue_prompt = "Authenticating with ssh-agent...";
-        auth_key_file = config.sops.secrets."ssh/authorized_keys".path;
-      };
-    };
-    services.sudo.rssh = true;
-  };
+  # servers are administered as root
+  security.sudo.enable = false;
 
   systemd = {
     enableEmergencyMode = false;
