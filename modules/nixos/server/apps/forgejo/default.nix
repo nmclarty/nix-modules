@@ -58,6 +58,8 @@ in
             # disable federated openid (not OIDC sso) signup
             FORGEJO__openid__ENABLE_OPENID_SIGNIN = "false";
             FORGEJO__openid__ENABLE_OPENID_SIGNUP = "false";
+            # tinyauth lets in any forgejo user
+            FORGEJO__service__DISABLE_REGISTRATION = "true";
             # ensure emails are private
             FORGEJO__service__DEFAULT_KEEP_EMAIL_PRIVATE = "true";
             FORGEJO__service__REQUIRE_SIGNIN_VIEW = "true";

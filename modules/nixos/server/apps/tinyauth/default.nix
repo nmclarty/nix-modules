@@ -80,6 +80,7 @@ in
           # general
           TINYAUTH_APPURL = "https://tinyauth.${domain}";
           TINYAUTH_LOG_LEVEL = "warn";
+          TINYAUTH_ANALYTICS_ENABLED = "false";
           TINYAUTH_OAUTH_AUTOREDIRECT = cfg.provider;
           TINYAUTH_AUTH_SECURECOOKIE = "true";
           TINYAUTH_AUTH_TRUSTEDPROXIES = traefikAddress;

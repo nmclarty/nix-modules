@@ -17,10 +17,7 @@ in
       ] config.custom.base.secrets.podman;
 
       templates."immich/config.json" = {
-        restartUnits = [
-          "immich.service"
-          "immich-microservices.service"
-        ];
+        restartUnits = [ "immich.service" ];
         owner = cfg.user.name;
         content = ''
           {

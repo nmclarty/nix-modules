@@ -296,7 +296,6 @@ in
             networks = [ networks.minecraft-support.ref ];
             healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:8100";
           };
-          serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;
           unitConfig = {
             Wants = [ containers.minecraft-mariadb.ref ];
             After = [ containers.minecraft-mariadb.ref ];

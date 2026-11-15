@@ -52,7 +52,6 @@ in
               REDIS_HOSTNAME = "immich-redis";
               DB_HOSTNAME = "immich-postgres";
               IMMICH_CONFIG_FILE = "/etc/immich/immich.json";
-              IMMICH_WORKERS_INCLUDE = "api";
             };
             secrets = [ "immich__postgres__password,uid=${id},gid=${id},mode=0400" ];
             devices = [ "/dev/dri:/dev/dri" ];
@@ -67,36 +66,7 @@ in
             containers.immich-redis.ref
             containers.immich-postgres.ref
             containers.immich-learning.ref
-            containers.immich-microservices.ref
           ];
-        };
-
-        immich-microservices = {
-          containerConfig = {
-            image = "ghcr.io/immich-app/immich-server:${cfg.tags.default}";
-            user = "${id}:${id}";
-            environments = {
-              DB_PASSWORD_FILE = "/run/secrets/immich__postgres__password";
-              REDIS_HOSTNAME = "immich-redis";
-              DB_HOSTNAME = "immich-postgres";
-              IMMICH_CONFIG_FILE = "/etc/immich/immich.json";
-              IMMICH_WORKERS_EXCLUDE = "api";
-            };
-            secrets = [ "immich__postgres__password,uid=${id},gid=${id},mode=0400" ];
-            devices = [ "/dev/dri:/dev/dri" ];
-            volumes = [
-              "/srv/immich/library:/data"
-              "${config.sops.templates."immich/config.json".path}:/etc/immich/immich.json:ro"
-            ];
-            networks = [ networks.immich-support.ref ];
-            healthCmd = "true";
-          };
-          unitConfig = mkDeps [
-            containers.immich-redis.ref
-            containers.immich-postgres.ref
-            containers.immich-learning.ref
-          ];
-          serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;
         };
 
         immich-learning = {
@@ -106,16 +76,13 @@ in
             environments = {
               MACHINE_LEARNING_MODEL_INTRA_OP_THREADS = "2";
             };
-            podmanArgs = [ "--device-cgroup-rule=c 189:* rmw" ];
             devices = [ "/dev/dri:/dev/dri" ];
             volumes = [
-              "/dev/bus/usb:/dev/bus/usb"
               "immich-learning-cache:/cache"
             ];
             networks = [ networks.immich-support.ref ];
             healthCmd = "bash -c 'echo -n > /dev/tcp/127.0.0.1/3003'";
           };
-          serviceConfig.AllowedCPUs = config.custom.apps.settings.cpus;
         };
       };
       networks = {

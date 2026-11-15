@@ -40,11 +40,6 @@ in
         default = "example.com";
         description = "The domain name to use for all apps.";
       };
-      cpus = mkOption {
-        type = types.str;
-        default = "";
-        description = "The cpu core(s) that performance-intensive apps will be limited to.";
-      };
     };
   };
 }
