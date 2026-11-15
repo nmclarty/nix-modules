@@ -19,9 +19,12 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     # apps
-    tangled.url = "git+https://tangled.org/did:plc:j5hmlfdrwkvtxm7cjmu7j2is";
+    # the knot hosting tangled.org/core, since going through tangled.org warns about a redirect
+    tangled.url = "git+https://knot1.tangled.sh/did:plc:j5hmlfdrwkvtxm7cjmu7j2is";
     tangled.inputs.nixpkgs.follows = "nixpkgs";
     tangled.inputs.nixpkgs-pds.follows = "nixpkgs";
+    # only used by their default.nix, and its locked url fails to fetch
+    tangled.inputs.flake-compat.follows = "";
 
     # personal
     helper-tools.url = "github:nmclarty/helper-tools";
