@@ -6,6 +6,8 @@
     settings.allowed-users = [ "@wheel" ];
   };
 
+  networking.nftables.enable = true;
+
   # enable nonfree firmware
   hardware.enableRedistributableFirmware = true;
 

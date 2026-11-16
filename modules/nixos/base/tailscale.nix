@@ -9,6 +9,8 @@ in
       enable = true;
       openFirewall = true;
     };
+    # the tailnet policy decides what can reach each host
+    networking.firewall.trustedInterfaces = [ config.services.tailscale.interfaceName ];
     systemd.services.tailscaled = {
       # stop ssh connection from dropping while rebuilding
       restartIfChanged = false;
