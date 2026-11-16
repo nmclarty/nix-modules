@@ -2,7 +2,6 @@
   lib,
   flake,
   inputs,
-  config,
   ...
 }:
 let
@@ -30,14 +29,7 @@ in
         "flakes"
       ];
       warn-dirty = false;
+      use-xdg-base-directories = true;
     };
-    extraOptions = "!include ${config.sops.templates."nix/access-tokens".path}";
-  };
-
-  sops = {
-    secrets."nix/github-token" = { };
-    templates."nix/access-tokens".content = ''
-      access-tokens = github.com=${config.sops.placeholder."nix/github-token"}
-    '';
   };
 }

@@ -20,7 +20,6 @@ in
     ./jellyfin
     ./knot
     ./librespeed
-    ./minecraft
     ./pocket
     ./restic
     ./seafile

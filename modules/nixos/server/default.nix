@@ -11,7 +11,9 @@ in
   imports = with inputs; [
     quadlet-nix.nixosModules.quadlet
     helper-tools.nixosModules.secret
+    helper-tools.nixosModules.backup
     ./apps
+    ./backup.nix
     ./services.nix
     ./system.nix
     ./ups.nix
@@ -43,6 +45,18 @@ in
         );
         default = { };
         description = "Extra prometheus endpoints for alloy to scrape and push, keyed by job name.";
+      };
+    };
+    backup = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "If snapshots and restic backups should be enabled.";
+      };
+      remote = mkOption {
+        type = types.str;
+        example = "s3:https://s3.example.com/bucket";
+        description = "The offsite restic repository, reached with the restic/access_key and restic/secret_key secrets.";
       };
     };
     beszel = {
