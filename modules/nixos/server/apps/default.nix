@@ -18,7 +18,6 @@ in
     ./homepage
     ./immich
     ./jellyfin
-    ./knot
     ./librespeed
     ./pocket
     ./restic

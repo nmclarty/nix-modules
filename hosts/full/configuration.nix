@@ -21,15 +21,7 @@
 
   custom.server.backup.remote = "s3:https://s3.example.com/full";
 
-  custom.apps = lib.mkMerge [
-    (lib.mapAttrs (_: _: { enable = true; }) (
-      lib.filterAttrs (_: o: lib.isOption (o.enable or null)) options.custom.apps
-    ))
-    {
-      knot = {
-        admins = [ "did:plc:example" ];
-        email = "knot@example.com";
-      };
-    }
-  ];
+  custom.apps = lib.mapAttrs (_: _: { enable = true; }) (
+    lib.filterAttrs (_: o: lib.isOption (o.enable or null)) options.custom.apps
+  );
 }
