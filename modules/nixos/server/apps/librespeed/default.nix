@@ -18,6 +18,7 @@ in
 
   config = lib.mkIf cfg.enable {
     users = mkUser { inherit (cfg.user) name id; };
+    custom.server.backup.keepRunning = [ "librespeed" ];
 
     custom.apps.traefik.routes.librespeed = {
       container = "librespeed";

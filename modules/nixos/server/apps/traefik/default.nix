@@ -227,7 +227,10 @@ in
       filter (r: isHostRoute r && r.port != null) routes
     );
 
-    custom.server.alloy.scrapes.traefik.address = "127.0.0.1:8082";
+    custom.server = {
+      alloy.scrapes.traefik.address = "127.0.0.1:8082";
+      backup.keepRunning = [ "traefik" ];
+    };
 
     # user
     users = mkUser { inherit (cfg.user) name id; };

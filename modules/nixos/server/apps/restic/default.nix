@@ -38,6 +38,8 @@ in
       services.restic.endpoints."tcp:8000" = "tcp://127.0.0.1:8000";
     };
     custom.server.alloy.scrapes.restic.address = "127.0.0.1:8000";
+    # other hosts push to it during the backup window
+    custom.server.backup.keepRunning = [ "restic" ];
 
     virtualisation.quadlet.containers.restic = {
       unitConfig.AssertPathIsMountPoint = data;

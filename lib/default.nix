@@ -92,15 +92,13 @@ in
         filterAttrs (_: v: v.enable or false && v.autoStart or false) (with config; custom.apps or { })
       );
 
-    # Returns a list of all service containers that should be running.
+    # Returns a list of all service containers.
     # - config (config to check apps for)
     getServices =
       config:
       map (s: "${s}.service") (
         builtins.attrNames (
-          filterAttrs (_: v: v.autoStart) (
-            with config; if virtualisation ? quadlet then virtualisation.quadlet.containers else { }
-          )
+          with config; if virtualisation ? quadlet then virtualisation.quadlet.containers else { }
         )
       );
   };

@@ -14,6 +14,8 @@ in
         name = "DDNS Updater";
       };
     };
+    # traefik requires it, so it has to keep running too
+    custom.server.backup.keepRunning = [ "ddns-updater" ];
 
     virtualisation.quadlet.containers.ddns-updater.containerConfig = {
       image = "docker.io/qmcgaw/ddns-updater:${cfg.tags.ddns-updater}";

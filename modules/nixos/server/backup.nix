@@ -23,7 +23,7 @@ in
             "${resticprofile}/bin/resticprofile"
             "backup"
           ];
-          services = getServices config;
+          services = lib.subtractLists (map (c: "${c}.service") cfg.keepRunning) (getServices config);
           zpool = {
             name = "zroot";
             datasets = [
@@ -33,7 +33,7 @@ in
           };
         };
       };
-      # sanoid is managed by py-backup, so its timer is masked
+      # sanoid is managed by helper-tools, so its timer is masked
       sanoid = {
         enable = true;
         templates.default = {

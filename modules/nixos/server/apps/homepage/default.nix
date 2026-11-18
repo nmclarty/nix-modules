@@ -21,6 +21,7 @@ in
     users = mkUser { inherit (cfg.user) name id; };
 
     systemd.tmpfiles.rules = [ "d /srv/homepage 0750 ${id} ${id}" ];
+    custom.server.backup.keepRunning = [ "homepage" ];
 
     custom.apps.traefik.routes.homepage = {
       container = "homepage";

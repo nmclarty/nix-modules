@@ -1,5 +1,5 @@
 { inputs, ... }:
-{ lib, ... }:
+{ lib, config, ... }:
 let
   inherit (lib) mkOption types;
 in
@@ -54,6 +54,12 @@ in
         type = types.str;
         example = "s3:https://s3.example.com/bucket";
         description = "The offsite restic repository, reached with the restic/access_key and restic/secret_key secrets.";
+      };
+      keepRunning = mkOption {
+        type = types.listOf (types.enum (lib.attrNames config.virtualisation.quadlet.containers));
+        default = [ ];
+        example = [ "restic" ];
+        description = "Containers the backup leaves running instead of stopping them while it snapshots. Anything that requires a stopped container is stopped with it and not restarted.";
       };
     };
     beszel = {
