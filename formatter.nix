@@ -19,6 +19,7 @@ pkgs.treefmt.withConfig {
     statix-fix
     deadnix
     actionlint
+    prettier
   ];
   settings = {
     on-unmatched = "info";
@@ -39,6 +40,16 @@ pkgs.treefmt.withConfig {
       actionlint = {
         command = "actionlint";
         includes = [ ".github/workflows/*.yaml" ];
+      };
+      prettier = {
+        command = "prettier";
+        options = [ "--write" ];
+        includes = [
+          "*.yaml"
+          "*.json"
+          "*.md"
+        ];
+        excludes = [ "secrets/**" ];
       };
     };
   };
