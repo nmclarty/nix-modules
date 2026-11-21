@@ -6,7 +6,7 @@ in
 {
   options.custom.disks.cold = {
     enable = mkEnableOption "If cold zfs pool config should be enabled.";
-    disks = mkOption {
+    devices = mkOption {
       type = with types; listOf str;
       description = "The list of disk devices to use.";
     };
@@ -20,7 +20,7 @@ in
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = builtins.length cfg.disks == 2;
+        assertion = builtins.length cfg.devices == 2;
         message = "Cold disk type 'zfs' requires 2 disks.";
       }
     ];
@@ -44,7 +44,7 @@ in
               };
             };
           };
-        }) cfg.disks
+        }) cfg.devices
       );
 
       zpool.cold = {

@@ -22,7 +22,7 @@
     server.backup.remote = "s3:https://s3.example.com/minimal";
     disks.root = {
       enable = true;
-      disks = [ "/dev/nvme0n1" ];
+      devices = [ "/dev/nvme0n1" ];
     };
   };
 }

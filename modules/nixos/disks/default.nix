@@ -3,7 +3,7 @@
   imports = [
     inputs.disko.nixosModules.disko
     inputs.lanzaboote.nixosModules.lanzaboote
-    ./root.nix
+    ./root
     ./cold.nix
   ];
 }

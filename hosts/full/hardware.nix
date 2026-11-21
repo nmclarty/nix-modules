@@ -10,14 +10,14 @@
       root = {
         enable = true;
         secureBoot = true;
-        disks = [
+        devices = [
           "/dev/nvme0n1"
           "/dev/nvme1n1"
         ];
       };
       cold = {
         enable = true;
-        disks = [
+        devices = [
           "/dev/sda"
           "/dev/sdb"
         ];
