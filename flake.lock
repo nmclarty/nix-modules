@@ -105,11 +105,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1794985187,
-        "narHash": "sha256-anjrVMjMKt2Y+zE3/z7Ec69+JL4YoPiiJhL91/22Ptc=",
+        "lastModified": 1795302740,
+        "narHash": "sha256-naE2OosrNtnbsFqCeuZ1FklousvD2130bgygTIzqsLI=",
         "owner": "nmclarty",
         "repo": "helper-tools",
-        "rev": "eb2fbdd225e37df9b208f972768929968eeaca54",
+        "rev": "5ea0bfd88b5d973cd6a730d6e51662235b6764ea",
         "type": "github"
       },
       "original": {
