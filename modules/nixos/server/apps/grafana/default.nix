@@ -22,6 +22,7 @@ in
       default = "13.3";
       loki = "3";
       prometheus = "v3";
+      mcp = "latest";
     };
   };
 

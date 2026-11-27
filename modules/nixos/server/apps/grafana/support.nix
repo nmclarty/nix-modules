@@ -7,11 +7,14 @@ let
 in
 {
   config = mkIf cfg.enable {
-    # neither has auth of its own, so access is left to the tailnet's grants
+    # none has auth of its own, so access is left to the tailnet's grants
     services.tailscale.serve = {
       enable = true;
-      services.loki.endpoints."tcp:3100" = "tcp://127.0.0.1:3100";
-      services.prometheus.endpoints."tcp:9090" = "tcp://127.0.0.1:9090";
+      services = {
+        loki.endpoints."tcp:3100" = "tcp://127.0.0.1:3100";
+        prometheus.endpoints."tcp:9090" = "tcp://127.0.0.1:9090";
+        grafana-mcp.endpoints."tcp:80" = "tcp://127.0.0.1:8000";
+      };
     };
 
     virtualisation.quadlet.containers = {
@@ -45,6 +48,22 @@ in
         networks = [ networks.grafana-support.ref ];
         publishPorts = [ "127.0.0.1:9090:9090" ];
         healthCmd = "wget -O /dev/null -q -T 5 http://127.0.0.1:9090/-/ready";
+      };
+
+      grafana-mcp.containerConfig = {
+        image = "docker.io/grafana/mcp-grafana:${cfg.tags.mcp}";
+        user = "${id}:${id}";
+        exec = [
+          "--allowed-hosts=grafana-mcp"
+          "--transport=streamable-http"
+          "--disable-write"
+        ];
+        environments.GRAFANA_URL = "http://grafana:3000";
+        secrets = [ "grafana__mcp__token,type=env,target=GRAFANA_SERVICE_ACCOUNT_TOKEN" ];
+        networks = [ networks.grafana-support.ref ];
+        publishPorts = [ "127.0.0.1:8000:8000" ];
+        # the image has no wget or curl
+        healthCmd = "bash -c ': </dev/tcp/127.0.0.1/8000'";
       };
     };
   };
