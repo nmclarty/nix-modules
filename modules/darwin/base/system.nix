@@ -14,7 +14,10 @@
         Weekday = 1;
       }
     ]; # weekly
-    settings.allowed-users = [ "@admin" ];
+    settings = {
+      allowed-users = [ "@admin" ];
+      sandbox = true;
+    };
   };
   security.pam.services.sudo_local.touchIdAuth = true;
 }
